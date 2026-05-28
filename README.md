@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HackNC 2026 Website
 
-## Getting Started
+This repository contains the HackNC 2026 website.
 
-First, run the development server:
+## Tech stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- npm
+- ESLint
+- Prettier
+
+## Getting started
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the local development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the local URL shown in your terminal. By default, this is usually:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```txt
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Available scripts
 
-## Learn More
+### Start development server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Starts the local development server.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### Create production build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Creates a production build.
+
+---
+
+### Run production build locally
+
+```bash
+npm run start
+```
+
+Runs the production build locally after building.
+
+---
+
+### Run ESLint
+
+```bash
+npm run lint
+```
+
+Checks the project for lint issues.
+
+---
+
+### Automatically fix ESLint issues
+
+```bash
+npm run lint:fix
+```
+
+Attempts to automatically fix lint issues.
+
+---
+
+### Format files with Prettier
+
+```bash
+npm run format
+```
+
+Formats project files using Prettier.
+
+---
+
+### Check Prettier formatting
+
+```bash
+npm run format:check
+```
+
+Checks whether project files are formatted correctly.
+
+## Project structure
+
+```txt
+app/
+components/
+data/
+lib/
+public/
+types/
+```
+
+### `app/`
+
+Contains Next.js App Router files such as pages, layouts, and metadata.
+
+### `components/`
+
+Contains reusable UI components.
+
+### `data/`
+
+Contains shared website content data such as FAQs, navigation links, sponsors, social links, and board members.
+
+### `lib/`
+
+Contains shared utilities, helper functions, or constants.
+
+### `public/`
+
+Contains static assets such as images, icons, and logos.
+
+### `types/`
+
+Contains shared TypeScript types.
+
+## Development workflow
+
+Create a new branch for each task or feature.
+
+Suggested branch naming examples:
+
+```txt
+setup/add-prettier
+docs/update-readme-onboarding
+feature/add-faq-section
+fix/navbar-link
+```
+
+Before opening a pull request, run:
+
+```bash
+npm run lint
+npm run format:check
+```
+
+Also verify the site runs locally:
+
+```bash
+npm run dev
+```
