@@ -31,7 +31,7 @@ After making changes to the files, do the following:
 
 3. Permanently save those staged changes to your local database by running `git commit -m "your commit message here"`.
 
-4. Push your local commits to the GitHub repository by running `git push`.
+4. Push your local commits to the GitHub repository by running `git push -u origin <branchname>`.
 
 5. Go to the GitHub repository via https://github.com/HackNC/fall2026.
 
