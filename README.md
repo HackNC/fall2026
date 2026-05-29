@@ -1,18 +1,38 @@
 # HackNC 2026 Website
 
-This repository contains the HackNC 2026 website.
+This repository contains the HackNC 2026 Website.
 
-## Tech stack
+The website will be used to share event information, display sponsor and board members, answer participant questions, and provide important external links.
+
+# Tech Stack
+
+## Frontend
 
 - Next.js
 - React
 - TypeScript
 - Tailwind CSS
 - npm
+
+## Tooling
+
 - ESLint
 - Prettier
 
-## Getting started
+# Repository Structure
+
+```txt
+app/          Next.js App Router pages and layouts
+components/   Reusable UI components
+data/         Shared website content data
+docs/         Project documentation
+lib/          Shared utilities and helper functions
+public/       Static assets
+types/        Shared TypeScript types
+.github/      Repository templates and GitHub config
+```
+
+# Local Development
 
 Install dependencies:
 
@@ -26,131 +46,73 @@ Start the local development server:
 npm run dev
 ```
 
-Open the local URL shown in your terminal. By default, this is usually:
+The local website should be available at:
 
 ```txt
 http://localhost:3000
 ```
 
-## Available scripts
+# Available Scripts
 
-### Start development server
+## Start development server
 
 ```bash
 npm run dev
 ```
 
-Starts the local development server.
-
----
-
-### Create production build
+## Create production build
 
 ```bash
 npm run build
 ```
 
-Creates a production build.
-
----
-
-### Run production build locally
+## Run production build locally
 
 ```bash
 npm run start
 ```
 
-Runs the production build locally after building.
-
----
-
-### Run ESLint
+## Run ESLint
 
 ```bash
 npm run lint
 ```
 
-Checks the project for lint issues.
-
----
-
-### Automatically fix ESLint issues
+## Automatically fix ESLint issues
 
 ```bash
 npm run lint:fix
 ```
 
-Attempts to automatically fix lint issues.
-
----
-
-### Format files with Prettier
+## Format files with Prettier
 
 ```bash
 npm run format
 ```
 
-Formats project files using Prettier.
-
----
-
-### Check Prettier formatting
+## Check Prettier formatting
 
 ```bash
 npm run format:check
 ```
 
-Checks whether project files are formatted correctly.
+# Git Workflow
 
-## Project structure
+Use branches for setup and feature work.
 
-```txt
-app/
-components/
-data/
-lib/
-public/
-types/
-```
-
-### `app/`
-
-Contains Next.js App Router files such as pages, layouts, and metadata.
-
-### `components/`
-
-Contains reusable UI components.
-
-### `data/`
-
-Contains shared website content data such as FAQs, navigation links, sponsors, social links, and board members.
-
-### `lib/`
-
-Contains shared utilities, helper functions, or constants.
-
-### `public/`
-
-Contains static assets such as images, icons, and logos.
-
-### `types/`
-
-Contains shared TypeScript types.
-
-## Development workflow
-
-Create a new branch for each task or feature.
-
-Suggested branch naming examples:
+Example branch names:
 
 ```txt
 setup/add-prettier
-docs/update-readme-onboarding
+setup/create-folder-structure
 feature/add-faq-section
-fix/navbar-link
+feature/add-navigation
+fix/mobile-navbar
 ```
 
-Before opening a pull request, run:
+Keep pull requests focused on a single task or feature whenever possible.
+
+Before opening a pull request:
 
 ```bash
 npm run lint
@@ -162,3 +124,23 @@ Also verify the site runs locally:
 ```bash
 npm run dev
 ```
+
+# Documentation
+
+Project documentation is stored in:
+
+```txt
+docs/
+```
+
+Current documentation:
+
+```txt
+docs/onboarding.md
+docs/git-workflow.md
+docs/architecture.md
+```
+
+# Status
+
+This repository is currently in the initial setup phase.
