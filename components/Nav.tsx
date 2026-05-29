@@ -37,7 +37,7 @@ export default function Nav() {
           <a href="#about" style={{ color: "#111", textDecoration: "none" }}>ABOUT</a>
           <a href="#host-interest" style={{ color: "#111", textDecoration: "none" }}>PARTNER</a>
           <a style={{ color: "#4B9CD3", textDecoration: "none", visibility: "hidden"}}>
-            PLACEHOL
+            PLACEHOLDER
           </a>
         </nav>
       </div>
