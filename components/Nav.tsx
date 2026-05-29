@@ -33,9 +33,9 @@ export default function Nav() {
         <span style={{ fontFamily: D, fontSize: "26px", letterSpacing: "0.02em", color: "#111" }}>
           HACKNC
         </span>
-        <nav style={{ fontFamily: M, fontSize: "11px", letterSpacing: "0.12em", display: "flex", gap: "32px" }}>
+        <nav style={{ fontFamily: M, fontSize: "11px", letterSpacing: "0.12em", display: "flex", gap: "40px" }}>
           <a href="#about" style={{ color: "#111", textDecoration: "none" }}>ABOUT</a>
-          <a href="#host-interest" style={{ color: "#111", textDecoration: "none" }}>PARTNER</a>
+          <a href="#host-interest" style={{ color: "#111", textDecoration: "none" }}>INTEREST FORM</a>
           <a style={{ color: "#4B9CD3", textDecoration: "none", visibility: "hidden"}}>
             PLACEHOLDER
           </a>
