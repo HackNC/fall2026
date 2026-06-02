@@ -28,7 +28,14 @@ export default function Hero() {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
           <h1
             style={{
               fontFamily: D,
@@ -59,14 +66,20 @@ export default function Hero() {
                 margin: 0,
               }}
             >
-              An annual hackathon at UNC Chapel Hill. We bring together
-              students from across the Southeast to build, hack, and deploy in
-              one weekend. All skill levels welcome, first-timers especially!
+              An annual hackathon at UNC Chapel Hill. We bring together students
+              from across the Southeast to build, hack, and deploy in one
+              weekend. All skill levels welcome, first-timers especially!
             </p>
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "32px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingTop: "32px",
+          }}
+        >
           <a
             href="#host-interest"
             style={{

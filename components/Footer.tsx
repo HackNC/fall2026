@@ -13,15 +13,37 @@ export default function Footer() {
         }}
       >
         <div>
-          <span style={{ fontFamily: D, fontSize: "22px", color: "#f5f0e8", letterSpacing: "0.02em" }}>
+          <span
+            style={{
+              fontFamily: D,
+              fontSize: "22px",
+              color: "#f5f0e8",
+              letterSpacing: "0.02em",
+            }}
+          >
             HACKNC 2026
           </span>
-          <p style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.12em", color: "#666", margin: "6px 0 0 0" }}>
+          <p
+            style={{
+              fontFamily: M,
+              fontSize: "10px",
+              letterSpacing: "0.12em",
+              color: "#666",
+              margin: "6px 0 0 0",
+            }}
+          >
             UNIVERSITY OF NORTH CAROLINA AT CHAPEL HILL
           </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-          <span style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.12em", color: "#555" }}>
+          <span
+            style={{
+              fontFamily: M,
+              fontSize: "10px",
+              letterSpacing: "0.12em",
+              color: "#555",
+            }}
+          >
             © {new Date().getFullYear()} HACKNC
           </span>
           <a
