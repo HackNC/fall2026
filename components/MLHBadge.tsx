@@ -8,10 +8,10 @@ export default function MLHBadge() {
       style={{
         position: "fixed",
         top: 0,
-        right: "24px",
+        right: "clamp(8px, 3vw, 24px)",
         zIndex: 50,
-        width: "100px",
-        minWidth: "80px",
+        width: "clamp(70px, 20vw, 100px)",
+        minWidth: "70px",
         maxWidth: "120px",
       }}
     >
