@@ -8,10 +8,24 @@ export default function HostInterest() {
       <div
         className="flex items-baseline justify-between border-b-2 border-[#111] px-4 py-3 sm:px-6 md:px-8 lg:px-10"
       >
-        <span style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.15em", color: "#555" }}>
+        <span
+          style={{
+            fontFamily: M,
+            fontSize: "10px",
+            letterSpacing: "0.15em",
+            color: "#555",
+          }}
+        >
           INTEREST FORM
         </span>
-        <span style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.15em", color: "#4B9CD3" }}>
+        <span
+          style={{
+            fontFamily: M,
+            fontSize: "10px",
+            letterSpacing: "0.15em",
+            color: "#4B9CD3",
+          }}
+        >
           § 02
         </span>
       </div>
@@ -56,10 +70,17 @@ export default function HostInterest() {
             >
               LET US KNOW YOU&apos;RE INTERESTED
             </p>
-            <p style={{ fontSize: "17px", lineHeight: 1.7, color: "#333", margin: "0 0 28px 0" }}>
-              Registration isn&apos;t open yet, but fill out our interest form and
-              we&apos;ll reach out as soon as applications go live. Takes less than
-              a minute.
+            <p
+              style={{
+                fontSize: "17px",
+                lineHeight: 1.7,
+                color: "#333",
+                margin: "0 0 28px 0",
+              }}
+            >
+              Registration isn&apos;t open yet, but fill out our interest form
+              and we&apos;ll reach out as soon as applications go live. Takes
+              less than a minute.
             </p>
           </div>
 

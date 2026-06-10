@@ -49,9 +49,9 @@ export default function Hero() {
                 margin: 0,
               }}
             >
-              An annual hackathon at UNC Chapel Hill. We bring together
-              students from across the Southeast to build, hack, and deploy in
-              one weekend. All skill levels welcome, first-timers especially!
+              An annual hackathon at UNC Chapel Hill. We bring together students
+              from across the Southeast to build, hack, and deploy in one
+              weekend. All skill levels welcome, first-timers especially!
             </p>
           </div>
         </div>

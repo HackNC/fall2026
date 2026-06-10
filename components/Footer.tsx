@@ -8,7 +8,14 @@ export default function Footer() {
         className="flex flex-col items-start justify-between gap-6 px-4 py-8 sm:px-6 md:px-8 lg:flex-row lg:items-center lg:px-10"
       >
         <div>
-          <span style={{ fontFamily: D, fontSize: "22px", color: "#f5f0e8", letterSpacing: "0.02em" }}>
+          <span
+            style={{
+              fontFamily: D,
+              fontSize: "22px",
+              color: "#f5f0e8",
+              letterSpacing: "0.02em",
+            }}
+          >
             HACKNC 2026
           </span>
           <p style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.12em", color: "#666", margin: "6px 0 0 0", overflowWrap: "anywhere" }}>

@@ -28,6 +28,7 @@ data/         Shared website content data
 docs/         Project documentation
 lib/          Shared utilities and helper functions
 public/       Static assets
+styles/       CSS files
 types/        Shared TypeScript types
 .github/      Repository templates and GitHub config
 ```

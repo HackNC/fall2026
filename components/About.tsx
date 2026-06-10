@@ -14,10 +14,24 @@ export default function About() {
       <div
         className="flex items-baseline justify-between border-b-2 border-[#111] px-4 py-3 sm:px-6 md:px-8 lg:px-10"
       >
-        <span style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.15em", color: "#555" }}>
+        <span
+          style={{
+            fontFamily: M,
+            fontSize: "10px",
+            letterSpacing: "0.15em",
+            color: "#555",
+          }}
+        >
           ABOUT THE EVENT
         </span>
-        <span style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.15em", color: "#4B9CD3" }}>
+        <span
+          style={{
+            fontFamily: M,
+            fontSize: "10px",
+            letterSpacing: "0.15em",
+            color: "#4B9CD3",
+          }}
+        >
           § 01
         </span>
       </div>
@@ -41,7 +55,14 @@ export default function About() {
             <span style={{ fontFamily: D, fontSize: "clamp(44px, 10vw, 64px)", lineHeight: 1, color: "#111" }}>
               {value}
             </span>
-            <span style={{ fontFamily: M, fontSize: "10px", letterSpacing: "0.15em", color: "#4B9CD3" }}>
+            <span
+              style={{
+                fontFamily: M,
+                fontSize: "10px",
+                letterSpacing: "0.15em",
+                color: "#4B9CD3",
+              }}
+            >
               {label}
             </span>
           </div>
