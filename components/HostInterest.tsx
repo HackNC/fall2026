@@ -5,9 +5,7 @@ export default function HostInterest() {
   return (
     <section id="host-interest" style={{ borderBottom: "4px solid #111" }}>
       {/* Section header */}
-      <div
-        className="flex items-baseline justify-between border-b-2 border-[#111] px-4 py-3 sm:px-6 md:px-8 lg:px-10"
-      >
+      <div className="flex items-baseline justify-between border-b-2 border-[#111] px-4 py-3 sm:px-6 md:px-8 lg:px-10">
         <span
           style={{
             fontFamily: M,
@@ -33,9 +31,7 @@ export default function HostInterest() {
       {/* Asymmetric two-column */}
       <div className="grid grid-cols-1 lg:grid-cols-[5fr_4fr]">
         {/* Left: big heading */}
-        <div
-          className="px-4 py-8 sm:px-6 md:px-8 lg:border-r-2 lg:border-[#111] lg:px-10 lg:py-12"
-        >
+        <div className="px-4 py-8 sm:px-6 md:px-8 lg:border-r-2 lg:border-[#111] lg:px-10 lg:py-12">
           <h2
             style={{
               fontFamily: D,
@@ -55,9 +51,7 @@ export default function HostInterest() {
         </div>
 
         {/* Right: copy + CTA */}
-        <div
-          className="flex flex-col justify-between border-t-2 border-[#111] px-4 py-8 sm:px-6 md:px-8 lg:border-t-0 lg:px-10 lg:py-12"
-        >
+        <div className="flex flex-col justify-between border-t-2 border-[#111] px-4 py-8 sm:px-6 md:px-8 lg:border-t-0 lg:px-10 lg:py-12">
           <div>
             <p
               style={{

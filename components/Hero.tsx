@@ -10,13 +10,9 @@ const meta = [
 
 export default function Hero() {
   return (
-    <section
-      className="grid min-h-[calc(100vh-89px)] grid-cols-1 border-b-4 border-[#111] lg:grid-cols-[minmax(0,1fr)_260px]"
-    >
+    <section className="grid min-h-[calc(100vh-89px)] grid-cols-1 border-b-4 border-[#111] lg:grid-cols-[minmax(0,1fr)_260px]">
       {/* Left: title + copy */}
-      <div
-        className="flex min-w-0 flex-col justify-between px-4 pb-8 pt-10 sm:px-6 md:px-8 lg:border-r-4 lg:border-[#111] lg:px-10 lg:pb-10 lg:pt-12"
-      >
+      <div className="flex min-w-0 flex-col justify-between px-4 pb-8 pt-10 sm:px-6 md:px-8 lg:border-r-4 lg:border-[#111] lg:px-10 lg:pb-10 lg:pt-12">
         <div className="flex flex-1 flex-col justify-center">
           <h1
             style={{
@@ -93,7 +89,12 @@ export default function Hero() {
         >
           2026
         </p>
-        <div style={{ borderTop: "2px solid #111", marginBottom: "clamp(20px, 3vw, 32px)" }} />
+        <div
+          style={{
+            borderTop: "2px solid #111",
+            marginBottom: "clamp(20px, 3vw, 32px)",
+          }}
+        />
         {meta.map(({ label, value }) => (
           <div key={label} style={{ marginBottom: "28px" }}>
             <p
