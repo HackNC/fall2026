@@ -12,13 +12,7 @@ export default function About() {
     <section id="about" style={{ borderBottom: "4px solid #111" }}>
       {/* Section header */}
       <div
-        style={{
-          borderBottom: "2px solid #111",
-          padding: "12px 40px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "baseline",
-        }}
+        className="flex items-baseline justify-between border-b-2 border-[#111] px-4 py-3 sm:px-6 md:px-8 lg:px-10"
       >
         <span
           style={{
@@ -44,31 +38,21 @@ export default function About() {
 
       {/* Stats bar */}
       <div
-        style={{
-          borderBottom: "2px solid #111",
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-        }}
+        className="grid grid-cols-1 border-b-2 border-[#111] sm:grid-cols-3"
       >
         {stats.map(({ value, label }, i) => (
           <div
             key={label}
             style={{
-              padding: "28px 40px",
-              borderRight: i < stats.length - 1 ? "2px solid #111" : "none",
+              padding: "clamp(20px, 4vw, 28px) clamp(16px, 4vw, 40px)",
               display: "flex",
               alignItems: "baseline",
               gap: "12px",
+              flexWrap: "wrap",
             }}
+            className={`${i < stats.length - 1 ? "border-b-2 sm:border-b-0 sm:border-r-2" : ""} border-[#111]`}
           >
-            <span
-              style={{
-                fontFamily: D,
-                fontSize: "64px",
-                lineHeight: 1,
-                color: "#111",
-              }}
-            >
+            <span style={{ fontFamily: D, fontSize: "clamp(44px, 10vw, 64px)", lineHeight: 1, color: "#111" }}>
               {value}
             </span>
             <span
@@ -87,42 +71,22 @@ export default function About() {
 
       {/* Two-column body */}
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          borderBottom: "2px solid #111",
-        }}
+        className="grid grid-cols-1 border-b-2 border-[#111] lg:grid-cols-2"
       >
-        <div style={{ padding: "40px", borderRight: "2px solid #111" }}>
-          <p
-            style={{
-              fontSize: "17px",
-              lineHeight: 1.7,
-              color: "#222",
-              margin: 0,
-            }}
-          >
-            HackNC is a weekend for students of all skill levels to broaden
-            their talents. Your challenge is to make an awesome project in just
-            24 hours. You will have access to hands-on tech workshops, sponsor
-            networking, and exciting talks about what&apos;s happening right now
-            in CS and tech — not to mention all of the free food, shirts,
-            stickers, and swag!
-          </p>
+        <div className="px-4 py-8 sm:px-6 md:px-8 lg:border-r-2 lg:border-[#111] lg:px-10 lg:py-10">
+          <p style={{ fontSize: "clamp(16px, 2.2vw, 17px)", lineHeight: 1.7, color: "#222", margin: 0 }}>
+            HackNC is a weekend for students of all skill levels to broaden their
+            talents. Your challenge is to make an awesome project in just 24 hours.
+            You will have access to hands-on tech workshops, sponsor networking, and
+            exciting talks about what&apos;s happening right now in CS and tech —
+            not to mention all of the free food, shirts, stickers, and swag!</p>
         </div>
-        <div style={{ padding: "40px" }}>
-          <p
-            style={{
-              fontSize: "17px",
-              lineHeight: 1.7,
-              color: "#222",
-              margin: 0,
-            }}
-          >
-            You don&apos;t need to be a senior computer science student with
-            four internships to show up. HackNC is explicitly built for people
-            who are still figuring it out. The best projects usually come from
-            people who had no idea what they were doing on Friday night.
+        <div className="px-4 py-8 sm:px-6 md:px-8 lg:px-10 lg:py-10">
+          <p style={{ fontSize: "clamp(16px, 2.2vw, 17px)", lineHeight: 1.7, color: "#222", margin: 0 }}>
+            You don&apos;t need to be a senior computer science student with four internships
+            to show up. HackNC is explicitly built for people who are still figuring
+            it out. The best projects usually come from people who had no idea what
+            they were doing on Friday night.
           </p>
         </div>
       </div>

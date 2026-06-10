@@ -6,13 +6,7 @@ export default function HostInterest() {
     <section id="host-interest" style={{ borderBottom: "4px solid #111" }}>
       {/* Section header */}
       <div
-        style={{
-          borderBottom: "2px solid #111",
-          padding: "12px 40px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "baseline",
-        }}
+        className="flex items-baseline justify-between border-b-2 border-[#111] px-4 py-3 sm:px-6 md:px-8 lg:px-10"
       >
         <span
           style={{
@@ -37,18 +31,15 @@ export default function HostInterest() {
       </div>
 
       {/* Asymmetric two-column */}
-      <div style={{ display: "grid", gridTemplateColumns: "5fr 4fr" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[5fr_4fr]">
         {/* Left: big heading */}
         <div
-          style={{
-            borderRight: "2px solid #111",
-            padding: "48px 40px",
-          }}
+          className="px-4 py-8 sm:px-6 md:px-8 lg:border-r-2 lg:border-[#111] lg:px-10 lg:py-12"
         >
           <h2
             style={{
               fontFamily: D,
-              fontSize: "clamp(56px, 7vw, 96px)",
+              fontSize: "clamp(44px, 14vw, 96px)",
               lineHeight: 0.92,
               color: "#111",
               margin: 0,
@@ -65,12 +56,7 @@ export default function HostInterest() {
 
         {/* Right: copy + CTA */}
         <div
-          style={{
-            padding: "48px 40px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
+          className="flex flex-col justify-between border-t-2 border-[#111] px-4 py-8 sm:px-6 md:px-8 lg:border-t-0 lg:px-10 lg:py-12"
         >
           <div>
             <p
@@ -98,20 +84,21 @@ export default function HostInterest() {
             </p>
           </div>
 
-          <div style={{ paddingTop: "40px" }}>
+          <div style={{ paddingTop: "clamp(24px, 5vw, 40px)" }}>
             <a
               href="https://forms.gle/hj2APFBivY3rAYtz8"
               target="_blank"
               rel="noreferrer"
               style={{
                 fontFamily: D,
-                fontSize: "22px",
+                fontSize: "clamp(18px, 4vw, 22px)",
                 color: "#f5f0e8",
                 background: "#111",
                 textDecoration: "none",
-                padding: "16px 28px",
+                padding: "14px clamp(18px, 4vw, 28px)",
                 display: "inline-block",
                 letterSpacing: "0.03em",
+                minHeight: "44px",
               }}
             >
               FILL OUT THE FORM ↗
