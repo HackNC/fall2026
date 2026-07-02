@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-const D = "var(--font-display)";
 const M = "var(--font-mono)";
 
 export default function Nav() {
@@ -53,16 +52,12 @@ export default function Nav() {
           flexWrap: "wrap",
         }}
       >
-        <span
-          style={{
-            fontFamily: D,
-            fontSize: "26px",
-            letterSpacing: "0.02em",
-            color: "#111",
-          }}
-        >
-          HACKNC
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/hacknc-logo.png"
+          alt="HackNC"
+          style={{ height: "48px", width: "auto" }}
+        />
 
         <button
           type="button"

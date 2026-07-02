@@ -6,16 +6,24 @@ export default function Footer() {
     <footer style={{ borderTop: "4px solid #111", background: "#111" }}>
       <div className="flex flex-col items-start justify-between gap-6 px-4 py-8 sm:px-6 md:px-8 lg:flex-row lg:items-center lg:px-10">
         <div>
-          <span
-            style={{
-              fontFamily: D,
-              fontSize: "22px",
-              color: "#f5f0e8",
-              letterSpacing: "0.02em",
-            }}
-          >
-            HACKNC 2026
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/hacknc-logo.png"
+              alt="HackNC"
+              style={{ height: "40px", width: "auto" }}
+            />
+            <span
+              style={{
+                fontFamily: D,
+                fontSize: "22px",
+                color: "#f5f0e8",
+                letterSpacing: "0.02em",
+              }}
+            >
+              2026
+            </span>
+          </div>
           <p
             style={{
               fontFamily: M,
