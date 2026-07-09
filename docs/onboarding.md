@@ -16,11 +16,8 @@ Install the following before starting:
 ```txt
 app/          Next.js App Router pages and layouts
 components/   Reusable UI components
-data/         Shared website content data
 docs/         Project documentation
-lib/          Shared utilities and helper functions
 public/       Static assets
-types/        Shared TypeScript types
 .github/      Repository templates and GitHub config
 ```
 

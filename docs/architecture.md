@@ -42,42 +42,6 @@ Examples may include:
 - FAQ components
 - footer components
 
-## Shared Content Data
-
-Shared content data should be stored in:
-
-```txt
-data/
-```
-
-Examples include:
-
-- FAQs
-- sponsor information
-- navigation links
-- social links
-- board member information
-
-This keeps content separate from UI components whenever possible.
-
-## Shared Types
-
-Shared TypeScript types should be stored in:
-
-```txt
-types/
-```
-
-This helps keep shared data structures consistent across the project.
-
-## Utilities
-
-Shared helper functions and utilities should be stored in:
-
-```txt
-lib/
-```
-
 # Styling
 
 The project uses Tailwind CSS for styling.

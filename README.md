@@ -4,6 +4,8 @@ This repository contains the HackNC 2026 Website.
 
 The website will be used to share event information, display sponsor and board members, answer participant questions, and provide important external links.
 
+**Wireframe** : https://whimsical.com/hacknc-2026-website-wireframe-51ti3C4wRxYjBxpJnTA4YR
+
 # Tech Stack
 
 ## Frontend
@@ -24,12 +26,8 @@ The website will be used to share event information, display sponsor and board m
 ```txt
 app/          Next.js App Router pages and layouts
 components/   Reusable UI components
-data/         Shared website content data
 docs/         Project documentation
-lib/          Shared utilities and helper functions
 public/       Static assets
-styles/       CSS files
-types/        Shared TypeScript types
 .github/      Repository templates and GitHub config
 ```
 
