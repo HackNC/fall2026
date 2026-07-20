@@ -2,7 +2,7 @@ export default function MLHBadge() {
   return (
     <a
       id="mlh-trust-badge"
-      href="https://mlh.io/na?utm_source=na-hackathon&utm_medium=TrustBadge&utm_campaign=2027-season&utm_content=blue"
+      href="https://www.mlh.com/seasons/2026/events"
       target="_blank"
       rel="noreferrer"
       style={{
