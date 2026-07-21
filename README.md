@@ -6,6 +6,8 @@ The website will be used to share event information, display sponsor and board m
 
 **Wireframe** : https://whimsical.com/hacknc-2026-website-wireframe-51ti3C4wRxYjBxpJnTA4YR
 
+**Figma** : https://www.figma.com/design/W1mgcz5bSEXb9BdrbKnNMY/hacknc-2026-website?node-id=0-1&p=f
+
 # Tech Stack
 
 ## Frontend
