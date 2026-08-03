@@ -46,7 +46,13 @@ export default function RootLayout({
         lang="en"
         className={`${geistSans.variable} ${geistMono.variable} ${ubuntu.variable} ${istokWeb.variable} h-full antialiased`}
       >
-        <body className="min-h-full flex flex-col">
+        {/*
+          Browser extensions (Grammarly, password managers) inject attributes
+          onto <body> before React hydrates, which React reports as a mismatch.
+          Suppression applies one level deep — attributes on this element only,
+          never its children — so real mismatches inside the app still surface.
+        */}
+        <body className="min-h-full flex flex-col" suppressHydrationWarning>
           <Navigation />
           <div className="flex-1">{children}</div>
           <Footer />
