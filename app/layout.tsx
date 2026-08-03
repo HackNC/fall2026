@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Istok_Web, Ubuntu } from "next/font/google";
 import Footer from "@/components/Footer";
 import MLHBadge from "@/components/MLHBadge";
 import Navigation from "@/components/Navigation";
@@ -12,6 +12,20 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+// Stand-ins for the style guide's Bubblebody Neue and Aptos. See the font
+// stack comment in globals.css.
+const ubuntu = Ubuntu({
+  variable: "--font-ubuntu",
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+});
+
+const istokWeb = Istok_Web({
+  variable: "--font-istok-web",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -30,7 +44,7 @@ export default function RootLayout({
       <MLHBadge />
       <html
         lang="en"
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${ubuntu.variable} ${istokWeb.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col">
           <Navigation />
