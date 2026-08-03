@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import BoardMembers from "@/components/BoardMembers";
 import BriefHistory from "@/components/BriefHistory";
+import MeetOurTeam from "@/components/MeetOurTeam";
 
 export const metadata: Metadata = {
   title: "About | HackNC 2026",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main>
+      <MeetOurTeam />
       <BriefHistory />
-      <BoardMembers />
     </main>
   );
 }
