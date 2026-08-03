@@ -2,7 +2,9 @@
 
 :root {
   color-scheme: light;
-  --background: #f7f2e8;
+  /* Page backdrop from the mockups. The nav bar and footer are shared, so the
+     whole site moves to this background together with them. */
+  --background: #dfefff;
   --foreground: #181816;
   --accent: #1859a9;
 }
@@ -15,12 +17,60 @@
   --font-display: var(--font-geist-sans);
   --font-serif: Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono);
+
+  /*
+   * hacknc 2026 style guide tokens.
+   * Palette names are ours; the hex values come straight from the style guide
+   * frame in Figma (main colors, then accent colors), plus the two text colors
+   * the mockups use that the swatch board does not name.
+   */
+  --color-sky: #baefff;
+  --color-royal: #1554c9;
+  --color-lime: #d5ff82;
+  --color-forest: #147842;
+  --color-peach: #ffdfa8;
+  --color-tangerine: #ff8000;
+  --color-frost: #f4fffe;
+  --color-blossom: #ff98b8;
+  --color-ink: #173771;
+  --color-plum: #711767;
+  --color-backdrop: #dfefff;
+
+  /*
+   * The style guide asks for Bubblebody Neue / Tahoma / Aptos. Bubblebody Neue
+   * is commercially licensed and is not in the repo, so the Figma file itself
+   * renders a substitute; Aptos ships with Microsoft Office rather than the
+   * web. Each stack therefore leads with the specified face and falls back to
+   * the one the mockup actually renders, so dropping in the real font files
+   * later is a one-line change here.
+   */
+  --font-title:
+    "Bubblebody Neue", var(--font-ubuntu), "Trebuchet MS", sans-serif;
+  --font-accent: Tahoma, Verdana, sans-serif;
+  --font-body: Aptos, var(--font-istok-web), Verdana, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/*
+ * Backdrop texture. Placeholder export of the "temp bg" layer in Figma — the
+ * layer is marked temporary there too, so expect this to be replaced once
+ * graphics delivers the real artwork.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("/site-backdrop.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.29;
+  pointer-events: none;
 }
 
 details summary {

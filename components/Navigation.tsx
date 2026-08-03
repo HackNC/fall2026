@@ -1,58 +1,91 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { glossyPill } from "@/components/glossyPill";
 
 const internalLinks = [
-  { label: "About", href: "/about" },
-  { label: "Resources", href: "/resources" },
-  { label: "Schedule", href: "/schedule" },
+  { label: "about", href: "/about" },
+  { label: "resources", href: "/resources" },
+  { label: "schedule", href: "/schedule" },
 ];
 
+const REGISTER_HREF =
+  "https://docs.google.com/forms/d/e/1FAIpQLSfMx28v4vb33tfTGMJoqbkKMWl2Js5JSXjX9wPYvMZiHOpRCQ/viewform";
+
 export default function Navigation() {
+  const pathname = usePathname();
+
   return (
-    <header className="border-b border-slate-200">
+    <header className="px-2 pt-3 sm:px-4 sm:pt-5">
       <nav
         aria-label="Primary"
-        className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4 sm:px-8 lg:px-10 xl:px-12"
+        // The MLH badge is fixed to the top right corner, so the bar keeps a
+        // matching gutter on that side at every width.
+        className="mx-auto flex w-full max-w-[89rem] flex-wrap items-center gap-x-4 gap-y-3 rounded-[20px] bg-white/10 px-4 py-3 pr-20 sm:px-6 sm:pr-32"
       >
         <Link
           href="/"
-          className="flex items-center gap-2"
           aria-label="HackNC home"
+          className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
         >
           <Image
             src="/hacknc-logo.png"
             alt="HackNC logo"
-            width={36}
-            height={36}
-            className="h-9 w-9 object-contain"
+            width={74}
+            height={74}
+            priority
+            className="h-12 w-12 object-contain sm:h-[74px] sm:w-[74px]"
           />
-          <span className="text-base font-semibold text-slate-950">HackNC</span>
         </Link>
 
-        <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-slate-700">
-          {internalLinks.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="transition-colors hover:text-slate-950"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-          <li>
-            <a href="#" className="transition-colors hover:text-slate-950">
-              Portal
-            </a>
-          </li>
+        {/* Below sm the tabs take their own full-width row so they can sit two
+            or three across instead of one per line. */}
+        <ul className="flex w-full flex-wrap items-center justify-center gap-2 sm:w-auto sm:flex-1 sm:gap-3.5">
+          {internalLinks.map((link) => {
+            const isCurrent = pathname.startsWith(link.href);
+
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={isCurrent ? "page" : undefined}
+                  className={glossyPill(
+                    isCurrent ? "pressed" : "royal",
+                    "min-w-[6.5rem] sm:min-w-[8rem] lg:min-w-[11.2rem]"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
           <li>
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSfMx28v4vb33tfTGMJoqbkKMWl2Js5JSXjX9wPYvMZiHOpRCQ/viewform"
+              href="#"
+              className={glossyPill(
+                "royal",
+                "min-w-[6.5rem] sm:min-w-[8rem] lg:min-w-[11.2rem]"
+              )}
+            >
+              portal
+            </a>
+          </li>
+          {/* Not in the Figma nav, but dropping it would leave the site with no
+              registration link. Styled with the style guide's accent colour so
+              it reads as the call to action. */}
+          <li>
+            <a
+              href={REGISTER_HREF}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full bg-slate-950 px-4 py-2 text-white transition-colors hover:bg-slate-800"
+              className={glossyPill(
+                "tangerine",
+                "min-w-[6.5rem] sm:min-w-[8rem] lg:min-w-[11.2rem]"
+              )}
             >
-              Register
+              register
             </a>
           </li>
         </ul>
