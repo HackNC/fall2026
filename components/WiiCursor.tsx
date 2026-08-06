@@ -1,21 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
-
-type WiiCursorProps = {
-  /** The element the pointer takes over. Nothing outside it is affected. */
-  containerRef: RefObject<HTMLElement | null>;
-};
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 /**
- * The Wii Player 1 hand pointer, scoped to one container.
+ * The Wii Player 1 hand pointer, covering the whole page it is mounted on.
  *
  * The hand chases the real pointer instead of tracking it exactly — a Wii
  * remote never lands on a pixel instantly, and the lag plus the lean into
  * horizontal movement is most of what makes it read as a Wii cursor rather
  * than a hand-shaped mouse cursor.
  */
-export default function WiiCursor({ containerRef }: WiiCursorProps) {
+export default function WiiCursor() {
   const [enabled, setEnabled] = useState(false);
   const handRef = useRef<SVGSVGElement>(null);
 
@@ -41,9 +37,10 @@ export default function WiiCursor({ containerRef }: WiiCursorProps) {
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
     const hand = handRef.current;
-    if (!enabled || !container || !hand) return;
+    if (!enabled || !hand) return;
+
+    const root = document.documentElement;
 
     let pointerX = 0;
     let pointerY = 0;
@@ -57,10 +54,9 @@ export default function WiiCursor({ containerRef }: WiiCursorProps) {
       pointerX = event.clientX;
       pointerY = event.clientY;
 
-      // First reading of the session: drop the hand straight onto the pointer
-      // rather than letting it fly in from the top-left corner. Revealing it
-      // here rather than on pointerenter matters — enter fires before any
-      // coordinates exist, which would show one frame parked at 0,0.
+      // First reading: drop the hand straight onto the pointer rather than
+      // letting it fly in from the top-left corner, and only reveal it once
+      // there are real coordinates to place it at.
       if (!placed) {
         handX = pointerX;
         handY = pointerY;
@@ -69,12 +65,11 @@ export default function WiiCursor({ containerRef }: WiiCursorProps) {
       }
     }
 
-    function handleEnter() {
-      container?.classList.add("wii-pointer-active");
-    }
-
-    function handleLeave() {
-      container?.classList.remove("wii-pointer-active");
+    // Only hides when the pointer genuinely leaves the viewport — for the
+    // browser chrome or another window. There is deliberately no per-element
+    // boundary: a hover raise moves the element out from under the pointer,
+    // so enter/leave on anything that animates oscillates forever.
+    function handleLeaveViewport() {
       if (hand) hand.style.opacity = "0";
       placed = false;
     }
@@ -89,7 +84,7 @@ export default function WiiCursor({ containerRef }: WiiCursorProps) {
       angle += (lean - angle) * 0.15;
 
       // Written straight to the node: running this through state would
-      // re-render the whole window on every frame of pointer movement.
+      // re-render the page on every frame of pointer movement.
       if (hand) {
         hand.style.transform = `translate3d(${handX - 20}px, ${handY - 4}px, 0) rotate(${angle}deg)`;
       }
@@ -97,30 +92,41 @@ export default function WiiCursor({ containerRef }: WiiCursorProps) {
       frame = requestAnimationFrame(tick);
     }
 
-    container.addEventListener("pointermove", handleMove);
-    container.addEventListener("pointerenter", handleEnter);
-    container.addEventListener("pointerleave", handleLeave);
+    root.classList.add("wii-pointer-active");
+    window.addEventListener("pointermove", handleMove, { passive: true });
+    root.addEventListener("pointerleave", handleLeaveViewport);
     frame = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(frame);
-      container.removeEventListener("pointermove", handleMove);
-      container.removeEventListener("pointerenter", handleEnter);
-      container.removeEventListener("pointerleave", handleLeave);
-      container.classList.remove("wii-pointer-active");
+      window.removeEventListener("pointermove", handleMove);
+      root.removeEventListener("pointerleave", handleLeaveViewport);
+      // Without this the native cursor stays hidden after navigating away.
+      root.classList.remove("wii-pointer-active");
     };
-  }, [enabled, containerRef]);
+  }, [enabled]);
 
   if (!enabled) return null;
 
-  return (
+  /*
+   * Portaled to <body> on purpose, and it must stay that way.
+   *
+   * A transformed ancestor becomes the containing block for a position: fixed
+   * descendant, so nesting this anywhere inside the team window — which both
+   * drifts and raises — would position the hand relative to that window while
+   * the pointer coordinates driving it stay relative to the viewport. The hand
+   * then sits a window's-offset away from the real pointer and slides further
+   * on scroll. Portaling out is what guarantees the viewport is the reference.
+   */
+  return createPortal(
     <svg
       ref={handRef}
       aria-hidden="true"
       viewBox="0 0 48 52"
       width="44"
       height="48"
-      className="pointer-events-none fixed top-0 left-0 z-40 opacity-0 transition-opacity duration-150"
+      // z-60 keeps it above the fixed MLH badge at z-index 50.
+      className="pointer-events-none fixed top-0 left-0 z-[60] opacity-0 transition-opacity duration-150"
       style={{
         // Rotation pivots on the fingertip, which is also the point the
         // translate above aligns to the real pointer.
@@ -150,6 +156,7 @@ export default function WiiCursor({ containerRef }: WiiCursorProps) {
       >
         1
       </text>
-    </svg>
+    </svg>,
+    document.body
   );
 }
