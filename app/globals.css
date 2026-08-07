@@ -37,6 +37,16 @@
   --color-backdrop: #dfefff;
 
   /*
+   * Window frame gradient stops from the Figma mockups (not on the style
+   * guide swatch board): the first pair tints the blue schedule window, the
+   * second pair the green resources window.
+   */
+  --color-periwinkle: #b8d2f2;
+  --color-cornflower: #487ddf;
+  --color-sprout: #c9ffa9;
+  --color-dew: #f8ffdd;
+
+  /*
    * The style guide asks for Bubblebody Neue / Tahoma / Aptos. Bubblebody Neue
    * is commercially licensed and is not in the repo, so the Figma file itself
    * renders a substitute; Aptos ships with Microsoft Office rather than the
