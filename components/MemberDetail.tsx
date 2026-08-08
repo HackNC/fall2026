@@ -70,7 +70,7 @@ export default function MemberDetail({ member, onBack }: MemberDetailProps) {
         footer's "find us here" band does. The negative margins cancel the
         window padding, so they track it if that padding ever changes.
       */}
-      <p className="mt-10 -ml-6 w-[70%] max-w-[22rem] rounded-r-[10px] bg-linear-to-r from-[#769FDC] to-[#78A1BE] py-2.5 pr-6 pl-6 font-title text-lg tracking-[0.05em] text-white lowercase sm:-ml-10 sm:pl-10 sm:text-xl">
+      <p className="mt-10 -ml-6 w-[70%] max-w-[22rem] rounded-r-[10px] bg-linear-to-r from-[#7e9dcb] to-[#a5bddf] py-2.5 pr-6 pl-6 font-title text-lg tracking-[0.05em] text-white lowercase sm:-ml-10 sm:pl-10 sm:text-xl">
         {member.committee}
       </p>
     </div>
