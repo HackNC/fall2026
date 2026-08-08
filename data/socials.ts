@@ -5,15 +5,15 @@ export type SocialLink = {
 
 export const socials: SocialLink[] = [
   {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/company/thehacknc",
+    name: "Email",
+    href: "mailto:hello@hacknc.com",
   },
   {
     name: "Instagram",
     href: "https://www.instagram.com/thehacknc",
   },
   {
-    name: "Email",
-    href: "mailto:hello@hacknc.com",
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/company/thehacknc",
   },
 ];
