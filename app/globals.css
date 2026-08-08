@@ -9,6 +9,28 @@
   --accent: #1859a9;
 }
 
+/*
+ * Scroll position, published by useScrollProgress for the parallax layers to
+ * read. Registered rather than left as plain custom properties for two
+ * reasons: the declared initial-value is what the static export prerenders
+ * with (so the page is laid out un-scrolled before any JS runs, and stays
+ * that way under prefers-reduced-motion), and the <number> syntax lets the
+ * layers do `calc(var(--scroll-px) * 0.2px)` without the whole declaration
+ * being thrown out as invalid at computed-value time.
+ */
+@property --scroll-px {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
+/* 0 at the top of the page, 1 once the first viewport has scrolled past. */
+@property --scroll-hero {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -81,6 +103,15 @@ body::before {
   background-position: center;
   opacity: 0.29;
   pointer-events: none;
+}
+
+/*
+ * The home page paints its own full-bleed water instead. Without this the
+ * abstract swoosh above would sit on top of it at 29% and wash the waves out,
+ * because a pseudo-element's z-index beats DOM order.
+ */
+body:has(.water-backdrop)::before {
+  content: none;
 }
 
 details summary {
@@ -159,6 +190,110 @@ details summary::marker {
 
 /* Stands in for the Wii's channel-zoom when a tile opens. */
 @keyframes channel-open {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/*
+ * Home page water, disc and player motion.
+ *
+ * Kept in its own @theme block for the same reason as the one above: separate
+ * regions keep concurrent branches from colliding in this file.
+ *
+ * Every one of these is applied through `motion-safe:` at the call site, so
+ * `prefers-reduced-motion` drops the motion entirely.
+ */
+@theme {
+  /*
+   * One token per wave band rather than one shared token, because the three
+   * bands only read as water when their speeds disagree — matched speeds look
+   * like a single shape sliding sideways. The middle band runs the mirrored
+   * keyframe so it travels against the other two.
+   */
+  --animate-wave-back: wave-drift 26s linear infinite;
+  --animate-wave-mid: wave-drift-reverse 18s linear infinite;
+  --animate-wave-front: wave-drift 12s linear infinite;
+  --animate-bubble-bob: bubble-bob 7s ease-in-out infinite;
+  --animate-disc-spin: disc-spin 7s linear infinite;
+  --animate-equalizer: equalizer 900ms ease-in-out infinite;
+  --animate-track-open: track-open 260ms ease-out both;
+}
+
+/*
+ * Water.
+ *
+ * Each band is one wave tile drawn twice inside a 200%-wide track, so shifting
+ * the track by exactly half its width lands the second copy where the first
+ * started and the loop has no seam. Any value other than 50% here will visibly
+ * jump once per cycle.
+ *
+ * These drive an element that exists only to be animated — the scroll offset
+ * lives on its parent. Putting both on one element would let the running
+ * animation win and the band would stop responding to scroll entirely, which
+ * is the same trap the window-float comment above describes.
+ */
+@keyframes wave-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes wave-drift-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes bubble-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(0, -18px, 0);
+    opacity: 0.9;
+  }
+}
+
+@keyframes disc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The three bars on the playing track in the FAQ player. */
+@keyframes equalizer {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/*
+ * A FAQ answer opening under its track. Same shape as channel-open above, but
+ * named for its own use so the player does not silently depend on an About
+ * page token that could be retuned or renamed.
+ */
+@keyframes track-open {
   from {
     opacity: 0;
     transform: scale(0.94);
