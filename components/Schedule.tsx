@@ -2,6 +2,7 @@
 
 import { useState, type KeyboardEvent } from "react";
 import { glossyPill } from "@/components/glossyPill";
+import WindowFrame from "@/components/WindowFrame";
 import { schedule, scheduleDays, type ScheduleDay } from "@/data/schedule";
 
 export default function Schedule() {
@@ -46,8 +47,10 @@ export default function Schedule() {
         </div>
 
         {/* Retro OS window frame. */}
-        <div className="mt-8 overflow-hidden rounded-[10px] border-[3px] border-royal/30 bg-radial-[at_5%_5%] from-[#F4FFFE] from-[25%] via-[#B8D2F2] via-[70%] to-[#487DDF] to-[100%] px-4 pt-4 pb-8 shadow-[0_4px_4px_rgba(23,55,113,0.45)] sm:mt-12 sm:px-6 sm:pt-5 sm:pb-12">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <WindowFrame
+          variant="blue"
+          className="mt-8 px-4 pt-4 pb-8 sm:mt-12 sm:px-6 sm:pt-5 sm:pb-12"
+          titleBar={
             <div
               role="tablist"
               aria-label="Schedule days"
@@ -77,13 +80,14 @@ export default function Schedule() {
                 );
               })}
             </div>
-
-            {/*
+          }
+          controls={
+            /*
               Window controls are pure decoration — a page cannot minimise or
               close itself — so they are hidden from assistive tech rather than
               exposed as buttons that do nothing.
-            */}
-            {/* Flush to the frame's top-right corner, as in the mockup. */}
+            */
+            /* Flush to the frame's top-right corner, as in the mockup. */
             <div className="-mt-4 -mr-4 ml-auto hidden sm:-mt-5 sm:-mr-6 sm:flex">
               <span
                 aria-hidden="true"
@@ -104,8 +108,8 @@ export default function Schedule() {
                 X
               </span>
             </div>
-          </div>
-
+          }
+        >
           <div
             id={`schedule-panel-${activeDay.toLowerCase()}`}
             role="tabpanel"
@@ -129,7 +133,7 @@ export default function Schedule() {
               </article>
             ))}
           </div>
-        </div>
+        </WindowFrame>
       </div>
     </section>
   );
