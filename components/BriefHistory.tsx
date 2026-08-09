@@ -5,12 +5,13 @@ export default function BriefHistory() {
         <p className="font-mono text-xs font-semibold tracking-[0.18em] text-accent uppercase">
           Our story
         </p>
-        <h1
+        {/* h2, not h1: the team window above it is now the page's main heading. */}
+        <h2
           id="history-heading"
           className="mt-4 max-w-3xl font-display text-4xl leading-none font-black tracking-[-0.04em] text-accent uppercase sm:text-6xl"
         >
           Brief History of HackNC
-        </h1>
+        </h2>
         <div className="mt-10 max-w-3xl space-y-6 font-serif text-lg leading-8 sm:text-xl sm:leading-9">
           <p>
             HackNC began as a student-led gathering at the University of North

@@ -81,3 +81,80 @@ details summary::-webkit-details-marker,
 details summary::marker {
   display: none;
 }
+
+/*
+ * Wii channel motion for the About page.
+ *
+ * Kept in a second @theme block rather than folded into the one above: the
+ * shared design tokens up there come from the schedule UI branch, and keeping
+ * these additions in their own block leaves that region untouched so the two
+ * branches merge cleanly.
+ *
+ * Every one of these is applied through `motion-safe:` at the call site, so
+ * `prefers-reduced-motion` drops the idle motion entirely. The hover raises
+ * are plain transitions and survive.
+ */
+@theme {
+  --animate-window-float: window-float 9s ease-in-out infinite;
+  --animate-channel-idle: channel-idle 3.6s ease-in-out infinite;
+  --animate-wii-breathe: wii-breathe 2.4s ease-in-out infinite;
+  --animate-channel-open: channel-open 260ms ease-out both;
+}
+
+/* The window drifts; a nested child handles the hover raise, because a
+   running transform animation would otherwise win over a hover: transform. */
+@keyframes window-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes channel-idle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* The Wii menu's bottom buttons pulse rather than sit still. */
+@keyframes wii-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/*
+ * Toggled by WiiCursor while the pointer is inside the team window, so the
+ * native cursor is only ever hidden when the hand is on screen to replace it.
+ *
+ * The descendant selector and !important are both load-bearing: Tailwind's
+ * preflight gives buttons `cursor: default`, which would otherwise beat the
+ * inherited `none` and make the real cursor reappear over every tile.
+ */
+.wii-pointer-active,
+.wii-pointer-active * {
+  cursor: none !important;
+}
+
+/* Stands in for the Wii's channel-zoom when a tile opens. */
+@keyframes channel-open {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
