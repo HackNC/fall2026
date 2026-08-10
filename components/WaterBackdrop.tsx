@@ -10,10 +10,9 @@ import { useScrollProgress } from "@/components/useScrollProgress";
  * colour. Layers move at different rates as the page scrolls, and the water
  * itself drifts sideways on its own so it reads as moving even at rest.
  *
- * The whole scene fades out across the first viewport, because the mockups
- * only show water behind the hero; everything below it sits on the flat page
- * backdrop. What is left once it fades is `--background`, which is the same
- * pale blue, so the handover is invisible.
+ * The scene eases down in intensity across the first viewport but keeps a
+ * low-opacity presence after that, so the single-page layout has one
+ * continuous backdrop from top to bottom.
  */
 
 /*
@@ -122,7 +121,7 @@ export default function WaterBackdrop() {
     >
       <div
         className="absolute inset-0"
-        style={{ opacity: "calc(1 - var(--scroll-hero))" }}
+        style={{ opacity: "calc(1 - (var(--scroll-hero) * 0.7))" }}
       >
         {/* Sky. The only layer that never moves. */}
         <div className="absolute inset-0 bg-linear-to-b from-[#f4fffe] from-0% via-[#dff2ff] via-30% to-[#a9e2fb] to-100%" />

@@ -88,6 +88,20 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+section[id] {
+  scroll-margin-top: 7rem;
+}
+
 /*
  * Backdrop texture. Placeholder export of the "temp bg" layer in Figma — the
  * layer is marked temporary there too, so expect this to be replaced once

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Istok_Web, Ubuntu } from "next/font/google";
 import Footer from "@/components/Footer";
-import MLHBadge from "@/components/MLHBadge";
 import Navigation from "@/components/Navigation";
 import "./globals.css";
 
@@ -40,24 +39,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <MLHBadge />
-      <html
-        lang="en"
-        className={`${geistSans.variable} ${geistMono.variable} ${ubuntu.variable} ${istokWeb.variable} h-full antialiased`}
-      >
-        {/*
-          Browser extensions (Grammarly, password managers) inject attributes
-          onto <body> before React hydrates, which React reports as a mismatch.
-          Suppression applies one level deep — attributes on this element only,
-          never its children — so real mismatches inside the app still surface.
-        */}
-        <body className="min-h-full flex flex-col" suppressHydrationWarning>
-          <Navigation />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </body>
-      </html>
-    </>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${ubuntu.variable} ${istokWeb.variable} h-full antialiased`}
+    >
+      {/*
+        Browser extensions (Grammarly, password managers) inject attributes
+        onto <body> before React hydrates, which React reports as a mismatch.
+        Suppression applies one level deep — attributes on this element only,
+        never its children — so real mismatches inside the app still surface.
+      */}
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <Navigation />
+        <div className="flex-1">{children}</div>
+        <Footer />
+      </body>
+    </html>
   );
 }
