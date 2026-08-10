@@ -23,12 +23,28 @@ export default function Navigation() {
         aria-label="Primary"
         // The MLH badge is fixed to the top right corner, so the bar keeps a
         // matching gutter on that side at every width.
-        className="mx-auto flex w-full max-w-[89rem] flex-wrap items-center gap-x-4 gap-y-3 rounded-[20px] bg-white/10 px-4 py-3 pr-20 sm:px-6 sm:pr-32"
+        //
+        // Liquid glass: the blur is what does the work, so the tint stays very
+        // light where backdrop-filter is available and falls back to a much
+        // more opaque white where it is not — an untinted, unblurred bar over
+        // the home page water would leave the tab labels unreadable.
+        className="relative mx-auto flex w-full max-w-[89rem] flex-wrap items-center gap-x-4 gap-y-3 overflow-hidden rounded-[20px] border border-white/45 bg-white/40 px-4 py-3 pr-20 shadow-[0_8px_32px_rgba(23,55,113,0.18),inset_0_1px_0_rgba(255,255,255,0.75),inset_0_-1px_0_rgba(255,255,255,0.25)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/15 sm:px-6 sm:pr-32"
       >
+        {/*
+          Specular highlight across the top half — the same "reflection" layer
+          glossyPill paints on the tabs, at the scale of the whole bar. Every
+          sibling below is positioned so that plain DOM order keeps them above
+          this: an absolute element outpaints static ones no matter the order.
+        */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-white/45 to-transparent"
+        />
+
         <Link
           href="/"
           aria-label="HackNC home"
-          className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
+          className="relative shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
         >
           <Image
             src="/hacknc-logo.png"
@@ -42,7 +58,7 @@ export default function Navigation() {
 
         {/* Below sm the tabs take their own full-width row so they can sit two
             or three across instead of one per line. */}
-        <ul className="flex w-full flex-wrap items-center justify-center gap-2 sm:w-auto sm:flex-1 sm:gap-3.5">
+        <ul className="relative flex w-full flex-wrap items-center justify-center gap-2 sm:w-auto sm:flex-1 sm:gap-3.5">
           {internalLinks.map((link) => {
             const isCurrent = pathname.startsWith(link.href);
 
