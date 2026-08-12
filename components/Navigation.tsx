@@ -117,7 +117,7 @@ export default function Navigation() {
         */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-transparent"
+          className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-white/45 to-transparent"
         />
 
         <Link
