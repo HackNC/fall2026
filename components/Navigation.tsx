@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import MLHBadge from "@/components/MLHBadge";
 import { glossyPill } from "@/components/glossyPill";
@@ -16,6 +17,7 @@ const MLH_BADGE_WIDTH = "clamp(70px, 20vw, 100px)";
 const MLH_BADGE_RIGHT_OFFSET = "clamp(10px, 3.5vw, 28px)";
 
 export default function Navigation() {
+  const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [showPortalNotice, setShowPortalNotice] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
@@ -123,6 +125,11 @@ export default function Navigation() {
         <Link
           href="/"
           aria-label="HackNC home"
+          onClick={(event) => {
+            if (pathname !== "/") return;
+            event.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="relative shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
         >
           <Image
