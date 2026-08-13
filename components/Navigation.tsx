@@ -2,26 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import MLHBadge from "@/components/MLHBadge";
 import { glossyPill } from "@/components/glossyPill";
 
 const internalLinks = [
-  { label: "about", href: "#about", sectionId: "about" },
-  { label: "resources", href: "#resources", sectionId: "resources" },
-  { label: "schedule", href: "#schedule", sectionId: "schedule" },
+  {
+    label: "about",
+    href: "#what-is-hacknc",
+    sectionIds: ["what-is-hacknc", "faq", "sponsors", "about"],
+  },
+  { label: "resources", href: "#resources", sectionIds: ["resources"] },
+  { label: "schedule", href: "#schedule", sectionIds: ["schedule"] },
 ];
 
 const MLH_BADGE_WIDTH = "clamp(70px, 20vw, 100px)";
 const MLH_BADGE_RIGHT_OFFSET = "clamp(10px, 3.5vw, 28px)";
 
 export default function Navigation() {
+  const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [showPortalNotice, setShowPortalNotice] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
 
   const trackedIds = useMemo(
-    () => internalLinks.map((link) => link.sectionId),
+    () => Array.from(new Set(internalLinks.flatMap((link) => link.sectionIds))),
     []
   );
 
@@ -47,11 +53,14 @@ export default function Navigation() {
         let nextActive: string | null = null;
         let maxRatio = 0;
 
-        for (const id of trackedIds) {
-          const ratio = visibility.get(id) ?? 0;
+        for (const link of internalLinks) {
+          const ratio = Math.max(
+            ...link.sectionIds.map((id) => visibility.get(id) ?? 0)
+          );
+
           if (ratio > maxRatio) {
             maxRatio = ratio;
-            nextActive = id;
+            nextActive = link.label;
           }
         }
 
@@ -101,20 +110,10 @@ export default function Navigation() {
     >
       <nav
         aria-label="Primary"
-        // Liquid glass: the blur is what does the work, so the tint stays very
-        // light where backdrop-filter is available and falls back to a much
-        // more opaque white where it is not — an untinted, unblurred bar over
-        // the home page water would leave the tab labels unreadable.
         className={`relative mx-auto flex w-full max-w-[89rem] flex-wrap items-center gap-x-4 gap-y-3 overflow-visible rounded-[20px] border border-white/45 bg-white/40 px-4 shadow-[0_8px_32px_rgba(23,55,113,0.18),inset_0_1px_0_rgba(255,255,255,0.75),inset_0_-1px_0_rgba(255,255,255,0.25)] backdrop-blur-xl backdrop-saturate-150 transition-[padding] duration-200 supports-[backdrop-filter]:bg-white/15 sm:px-6 sm:py-3 ${
           isCompact ? "py-2" : "py-3"
         }`}
       >
-        {/*
-          Specular highlight across the top half — the same "reflection" layer
-          glossyPill paints on the tabs, at the scale of the whole bar. Every
-          sibling below is positioned so that plain DOM order keeps them above
-          this: an absolute element outpaints static ones no matter the order.
-        */}
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-transparent"
@@ -123,6 +122,11 @@ export default function Navigation() {
         <Link
           href="/"
           aria-label="HackNC home"
+          onClick={(event) => {
+            if (pathname !== "/") return;
+            event.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="relative shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
         >
           <Image
@@ -135,16 +139,28 @@ export default function Navigation() {
           />
         </Link>
 
-        {/* Below sm the tabs take their own full-width row so they can sit two
-            or three across instead of one per line. */}
         <ul className="relative flex w-full flex-wrap items-center justify-center gap-2 sm:w-auto sm:flex-1 sm:justify-center sm:gap-3.5">
           {internalLinks.map((link) => {
-            const isCurrent = activeSection === link.sectionId;
+            const isCurrent = activeSection === link.label;
 
             return (
-              <li key={link.sectionId}>
+              <li key={link.label}>
                 <a
                   href={link.href}
+                  onClick={(event) => {
+                    if (link.label !== "about") return;
+
+                    const target = document.getElementById("what-is-hacknc");
+                    if (!target) return;
+
+                    event.preventDefault();
+                    target.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                      inline: "nearest",
+                    });
+                    window.history.replaceState(null, "", "#what-is-hacknc");
+                  }}
                   aria-current={isCurrent ? "location" : undefined}
                   className={glossyPill(
                     isCurrent ? "pressed" : "royal",
@@ -186,11 +202,6 @@ export default function Navigation() {
           </li>
         </ul>
 
-        {/*
-          The MLH badge is fixed to the viewport and does not participate in
-          flex layout. This spacer keeps left/right visual balance so the
-          centered tab row has matching edge gaps next to the logo and badge.
-        */}
         <span
           aria-hidden="true"
           className="hidden shrink-0 sm:block"
