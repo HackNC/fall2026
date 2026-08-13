@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { sponsors } from "@/data/sponsors";
+import { glossyPill } from "./glossyPill";
 
 const gridPlacement = [
   "lg:col-span-2",
@@ -13,9 +14,14 @@ export default function Sponsors() {
   return (
     <section className="max-w-5xl mx-auto py-16 sm:py-20">
       <div className="text-center">
-        <p className="text-base sm:text-lg font-semibold text-slate-950">
-          Brought to you by our sponsors
-        </p>
+        <span
+          className={glossyPill(
+            "bubble",
+            "min-w-[6.5rem] cursor-default sm:min-w-[8rem] lg:min-w-[11.2rem]"
+          )}
+        >
+          our sponsors
+        </span>
       </div>
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
         {sponsors.map((sponsor, index) => (
