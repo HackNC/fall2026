@@ -23,7 +23,7 @@ const base = [
 ].join(" ");
 
 const bubbleBase = [
-  "relative inline-flex items-center justify-center rounded-[10px] border",
+  "relative inline-flex items-center justify-center rounded-full border",
   "px-5 py-2 text-center font-body text-base tracking-[0.05em] lowercase sm:text-lg",
   "[text-shadow:0_2px_4px_rgba(23,55,113,0.65)]",
   "transition-none hover:brightness-100",

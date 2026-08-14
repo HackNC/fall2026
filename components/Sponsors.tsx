@@ -24,20 +24,35 @@ export default function Sponsors() {
         </span>
       </div>
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
-        {sponsors.map((sponsor, index) => (
-          <div
-            key={sponsor.name}
-            className={`${gridPlacement[index]} flex justify-center`}
-          >
-            <Image
-              src={sponsor.logoSrc}
-              alt={sponsor.alt}
-              width={sponsor.width}
-              height={sponsor.height}
-              className="h-[72px] w-auto object-contain"
-            />
-          </div>
-        ))}
+        {sponsors.map((sponsor, index) => {
+          const bubbleSize = Math.max(sponsor.width, sponsor.height) + 36;
+
+          return (
+            <div
+              key={sponsor.name}
+              className={`${gridPlacement[index]} flex justify-center`}
+            >
+              <div
+                className={glossyPill(
+                  "bubble",
+                  "flex items-center justify-center overflow-hidden p-3"
+                )}
+                style={{
+                  width: bubbleSize,
+                  height: bubbleSize,
+                }}
+              >
+                <Image
+                  src={sponsor.logoSrc}
+                  alt={sponsor.alt}
+                  width={sponsor.width}
+                  height={sponsor.height}
+                  className="h-[78%] w-[78%] object-contain"
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
