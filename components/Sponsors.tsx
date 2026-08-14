@@ -27,6 +27,15 @@ export default function Sponsors() {
         {sponsors.map((sponsor, index) => {
           const bubbleSize = Math.max(sponsor.width, sponsor.height) + 36;
 
+          // deterministic pseudo-random based on index to avoid SSR hydration issues
+          const seeded = Math.abs(Math.sin(index * 12.9898) * 43758.5453);
+          const rnd = seeded - Math.floor(seeded);
+
+          const duration = 9 + Math.round(rnd * 6); // 9..15s
+          const delay = Math.round(rnd * 1200) / 1000; // 0..1.2s
+          const swayX = 6 + Math.round(rnd * 12); // 6..18px
+          const swayY = 2 + Math.round(rnd * 6); // 2..8px
+
           return (
             <div
               key={sponsor.name}
@@ -35,11 +44,16 @@ export default function Sponsors() {
               <div
                 className={glossyPill(
                   "bubble",
-                  "flex items-center justify-center overflow-hidden p-3"
+                  "flex items-center justify-center overflow-hidden p-3 motion-safe:animate-bubble-sway"
                 )}
                 style={{
                   width: bubbleSize,
                   height: bubbleSize,
+                  animationDelay: `${delay}s`,
+                  animationDuration: `${duration}s`,
+                  willChange: "transform",
+                  ["--sway-x" as any]: `${swayX}px`,
+                  ["--sway-y" as any]: `${swayY}px`,
                 }}
               >
                 <Image
