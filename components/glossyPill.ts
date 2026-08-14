@@ -12,13 +12,21 @@
  * file as plain text, so an interpolated class name would never be generated.
  */
 
-export type GlossyVariant = "royal" | "blossom" | "tangerine" | "pressed";
+export type GlossyVariant = "royal" | "blossom" | "tangerine" | "pressed" | "bubble";
 
 const base = [
   "relative inline-flex items-center justify-center rounded-[10px] border",
   "px-5 py-2 text-center font-body text-base tracking-[0.05em] lowercase sm:text-lg",
   "[text-shadow:0_2px_4px_rgba(23,55,113,0.65)]",
   "transition duration-150 hover:brightness-105 active:translate-y-px",
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal",
+].join(" ");
+
+const bubbleBase = [
+  "relative inline-flex items-center justify-center rounded-full border",
+  "px-5 py-2 text-center font-body text-base tracking-[0.05em] lowercase sm:text-lg",
+  "[text-shadow:0_2px_4px_rgba(23,55,113,0.65)]",
+  "transition-none hover:brightness-100",
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal",
 ].join(" ");
 
@@ -46,8 +54,14 @@ const variants: Record<GlossyVariant, string> = {
     "border-royal/30 text-ink " +
     "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0)_55%),linear-gradient(to_bottom,#8F9CB8_0%,#FFFFFF_100%)] " +
     "shadow-[0_1px_4px_rgba(23,55,113,0.45),inset_0_-2px_0_rgba(21,84,201,0.2),inset_0_0_0.5px_3px_rgba(21,84,201,0.25)]",
+
+  bubble:
+    "border-[#4d9ae8]/85 text-[#12356b] " +
+    "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,1)_0%,rgba(255,255,255,0.95)_45%,rgba(188,230,255,0.97)_100%)] " +
+    "shadow-[0_4px_4px_rgba(23,55,113,0.45),inset_0_-2px_0_rgba(21,84,201,0.2),inset_0_4px_0_rgba(255,255,255,0.4)]",
 };
 
 export function glossyPill(variant: GlossyVariant, className = "") {
-  return `${base} ${variants[variant]} ${className}`.trim();
+  const isBubble = variant === "bubble";
+  return `${isBubble ? bubbleBase : base} ${variants[variant]} ${className}`.trim();
 }
