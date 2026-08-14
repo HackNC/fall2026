@@ -234,6 +234,7 @@ details summary::marker {
   --animate-wave-mid: wave-drift-reverse 18s linear infinite;
   --animate-wave-front: wave-drift 12s linear infinite;
   --animate-bubble-bob: bubble-bob 7s ease-in-out infinite;
+  --animate-bubble-sway: bubble-sway 10s cubic-bezier(.4,0,.2,1) infinite;
   --animate-disc-spin: disc-spin 7s linear infinite;
   --animate-equalizer: equalizer 900ms ease-in-out infinite;
   --animate-track-open: track-open 260ms ease-out both;
@@ -279,6 +280,22 @@ details summary::marker {
   50% {
     transform: translate3d(0, -18px, 0);
     opacity: 0.9;
+  }
+}
+
+@keyframes bubble-sway {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(calc(-1 * var(--sway-x, 10px)), calc(-1 * var(--sway-y, 6px)), 0);
+  }
+  50% {
+    transform: translate3d(0, calc(-0.5 * var(--sway-y, 6px)), 0);
+  }
+  80% {
+    transform: translate3d(var(--sway-x, 10px), calc(-1 * var(--sway-y, 6px)), 0);
   }
 }
 
