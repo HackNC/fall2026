@@ -3,7 +3,7 @@ import SpinningCd from "@/components/SpinningCd";
 export default function WhatIsHackNC() {
   return (
     <section aria-labelledby="what-is-hacknc-heading">
-      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+      <div className="mx-4 grid items-center gap-10 sm:mx-8 lg:mx-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:gap-16">
         {/* Blue frame with the white panel inset, as in the mockup: the frame
             shows through as a title bar above and a thin border elsewhere. */}
         <div className="relative rounded-[22px] bg-linear-to-br from-[#2b62c4] from-0% via-[#5f93dd] via-55% to-[#a8c6ec] to-100% p-2 pt-3 shadow-[0_10px_28px_rgba(23,55,113,0.28)] sm:rounded-[26px] sm:p-2.5 sm:pt-4">
