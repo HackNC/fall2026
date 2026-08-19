@@ -1,10 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import CommitteeScreen from "@/components/CommitteeScreen";
 import MemberDetail from "@/components/MemberDetail";
-import { committeeNames, teamMembers } from "@/data/teamMembers";
+import SelectionMenu from "@/components/SelectionMenu";
+import {
+  committeeNames,
+  teamMembers,
+  type Committee,
+} from "@/data/teamMembers";
 
 /**
  * Same Figma chrome as glossyPill's `royal` variant, reshaped into a square
@@ -48,7 +53,28 @@ const wiiButton =
   "transition duration-150 hover:brightness-[1.04] active:translate-y-px " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
 
-const rows = committeeNames.map((committee) => teamMembers[committee]);
+/*
+ * The main grid is directors only. Everyone else is reached through that
+ * committee's screen, which is what "Committee Members" lists, so a person
+ * appears in exactly one place.
+ *
+ * Laid out six to a row rather than one row per committee: with two directors
+ * on most committees, the per-committee rows left the grid mostly empty. Each
+ * director's committee is still named on their own screen's title bar.
+ *
+ * `rows` stays a 2-D array so the roving-tabindex handlers below — which index
+ * by [row][column] — keep working unchanged.
+ */
+const COLUMNS = 6;
+
+const directors = committeeNames.flatMap((committee) =>
+  teamMembers[committee].filter((member) => member.isDirector)
+);
+
+const rows = Array.from(
+  { length: Math.ceil(directors.length / COLUMNS) },
+  (_, row) => directors.slice(row * COLUMNS, (row + 1) * COLUMNS)
+);
 
 // Nothing announced yet renders as "coming soon" instead of an empty grid.
 // The roving-tabindex handlers below all key off `rows`, so they are simply
@@ -76,6 +102,12 @@ export default function MeetOurTeam() {
   // Roving tabindex position: the grid is one tab stop, arrow keys move within
   // it. Same contract as the Schedule day tabs, extended to two axes.
   const [active, setActive] = useState({ row: 0, column: 0 });
+  // Which console screen the window is showing. The grid and the member
+  // screens swap the window contents; the selection menu overlays them.
+  const [screen, setScreen] = useState<
+    { kind: "grid" } | { kind: "committee"; committee: Committee }
+  >({ kind: "grid" });
+  const [menuOpen, setMenuOpen] = useState(false);
   const restoreFocusRef = useRef(false);
 
   const selectedMember = selected ? rows[selected.row][selected.column] : null;
@@ -160,12 +192,55 @@ export default function MeetOurTeam() {
               onKeyDown={handleWindowKeyDown}
               className="relative rounded-window border border-white/70 bg-white/95 px-6 py-8 shadow-[0_10px_30px_rgba(23,55,113,0.35)] transition-[transform,box-shadow] duration-300 ease-out group-hover/window:-translate-y-1.5 group-hover/window:shadow-[0_18px_40px_rgba(23,55,113,0.45)] sm:px-10 sm:py-12"
             >
-              {selectedMember && selected ? (
+              {menuOpen ? (
+                <SelectionMenu
+                  onClose={() => setMenuOpen(false)}
+                  onViewDirectors={() => {
+                    setMenuOpen(false);
+                    setScreen({ kind: "grid" });
+                  }}
+                  onViewCommittee={() => {
+                    setMenuOpen(false);
+                    setScreen({
+                      kind: "committee",
+                      committee: selectedMember?.committee ?? committeeNames[0],
+                    });
+                  }}
+                />
+              ) : null}
+
+              {screen.kind === "committee" ? (
                 <>
                   <h1 id="team-heading" className="sr-only">
                     Meet Our Team
                   </h1>
-                  <MemberDetail member={selectedMember} onBack={closeChannel} />
+                  <CommitteeScreen
+                    committee={screen.committee}
+                    members={teamMembers[screen.committee].filter(
+                      (member) => !member.isDirector
+                    )}
+                    onBack={() => setScreen({ kind: "grid" })}
+                    onViewDirectors={() => {
+                      setScreen({ kind: "grid" });
+                      setSelected(null);
+                    }}
+                  />
+                </>
+              ) : selectedMember && selected ? (
+                <>
+                  <h1 id="team-heading" className="sr-only">
+                    Meet Our Team
+                  </h1>
+                  <MemberDetail
+                    member={selectedMember}
+                    onBack={closeChannel}
+                    onViewCommittee={() =>
+                      setScreen({
+                        kind: "committee",
+                        committee: selectedMember.committee,
+                      })
+                    }
+                  />
                 </>
               ) : (
                 <>
@@ -182,72 +257,63 @@ export default function MeetOurTeam() {
                         coming soon
                       </p>
                     ) : (
-                      committeeNames.map((committee, row) => (
-                        <section
-                          key={committee}
-                          aria-label={committee}
-                          className="mt-8 first:mt-0"
+                      rows.map((rowMembers, row) => (
+                        <ul
+                          key={row}
+                          className="mt-4 grid grid-cols-3 gap-3 first:mt-0 sm:mt-5 sm:grid-cols-6 sm:gap-4"
                         >
-                          <ul className="grid grid-cols-4 gap-3 sm:grid-cols-7 sm:gap-4">
-                            {teamMembers[committee].map((member, column) => (
-                              <li key={member.name} className="group/tile">
-                                <div
-                                  className="motion-safe:animate-channel-idle"
-                                  // Staggered so the row breathes as a wave instead
-                                  // of pulsing in lockstep. Wraps only the tile, so
-                                  // the name below stays still and readable.
-                                  style={{
-                                    animationDelay: `${(row * 7 + column) * 180}ms`,
-                                  }}
+                          {rowMembers.map((member, column) => (
+                            <li key={member.name} className="group/tile">
+                              <div
+                                className="motion-safe:animate-channel-idle"
+                                // Staggered so the row breathes as a wave instead
+                                // of pulsing in lockstep. Wraps only the tile, so
+                                // the name below stays still and readable.
+                                style={{
+                                  animationDelay: `${(row * 7 + column) * 180}ms`,
+                                }}
+                              >
+                                <button
+                                  id={tileId(row, column)}
+                                  type="button"
+                                  aria-label={`${member.name}, ${member.role}`}
+                                  tabIndex={
+                                    active.row === row &&
+                                    active.column === column
+                                      ? 0
+                                      : -1
+                                  }
+                                  onClick={() => openChannel(row, column)}
+                                  onFocus={() => setActive({ row, column })}
+                                  onKeyDown={(event) =>
+                                    handleTileKeyDown(event, row, column)
+                                  }
+                                  className={channelTile}
                                 >
-                                  <button
-                                    id={tileId(row, column)}
-                                    type="button"
-                                    aria-label={`${member.name}, ${member.role}`}
-                                    tabIndex={
-                                      active.row === row &&
-                                      active.column === column
-                                        ? 0
-                                        : -1
-                                    }
-                                    onClick={() => openChannel(row, column)}
-                                    onFocus={() => setActive({ row, column })}
-                                    onKeyDown={(event) =>
-                                      handleTileKeyDown(event, row, column)
-                                    }
-                                    className={channelTile}
-                                  >
-                                    {member.image ? (
-                                      <Image
-                                        src={member.image}
-                                        alt=""
-                                        fill
-                                        sizes="(min-width: 640px) 10rem, 25vw"
-                                        className="object-cover"
-                                      />
-                                    ) : (
-                                      <span
-                                        aria-hidden="true"
-                                        className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
-                                      >
-                                        {initials(member.name)}
-                                      </span>
-                                    )}
-                                  </button>
-                                </div>
-                                <p className="mt-1.5 truncate text-center font-body text-caption tracking-body text-ink">
-                                  {member.name}
-                                </p>
-                              </li>
-                            ))}
-                          </ul>
-                          <p
-                            aria-hidden="true"
-                            className="mt-2 font-body text-sm tracking-body text-ink/70 lowercase"
-                          >
-                            {committee}
-                          </p>
-                        </section>
+                                  {member.image ? (
+                                    <Image
+                                      src={member.image}
+                                      alt=""
+                                      fill
+                                      sizes="(min-width: 640px) 10rem, 25vw"
+                                      className="object-cover"
+                                    />
+                                  ) : (
+                                    <span
+                                      aria-hidden="true"
+                                      className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
+                                    >
+                                      {initials(member.name)}
+                                    </span>
+                                  )}
+                                </button>
+                              </div>
+                              <p className="mt-1.5 truncate text-center font-body text-caption tracking-body text-ink">
+                                {member.name}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
                       ))
                     )}
                   </div>
@@ -262,12 +328,15 @@ export default function MeetOurTeam() {
 
               {/* Bottom-left and bottom-right, as on the console. */}
               <div className="mt-10 flex items-center justify-between gap-4">
-                <Link
-                  href="/"
-                  className={`${wiiButton} motion-safe:animate-wii-breathe`}
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen(true)}
+                  className={`${wiiButton} cursor-pointer motion-safe:animate-wii-breathe`}
                 >
                   menu
-                </Link>
+                </button>
                 {/* Nothing to open until the roster lands, so the console's
                     start button is disabled rather than silently inert. */}
                 <button

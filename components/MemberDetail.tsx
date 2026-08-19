@@ -2,22 +2,29 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { glossyPill } from "@/components/glossyPill";
+import { ScreenFooter, ScreenTitleBar } from "@/components/CommitteeScreen";
 import type { TeamMember } from "@/data/teamMembers";
 
 type MemberDetailProps = {
   member: TeamMember;
   onBack: () => void;
+  onViewCommittee: () => void;
 };
 
 /**
- * A single member's channel.
+ * A director's screen: photo on the left, details on the right, under the
+ * committee title bar.
  *
  * This replaces the grid inside the same window rather than floating over it,
  * which is what the mockup shows — so it is a view swap, not a dialog, and
- * deliberately carries no `role="dialog"` or focus trap.
+ * deliberately carries no `role="dialog"` or focus trap. The SELECTION menu is
+ * the one thing here that *is* a dialog.
  */
-export default function MemberDetail({ member, onBack }: MemberDetailProps) {
+export default function MemberDetail({
+  member,
+  onBack,
+  onViewCommittee,
+}: MemberDetailProps) {
   const backRef = useRef<HTMLButtonElement>(null);
 
   // Opening a channel takes focus with it; the tile that was activated no
@@ -28,49 +35,69 @@ export default function MemberDetail({ member, onBack }: MemberDetailProps) {
 
   return (
     <div className="motion-safe:animate-channel-open">
-      <button
-        ref={backRef}
-        type="button"
-        onClick={onBack}
-        className={glossyPill("pressed", "cursor-pointer")}
-      >
-        back
-      </button>
+      <ScreenTitleBar committee={member.committee} />
 
-      <div className="mt-8 grid gap-8 sm:grid-cols-[minmax(0,18rem)_1fr] sm:gap-12">
-        <div className="relative aspect-3/4 overflow-hidden rounded-card bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
+      <div className="mt-6 grid gap-8 sm:mt-8 sm:grid-cols-[minmax(0,17rem)_1fr] sm:gap-14">
+        <div className="relative aspect-square overflow-hidden rounded-inset bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
           {member.image ? (
             <Image
               src={member.image}
               alt=""
               fill
-              sizes="(min-width: 640px) 18rem, 100vw"
+              sizes="(min-width: 640px) 16rem, 100vw"
               className="object-cover"
             />
           ) : (
-            <span className="grid size-full place-items-center font-body text-sm tracking-body text-ink/50">
+            <span className="grid size-full place-items-center font-body text-caption tracking-body text-ink/50">
               member pic
             </span>
           )}
         </div>
 
-        <div className="font-body tracking-body text-ink">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
+        {/*
+          Each row is optional so a half-filled member still reads correctly —
+          the roster is being written after this screen, not before it.
+        */}
+        <dl className="font-body tracking-body text-ink">
+          <dt className="sr-only">Name</dt>
+          <dd className="text-center font-title text-section tracking-title text-royal lowercase">
             {member.name}
-          </h2>
-          <p className="mt-1 text-center text-body">{member.role}</p>
-          <p className="mt-8 max-w-[34rem] text-body font-bold">{member.bio}</p>
-        </div>
+          </dd>
+
+          <dt className="sr-only">Role</dt>
+          <dd className="mt-2 text-center text-body font-bold lowercase">
+            {member.role}
+          </dd>
+
+          {member.year ? (
+            <div className="mt-7 flex gap-1.5 text-body">
+              <dt className="shrink-0 font-bold lowercase">year:</dt>
+              <dd className="lowercase">{member.year}</dd>
+            </div>
+          ) : null}
+
+          {member.majors ? (
+            <div className="mt-3 flex gap-1.5 text-body">
+              <dt className="shrink-0 font-bold lowercase">major(s):</dt>
+              <dd className="lowercase">{member.majors}</dd>
+            </div>
+          ) : null}
+
+          {member.funFact ? (
+            <div className="mt-3 flex gap-1.5 text-body">
+              <dt className="shrink-0 font-bold lowercase">fun fact:</dt>
+              <dd className="max-w-[30rem]">{member.funFact}</dd>
+            </div>
+          ) : null}
+        </dl>
       </div>
 
-      {/*
-        Committee tag, bleeding to the window's left edge the way the site
-        footer's "find us here" band does. The negative margins cancel the
-        window padding, so they track it if that padding ever changes.
-      */}
-      <p className="mt-10 -ml-6 w-[70%] max-w-[22rem] rounded-r-[10px] bg-linear-to-r from-[#7e9dcb] to-[#a5bddf] py-2.5 pr-6 pl-6 font-title text-lg tracking-title text-white lowercase sm:-ml-10 sm:pl-10 sm:text-xl">
-        {member.committee}
-      </p>
+      <ScreenFooter
+        backRef={backRef}
+        onBack={onBack}
+        actionLabel="View Committee Members"
+        onAction={onViewCommittee}
+      />
     </div>
   );
 }
