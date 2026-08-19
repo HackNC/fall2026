@@ -38,7 +38,7 @@ export default function MemberDetail({ member, onBack }: MemberDetailProps) {
       </button>
 
       <div className="mt-8 grid gap-8 sm:grid-cols-[minmax(0,18rem)_1fr] sm:gap-12">
-        <div className="relative aspect-3/4 overflow-hidden rounded-[10px] bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
+        <div className="relative aspect-3/4 overflow-hidden rounded-card bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
           {member.image ? (
             <Image
               src={member.image}
@@ -48,20 +48,18 @@ export default function MemberDetail({ member, onBack }: MemberDetailProps) {
               className="object-cover"
             />
           ) : (
-            <span className="grid size-full place-items-center font-body text-sm tracking-[0.05em] text-ink/50">
+            <span className="grid size-full place-items-center font-body text-sm tracking-body text-ink/50">
               member pic
             </span>
           )}
         </div>
 
-        <div className="font-body tracking-[0.05em] text-ink">
+        <div className="font-body tracking-body text-ink">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">
             {member.name}
           </h2>
-          <p className="mt-1 text-center text-base sm:text-lg">{member.role}</p>
-          <p className="mt-8 max-w-[34rem] text-base font-bold sm:text-lg">
-            {member.bio}
-          </p>
+          <p className="mt-1 text-center text-body">{member.role}</p>
+          <p className="mt-8 max-w-[34rem] text-body font-bold">{member.bio}</p>
         </div>
       </div>
 
@@ -70,7 +68,7 @@ export default function MemberDetail({ member, onBack }: MemberDetailProps) {
         footer's "find us here" band does. The negative margins cancel the
         window padding, so they track it if that padding ever changes.
       */}
-      <p className="mt-10 -ml-6 w-[70%] max-w-[22rem] rounded-r-[10px] bg-linear-to-r from-[#7e9dcb] to-[#a5bddf] py-2.5 pr-6 pl-6 font-title text-lg tracking-[0.05em] text-white lowercase sm:-ml-10 sm:pl-10 sm:text-xl">
+      <p className="mt-10 -ml-6 w-[70%] max-w-[22rem] rounded-r-[10px] bg-linear-to-r from-[#7e9dcb] to-[#a5bddf] py-2.5 pr-6 pl-6 font-title text-lg tracking-title text-white lowercase sm:-ml-10 sm:pl-10 sm:text-xl">
         {member.committee}
       </p>
     </div>

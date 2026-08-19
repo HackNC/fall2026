@@ -31,7 +31,7 @@ export default function ResourceList() {
                 />
                 <h1
                   id="resources-heading"
-                  className="font-title text-2xl tracking-[0.05em] text-forest lowercase sm:text-4xl"
+                  className="font-title text-page tracking-title text-forest lowercase"
                 >
                   resources
                 </h1>
@@ -54,7 +54,7 @@ export default function ResourceList() {
 
           {/* White content panel, inset ~2.3% from the window's edges. */}
           <div className="p-[2.3%]">
-            <div className="rounded-[10px] bg-white px-5 py-6 shadow-[0_4px_4px_rgba(20,120,66,0.2),inset_0_4px_4px_rgba(20,120,66,0.2)] sm:px-8 sm:py-10">
+            <div className="rounded-card bg-white px-5 py-6 shadow-[0_4px_4px_rgba(20,120,66,0.2),inset_0_4px_4px_rgba(20,120,66,0.2)] sm:px-8 sm:py-10">
               <div className="grid gap-10 md:grid-cols-2">
                 {resourceCategories.map((category, index) => (
                   <div
@@ -65,7 +65,7 @@ export default function ResourceList() {
                         : "md:pr-10"
                     }
                   >
-                    <h2 className="font-body text-xl tracking-[0.05em] text-forest lowercase sm:text-2xl">
+                    <h2 className="font-body text-section tracking-body text-forest lowercase">
                       {category.title}
                     </h2>
                     <ul className="mt-5 space-y-4">
@@ -75,10 +75,10 @@ export default function ResourceList() {
                             href={resource.href}
                             target="_blank"
                             rel="noreferrer"
-                            className="group block rounded-2xl border border-lime bg-linear-to-b from-white to-lime/20 p-4 shadow-sm motion-safe:transition hover:shadow-md motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                            className="group block rounded-inset border border-lime bg-linear-to-b from-white to-lime/20 p-4 shadow-sm motion-safe:transition hover:shadow-md motion-safe:hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
                           >
                             <span className="flex items-center justify-between gap-2">
-                              <span className="font-body text-lg font-semibold tracking-[0.05em] text-forest sm:text-2xl">
+                              <span className="font-body text-lg font-semibold tracking-body text-forest sm:text-2xl">
                                 {resource.title}
                               </span>
                               <ArrowUpRight
@@ -86,7 +86,7 @@ export default function ResourceList() {
                                 className="size-4 shrink-0 text-forest opacity-60 motion-safe:transition group-hover:opacity-100"
                               />
                             </span>
-                            <span className="mt-1 block font-body text-sm tracking-[0.05em] text-forest sm:text-base">
+                            <span className="mt-1 block font-body text-sm tracking-body text-forest sm:text-base">
                               {resource.description}
                             </span>
                           </a>
