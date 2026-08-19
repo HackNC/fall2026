@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { glossyPill } from "@/components/glossyPill";
 
 type SelectionMenuProps = {
+  viewDirectorsDisabled?: boolean;
   onViewDirectors: () => void;
   onViewCommittee: () => void;
   onClose: () => void;
@@ -20,6 +22,7 @@ type SelectionMenuProps = {
  * live area inset inside it.
  */
 export default function SelectionMenu({
+  viewDirectorsDisabled = false,
   onViewDirectors,
   onViewCommittee,
   onClose,
@@ -39,17 +42,17 @@ export default function SelectionMenu({
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  return (
+  const dialog = (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="selection-menu-heading"
-      className="absolute inset-0 z-20 m-auto grid h-fit max-h-full w-[min(92%,42rem)] content-start overflow-auto rounded-window bg-[#111214] p-5 shadow-[0_18px_44px_rgba(23,55,113,0.45)] motion-safe:animate-channel-open sm:p-7"
+      className="fixed inset-0 z-50 m-auto grid h-fit max-h-[calc(100dvh-1.5rem)] w-[min(94%,42rem)] content-start overflow-auto rounded-window bg-[#111214] p-4 shadow-[0_18px_44px_rgba(23,55,113,0.45)] motion-safe:animate-channel-open min-[391px]:w-[min(92%,42rem)] min-[391px]:p-5 sm:p-7"
     >
-      <div className="flex items-center justify-between gap-4 px-1 pb-4">
+      <div className="flex items-center justify-between gap-3 px-1 pb-3 min-[391px]:gap-4 min-[391px]:pb-4">
         <h2
           id="selection-menu-heading"
-          className="font-title text-section tracking-title text-white"
+          className="font-title text-[1.1rem] tracking-title text-white min-[391px]:text-section"
         >
           SELECTION Menu
         </h2>
@@ -69,13 +72,14 @@ export default function SelectionMenu({
       </div>
 
       {/* The screen's live area, inset in the bezel. */}
-      <div className="grid gap-5 rounded-card bg-[#1c1e22] px-6 py-10 shadow-[inset_0_2px_10px_rgba(0,0,0,0.6)] sm:gap-6 sm:px-10 sm:py-14">
+      <div className="grid gap-4 rounded-card bg-[#1c1e22] px-4 py-6 shadow-[inset_0_2px_10px_rgba(0,0,0,0.6)] min-[391px]:gap-5 min-[391px]:px-6 min-[391px]:py-8 sm:gap-6 sm:px-10 sm:py-10">
         <button
           type="button"
+          disabled={viewDirectorsDisabled}
           onClick={onViewDirectors}
           className={glossyPill(
             "pressed",
-            "mx-auto w-full max-w-[22rem] cursor-pointer normal-case"
+            "mx-auto w-full max-w-[22rem] cursor-pointer normal-case disabled:cursor-not-allowed disabled:opacity-45 disabled:brightness-95"
           )}
         >
           View Directors
@@ -93,6 +97,10 @@ export default function SelectionMenu({
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(dialog, document.body);
 }
 
 function HomeIcon() {
