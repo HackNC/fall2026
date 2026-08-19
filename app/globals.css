@@ -69,17 +69,57 @@
   --color-dew: #f8ffdd;
 
   /*
-   * The style guide asks for Bubblebody Neue / Tahoma / Aptos. Bubblebody Neue
-   * is commercially licensed and is not in the repo, so the Figma file itself
-   * renders a substitute; Aptos ships with Microsoft Office rather than the
-   * web. Each stack therefore leads with the specified face and falls back to
-   * the one the mockup actually renders, so dropping in the real font files
-   * later is a one-line change here.
+   * The three type roles, with the letter-spacing each one is specified at.
+   * Always pair the family with its tracking: `font-body tracking-body`,
+   * `font-accent tracking-accent`, `font-title tracking-title`.
+   *
+   * The spec settled on Ubuntu and Istok Web as the real accent and body
+   * faces. They started life as fallbacks for Tahoma and Aptos — Aptos ships
+   * with Office rather than the web — so these are no longer substitutes.
+   *
+   * Bubbleboddy Neue is a local face loaded in app/layout.tsx. Note the
+   * spelling: the family is "Bubbleboddy" with two d's, so the old
+   * "Bubblebody Neue" that used to lead this stack never matched anything.
    */
-  --font-title:
-    "Bubblebody Neue", var(--font-ubuntu), "Trebuchet MS", sans-serif;
-  --font-accent: Tahoma, Verdana, sans-serif;
-  --font-body: Aptos, var(--font-istok-web), Verdana, sans-serif;
+  --font-title: var(--font-bubbleboddy), "Trebuchet MS", sans-serif;
+  --font-accent: var(--font-ubuntu), "Trebuchet MS", sans-serif;
+  --font-body: var(--font-istok-web), Verdana, sans-serif;
+
+  /*
+   * Body sits at 5% and accent at regular, both per spec. Title is not
+   * specified, so it takes 5% — the value most title call sites already used
+   * (the rest were scattered across 2% and 4% with no pattern behind it).
+   */
+  --tracking-body: 0.05em;
+  --tracking-accent: 0em;
+  --tracking-title: 0.05em;
+
+  /*
+   * Corner radii, named by the kind of surface rather than by size, so a new
+   * component picks a role instead of eyeballing a pixel value. Collapsed from
+   * nine ad-hoc values (10/14/16/20/22/26/28/32/40) whose differences were
+   * noise rather than intent.
+   *
+   * `rounded-full` and `rounded-md` stay as Tailwind built-ins — pills and
+   * small chips already read unambiguously without a token.
+   */
+  --radius-card: 10px; /* tiles, list rows, glossy pills */
+  --radius-inset: 16px; /* panels nested inside a frame */
+  --radius-control: 20px; /* nav bar, countdown pane, tooltips */
+  --radius-window: 28px; /* framed windows and large surfaces */
+  --radius-panel: 40px; /* the hero glass */
+
+  /*
+   * Type scale. One token per role, each a clamp() so a heading scales with
+   * the viewport instead of stepping at `sm:`. Replaces responsive pairs that
+   * disagreed across pages — the team heading ran 3xl→6xl while the schedule
+   * heading ran 2xl→4xl for the same job.
+   */
+  --text-display: clamp(2.5rem, 1rem + 8vw, 6.5rem); /* hero wordmark */
+  --text-page: clamp(1.5rem, 1.1rem + 2vw, 2.25rem); /* page h1 */
+  --text-section: clamp(1.25rem, 1.1rem + 0.8vw, 1.5rem); /* section h2 */
+  --text-body: clamp(1rem, 0.95rem + 0.3vw, 1.125rem); /* paragraphs */
+  --text-caption: 0.75rem; /* labels under tiles */
 }
 
 body {
@@ -103,30 +143,12 @@ section[id] {
 }
 
 /*
- * Backdrop texture. Placeholder export of the "temp bg" layer in Figma — the
- * layer is marked temporary there too, so expect this to be replaced once
- * graphics delivers the real artwork.
+ * The old `body::before` swoosh texture lived here, switched off wherever
+ * `.water-backdrop` was present. WaterBackdrop is mounted in the root layout
+ * now, so that override matched on every page and the texture could never
+ * render — while the browser still fetched its 527 KB PNG. Both rules and
+ * public/site-backdrop.png are gone; WaterBackdrop is the only page backdrop.
  */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: url("/site-backdrop.png");
-  background-size: cover;
-  background-position: center;
-  opacity: 0.29;
-  pointer-events: none;
-}
-
-/*
- * The home page paints its own full-bleed water instead. Without this the
- * abstract swoosh above would sit on top of it at 29% and wash the waves out,
- * because a pseudo-element's z-index beats DOM order.
- */
-body:has(.water-backdrop)::before {
-  content: none;
-}
 
 details summary {
   list-style: none;
@@ -234,7 +256,7 @@ details summary::marker {
   --animate-wave-mid: wave-drift-reverse 18s linear infinite;
   --animate-wave-front: wave-drift 12s linear infinite;
   --animate-bubble-bob: bubble-bob 7s ease-in-out infinite;
-  --animate-bubble-sway: bubble-sway 10s cubic-bezier(.4,0,.2,1) infinite;
+  --animate-bubble-sway: bubble-sway 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   --animate-disc-spin: disc-spin 7s linear infinite;
   --animate-equalizer: equalizer 900ms ease-in-out infinite;
   --animate-track-open: track-open 260ms ease-out both;
@@ -289,13 +311,21 @@ details summary::marker {
     transform: translate3d(0, 0, 0);
   }
   20% {
-    transform: translate3d(calc(-1 * var(--sway-x, 10px)), calc(-1 * var(--sway-y, 6px)), 0);
+    transform: translate3d(
+      calc(-1 * var(--sway-x, 10px)),
+      calc(-1 * var(--sway-y, 6px)),
+      0
+    );
   }
   50% {
     transform: translate3d(0, calc(-0.5 * var(--sway-y, 6px)), 0);
   }
   80% {
-    transform: translate3d(var(--sway-x, 10px), calc(-1 * var(--sway-y, 6px)), 0);
+    transform: translate3d(
+      var(--sway-x, 10px),
+      calc(-1 * var(--sway-y, 6px)),
+      0
+    );
   }
 }
 

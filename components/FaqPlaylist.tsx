@@ -89,7 +89,7 @@ export default function FaqPlaylist() {
     <section aria-labelledby="faq-heading">
       {/* Retro player window, built like the schedule frame in the mockups'
           green register. */}
-      <div className="overflow-hidden rounded-[14px] border-[3px] border-forest/25 bg-linear-to-b from-[#F4FFFE] from-0% via-[#EDFAF0] via-55% to-[#D6EFDB] to-100% px-3 pt-3 pb-4 shadow-[0_4px_10px_rgba(20,120,66,0.28)] sm:px-5 sm:pt-4 sm:pb-6">
+      <div className="overflow-hidden rounded-inset border-[3px] border-forest/25 bg-linear-to-b from-[#F4FFFE] from-0% via-[#EDFAF0] via-55% to-[#D6EFDB] to-100% px-3 pt-3 pb-4 shadow-[0_4px_10px_rgba(20,120,66,0.28)] sm:px-5 sm:pt-4 sm:pb-6">
         <div className="flex items-center gap-3 pb-3 sm:gap-4">
           <span
             aria-hidden="true"
@@ -103,7 +103,7 @@ export default function FaqPlaylist() {
           <span aria-hidden="true" className="h-[3px] flex-1 bg-forest/70" />
           <h2
             id="faq-heading"
-            className="shrink-0 font-title text-lg tracking-[0.04em] text-forest lowercase sm:text-2xl"
+            className="shrink-0 font-title text-lg tracking-title text-forest lowercase sm:text-2xl"
           >
             FAQ playlist
           </h2>
@@ -117,7 +117,7 @@ export default function FaqPlaylist() {
           </span>
         </div>
 
-        <ul className="rounded-[10px] bg-white px-2 py-3 shadow-[0_2px_4px_rgba(20,120,66,0.2),inset_0_3px_6px_rgba(20,120,66,0.18)] sm:px-4 sm:py-5">
+        <ul className="rounded-card bg-white px-2 py-3 shadow-[0_2px_4px_rgba(20,120,66,0.2),inset_0_3px_6px_rgba(20,120,66,0.18)] sm:px-4 sm:py-5">
           {faqs.map((faq, index) => {
             const isOpen = isPlaying && index === trackIndex;
 
@@ -130,16 +130,14 @@ export default function FaqPlaylist() {
                   aria-controls={`faq-answer-${index}`}
                   onClick={() => selectTrack(index)}
                   onKeyDown={(event) => handleTrackKeyDown(event, index)}
-                  className={`flex w-full cursor-pointer items-center gap-3 rounded-md px-2 py-3 text-left font-body tracking-[0.01em] text-forest transition-colors duration-150 hover:bg-lime/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest sm:gap-4 sm:px-4 ${
+                  className={`flex w-full cursor-pointer items-center gap-3 rounded-md px-2 py-3 text-left font-body tracking-body text-forest transition-colors duration-150 hover:bg-lime/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest sm:gap-4 sm:px-4 ${
                     isOpen ? "bg-lime/35" : ""
                   }`}
                 >
                   <span className="w-5 shrink-0 tabular-nums sm:w-6">
                     {index + 1}.
                   </span>
-                  <span className="flex-1 text-base sm:text-lg">
-                    {faq.question}
-                  </span>
+                  <span className="flex-1 text-body">{faq.question}</span>
 
                   {isOpen ? (
                     <span
@@ -176,7 +174,7 @@ export default function FaqPlaylist() {
                   hidden={!isOpen}
                   className="px-2 pt-1 pb-4 motion-safe:animate-track-open sm:px-4 sm:pl-13"
                 >
-                  <p className="max-w-[62ch] font-body text-base leading-7 tracking-[0.01em] text-ink">
+                  <p className="max-w-[62ch] font-body text-base leading-7 tracking-body text-ink">
                     {faq.answer}
                   </p>
                 </div>

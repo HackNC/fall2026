@@ -38,7 +38,7 @@ export default function SpinningCd() {
 
         <div className="absolute inset-[27%] overflow-hidden rounded-full border border-white/70 bg-frost/80 shadow-[inset_0_2px_6px_rgba(23,55,113,0.2)]">
           <Image
-            src="/hacknc-logo.png"
+            src="/hacknc-logo.webp"
             alt=""
             width={300}
             height={300}

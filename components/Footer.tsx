@@ -38,7 +38,7 @@ export default function Footer() {
 
       <div className="flex flex-col items-center gap-6 bg-white pt-3 pb-6 sm:flex-row sm:justify-between sm:gap-8 sm:pb-3">
         <div className="flex w-full max-w-[42rem] items-center gap-5 rounded-r-2xl bg-gradient-to-r from-[#7e9dcb] to-[#a5bddf] px-6 py-5 sm:px-8">
-          <p className="font-display text-xl font-semibold whitespace-nowrap text-white sm:text-2xl">
+          <p className="font-title text-section whitespace-nowrap text-white">
             find us here
           </p>
           <span aria-hidden="true" className="h-0.5 flex-1 bg-white/90" />
@@ -63,7 +63,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <p className="px-6 text-center font-mono text-sm font-semibold text-[#1e3a6e] sm:px-8 sm:text-base lg:px-10 xl:px-12">
+        <p className="px-6 text-center font-mono text-sm font-semibold text-ink sm:px-8 sm:text-base lg:px-10 xl:px-12">
           {"made with <3 by the hacknc graphics + dev team"}
         </p>
       </div>

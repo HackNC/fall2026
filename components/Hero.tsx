@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { glossyPill } from "@/components/glossyPill";
+import wordmark from "@/app/figma/hacknc 2026.png";
 
 type TimeLeft = {
   days: number;
@@ -129,37 +131,61 @@ export default function Hero() {
         </span>
 
         {/*
-          The mockup's panel is nearly clear, which puts white type at about
-          2.6:1 over the sky behind it. The royal tint here is what carries the
-          wordmark to 3.2:1 — AA for text this size — while the blur, the white
-          rim and the highlight below keep it reading as glass rather than a
-          solid block.
+          The glass is the panel, not the type. It is almost entirely clear —
+          a faint white wash, a bright rim and a soft blur — so the sky and
+          bubbles behind it stay readable straight through the middle.
         */}
-        <div className="relative overflow-hidden rounded-[32px] border border-white/40 bg-[linear-gradient(to_bottom,rgba(21,84,201,0.62)_0%,rgba(21,84,201,0.74)_100%)] px-6 pt-14 pb-16 shadow-[0_18px_48px_rgba(23,55,113,0.32)] backdrop-blur-2xl backdrop-saturate-150 sm:rounded-[40px] sm:px-12 sm:pt-20 sm:pb-24">
+        <div className="relative overflow-hidden rounded-panel border border-white/65 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.16)_100%)] px-6 pt-14 pb-16 shadow-[0_18px_48px_rgba(23,55,113,0.18)] backdrop-blur-md backdrop-saturate-125 sm:px-12 sm:pt-20 sm:pb-24">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-linear-to-b from-white/30 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-linear-to-b from-white/25 to-transparent"
           />
 
-          <h1 className="relative text-center font-title text-[clamp(2.5rem,11vw,6.5rem)] leading-none tracking-[0.02em] text-white lowercase [text-shadow:0_4px_18px_rgba(23,55,113,0.55)]">
-            hacknc 2026
+          {/*
+            Still artwork rather than live text, and it has to stay that way
+            until the font is licensed.
+
+            The Bubbleboddy Neue *trial* substitutes a "PERSONAL USE ONLY —
+            ZETAFONTS.COM" watermark for every digit glyph, in all three
+            weights. Letters render perfectly, so `font-title` is fine for
+            headings; anything containing numbers is not. "hacknc 2026" set as
+            live text renders as `hacknc` followed by four watermark badges.
+
+            This export came from the Figma, which has the full family, so its
+            numerals are correct. Swap back to live text with `font-title
+            text-display font-light` once the commercial licence is bought.
+          */}
+          <h1 className="relative">
+            <span className="sr-only">HackNC 2026</span>
+            <Image
+              src={wordmark}
+              alt=""
+              priority
+              className="mx-auto h-auto w-full max-w-[46rem]"
+            />
           </h1>
         </div>
 
+        {/*
+          Its own pane of glass rather than a pill, tucked under the panel's
+          bottom-right corner and overlapping it. The negative margin is what
+          makes the two sheets read as stacked; the right inset keeps it clear
+          of the panel's rounded corner.
+        */}
         <div
-          className="relative -mt-7 flex justify-center px-4 sm:-mt-9 sm:justify-end sm:pr-10"
+          className="relative -mt-8 flex justify-center px-4 sm:-mt-10 sm:justify-end sm:pr-6"
           aria-live="polite"
           aria-atomic="true"
           aria-label="Countdown to October 9, 2026 Eastern Time"
         >
           {timeLeft.hasStarted ? (
-            <p className="rounded-full border border-white/35 bg-[rgba(23,55,113,0.72)] px-6 py-3 font-body text-base tracking-[0.12em] text-white uppercase backdrop-blur-md sm:text-lg">
+            <p className="rounded-control border border-white/65 bg-white/15 px-6 py-4 font-body text-body tracking-body text-white uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)]">
               event has started
             </p>
           ) : (
             // Tabular figures on purpose: without them the seconds digit
-            // changes width every tick and the whole pill jitters.
-            <p className="rounded-full border border-white/35 bg-[rgba(23,55,113,0.72)] px-5 py-3 text-center font-body text-sm tracking-[0.1em] text-white tabular-nums uppercase shadow-[0_8px_20px_rgba(23,55,113,0.35)] backdrop-blur-md sm:px-8 sm:text-lg">
+            // changes width every tick and the whole pane jitters.
+            <p className="rounded-control border border-white/65 bg-white/15 px-5 py-4 text-center font-body text-sm tracking-body text-white tabular-nums uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)] sm:px-10 sm:text-xl">
               {timeLeft.days} days : {formatUnit(timeLeft.hours)} hrs :{" "}
               {formatUnit(timeLeft.minutes)} min :{" "}
               {formatUnit(timeLeft.seconds)} sec

@@ -7,6 +7,7 @@ import { schedule, scheduleDays, type ScheduleDay } from "@/data/schedule";
 
 export default function Schedule() {
   const [activeDay, setActiveDay] = useState<ScheduleDay>(scheduleDays[0]);
+  const dayEvents = schedule[activeDay];
 
   function handleTabKeyDown(
     event: KeyboardEvent<HTMLButtonElement>,
@@ -39,7 +40,7 @@ export default function Schedule() {
           <span aria-hidden="true" className="h-[3px] w-12 bg-royal sm:w-32" />
           <h1
             id="schedule-heading"
-            className="font-title text-2xl tracking-[0.05em] text-royal lowercase sm:text-4xl"
+            className="font-title text-page tracking-title text-royal lowercase"
           >
             schedule
           </h1>
@@ -114,24 +115,34 @@ export default function Schedule() {
             id={`schedule-panel-${activeDay.toLowerCase()}`}
             role="tabpanel"
             aria-labelledby={`schedule-tab-${activeDay.toLowerCase()}`}
-            className="mt-4 min-h-[28rem] rounded-[10px] bg-white px-5 py-6 shadow-[0_4px_4px_rgba(23,55,113,0.25),inset_0_4px_4px_rgba(23,55,113,0.25)] sm:mt-3.5 sm:min-h-[40rem] sm:px-12 sm:py-10"
+            className={`mt-4 min-h-[28rem] rounded-card bg-white px-5 py-6 shadow-[0_4px_4px_rgba(23,55,113,0.25),inset_0_4px_4px_rgba(23,55,113,0.25)] sm:mt-3.5 sm:min-h-[40rem] sm:px-12 sm:py-10 ${
+              dayEvents.length === 0
+                ? "grid place-items-center text-center"
+                : ""
+            }`}
           >
-            {schedule[activeDay].map((event) => (
-              <article
-                key={`${event.time}-${event.title}`}
-                className="grid gap-1 border-b border-sky py-5 first:pt-0 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-x-16 sm:py-7"
-              >
-                <time className="font-body text-lg tracking-[0.05em] whitespace-nowrap text-ink sm:text-[2rem]">
-                  {event.time}
-                </time>
-                <div className="font-body tracking-[0.05em] text-ink">
-                  <h2 className="text-base sm:text-2xl">{event.title}</h2>
-                  <p className="mt-1 max-w-[46rem] text-base sm:text-2xl">
-                    {event.description}
-                  </p>
-                </div>
-              </article>
-            ))}
+            {dayEvents.length === 0 ? (
+              <p className="font-title text-page tracking-title text-royal lowercase">
+                coming soon
+              </p>
+            ) : (
+              dayEvents.map((event) => (
+                <article
+                  key={`${event.time}-${event.title}`}
+                  className="grid gap-1 border-b border-sky py-5 first:pt-0 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-x-16 sm:py-7"
+                >
+                  <time className="font-body text-page tracking-body whitespace-nowrap text-ink">
+                    {event.time}
+                  </time>
+                  <div className="font-body tracking-body text-ink">
+                    <h2 className="text-base sm:text-2xl">{event.title}</h2>
+                    <p className="mt-1 max-w-[46rem] text-base sm:text-2xl">
+                      {event.description}
+                    </p>
+                  </div>
+                </article>
+              ))
+            )}
           </div>
         </WindowFrame>
       </div>

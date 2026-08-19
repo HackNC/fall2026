@@ -24,7 +24,7 @@ import { committeeNames, teamMembers } from "@/data/teamMembers";
  * focus-visible stays unqualified — focus is not position-dependent.
  */
 const channelTile =
-  "relative block aspect-square w-full overflow-hidden rounded-[10px] border border-royal/30 " +
+  "relative block aspect-square w-full overflow-hidden rounded-card border border-royal/30 " +
   "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0)_55%),linear-gradient(to_bottom,#1554C9_5%,rgba(244,255,254,0.95)_100%)] " +
   "shadow-[0_4px_4px_rgba(23,55,113,0.45),inset_0_-2px_0_rgba(21,84,201,0.2),inset_0_4px_0_rgba(255,255,255,0.25)] " +
   "transition-[transform,box-shadow] duration-200 ease-out " +
@@ -41,7 +41,7 @@ const channelTile =
  */
 const wiiButton =
   "relative inline-flex items-center justify-center rounded-full border border-royal/25 " +
-  "min-w-[11rem] px-10 py-4 text-center font-title text-xl tracking-[0.05em] text-ink lowercase " +
+  "min-w-[11rem] px-10 py-4 text-center font-title text-xl tracking-title text-ink lowercase " +
   "sm:min-w-[15rem] sm:px-14 sm:py-5 sm:text-2xl " +
   "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.35)_45%,rgba(255,255,255,0)_46%),linear-gradient(to_bottom,#FBFDFF_0%,#DCE7F5_55%,#C2D3EA_100%)] " +
   "shadow-[0_6px_10px_rgba(23,55,113,0.35),inset_0_2px_0_rgba(255,255,255,0.95),inset_0_-3px_6px_rgba(21,84,201,0.18)] " +
@@ -49,6 +49,11 @@ const wiiButton =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
 
 const rows = committeeNames.map((committee) => teamMembers[committee]);
+
+// Nothing announced yet renders as "coming soon" instead of an empty grid.
+// The roving-tabindex handlers below all key off `rows`, so they are simply
+// unreachable while there are no tiles to focus.
+const hasMembers = rows.some((row) => row.length > 0);
 
 function tileId(row: number, column: number) {
   return `team-tile-${row}-${column}`;
@@ -153,7 +158,7 @@ export default function MeetOurTeam() {
           <div className="motion-safe:animate-window-float">
             <div
               onKeyDown={handleWindowKeyDown}
-              className="relative rounded-[28px] border border-white/70 bg-white/95 px-6 py-8 shadow-[0_10px_30px_rgba(23,55,113,0.35)] transition-[transform,box-shadow] duration-300 ease-out group-hover/window:-translate-y-1.5 group-hover/window:shadow-[0_18px_40px_rgba(23,55,113,0.45)] sm:px-10 sm:py-12"
+              className="relative rounded-window border border-white/70 bg-white/95 px-6 py-8 shadow-[0_10px_30px_rgba(23,55,113,0.35)] transition-[transform,box-shadow] duration-300 ease-out group-hover/window:-translate-y-1.5 group-hover/window:shadow-[0_18px_40px_rgba(23,55,113,0.45)] sm:px-10 sm:py-12"
             >
               {selectedMember && selected ? (
                 <>
@@ -166,84 +171,92 @@ export default function MeetOurTeam() {
                 <>
                   <h1
                     id="team-heading"
-                    className="text-center font-title text-3xl tracking-[0.05em] text-royal sm:text-6xl"
+                    className="text-center font-title text-page tracking-title text-royal"
                   >
                     Meet Our Team
                   </h1>
 
                   <div className="mt-8 sm:mt-12">
-                    {committeeNames.map((committee, row) => (
-                      <section
-                        key={committee}
-                        aria-label={committee}
-                        className="mt-8 first:mt-0"
-                      >
-                        <ul className="grid grid-cols-4 gap-3 sm:grid-cols-7 sm:gap-4">
-                          {teamMembers[committee].map((member, column) => (
-                            <li key={member.name} className="group/tile">
-                              <div
-                                className="motion-safe:animate-channel-idle"
-                                // Staggered so the row breathes as a wave instead
-                                // of pulsing in lockstep. Wraps only the tile, so
-                                // the name below stays still and readable.
-                                style={{
-                                  animationDelay: `${(row * 7 + column) * 180}ms`,
-                                }}
-                              >
-                                <button
-                                  id={tileId(row, column)}
-                                  type="button"
-                                  aria-label={`${member.name}, ${member.role}`}
-                                  tabIndex={
-                                    active.row === row &&
-                                    active.column === column
-                                      ? 0
-                                      : -1
-                                  }
-                                  onClick={() => openChannel(row, column)}
-                                  onFocus={() => setActive({ row, column })}
-                                  onKeyDown={(event) =>
-                                    handleTileKeyDown(event, row, column)
-                                  }
-                                  className={channelTile}
-                                >
-                                  {member.image ? (
-                                    <Image
-                                      src={member.image}
-                                      alt=""
-                                      fill
-                                      sizes="(min-width: 640px) 10rem, 25vw"
-                                      className="object-cover"
-                                    />
-                                  ) : (
-                                    <span
-                                      aria-hidden="true"
-                                      className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
-                                    >
-                                      {initials(member.name)}
-                                    </span>
-                                  )}
-                                </button>
-                              </div>
-                              <p className="mt-1.5 truncate text-center font-body text-[0.7rem] tracking-[0.05em] text-ink sm:text-xs">
-                                {member.name}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                        <p
-                          aria-hidden="true"
-                          className="mt-2 font-body text-sm tracking-[0.05em] text-ink/70 lowercase"
+                    {!hasMembers ? (
+                      <p className="grid min-h-[16rem] place-items-center text-center font-title text-page tracking-title text-royal lowercase sm:min-h-[22rem]">
+                        coming soon
+                      </p>
+                    ) : (
+                      committeeNames.map((committee, row) => (
+                        <section
+                          key={committee}
+                          aria-label={committee}
+                          className="mt-8 first:mt-0"
                         >
-                          {committee}
-                        </p>
-                      </section>
-                    ))}
+                          <ul className="grid grid-cols-4 gap-3 sm:grid-cols-7 sm:gap-4">
+                            {teamMembers[committee].map((member, column) => (
+                              <li key={member.name} className="group/tile">
+                                <div
+                                  className="motion-safe:animate-channel-idle"
+                                  // Staggered so the row breathes as a wave instead
+                                  // of pulsing in lockstep. Wraps only the tile, so
+                                  // the name below stays still and readable.
+                                  style={{
+                                    animationDelay: `${(row * 7 + column) * 180}ms`,
+                                  }}
+                                >
+                                  <button
+                                    id={tileId(row, column)}
+                                    type="button"
+                                    aria-label={`${member.name}, ${member.role}`}
+                                    tabIndex={
+                                      active.row === row &&
+                                      active.column === column
+                                        ? 0
+                                        : -1
+                                    }
+                                    onClick={() => openChannel(row, column)}
+                                    onFocus={() => setActive({ row, column })}
+                                    onKeyDown={(event) =>
+                                      handleTileKeyDown(event, row, column)
+                                    }
+                                    className={channelTile}
+                                  >
+                                    {member.image ? (
+                                      <Image
+                                        src={member.image}
+                                        alt=""
+                                        fill
+                                        sizes="(min-width: 640px) 10rem, 25vw"
+                                        className="object-cover"
+                                      />
+                                    ) : (
+                                      <span
+                                        aria-hidden="true"
+                                        className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
+                                      >
+                                        {initials(member.name)}
+                                      </span>
+                                    )}
+                                  </button>
+                                </div>
+                                <p className="mt-1.5 truncate text-center font-body text-caption tracking-body text-ink">
+                                  {member.name}
+                                </p>
+                              </li>
+                            ))}
+                          </ul>
+                          <p
+                            aria-hidden="true"
+                            className="mt-2 font-body text-sm tracking-body text-ink/70 lowercase"
+                          >
+                            {committee}
+                          </p>
+                        </section>
+                      ))
+                    )}
                   </div>
 
-                  <p className="mt-10 text-center font-body text-base tracking-[0.05em] text-ink/60 motion-safe:animate-wii-breathe">
-                    click to explore
-                  </p>
+                  {hasMembers ? (
+                    <p className="mt-10 text-center font-body text-base tracking-body text-ink/60 motion-safe:animate-wii-breathe">
+                      click to explore
+                    </p>
+                  ) : null}
                 </>
               )}
 
@@ -255,10 +268,13 @@ export default function MeetOurTeam() {
                 >
                   menu
                 </Link>
+                {/* Nothing to open until the roster lands, so the console's
+                    start button is disabled rather than silently inert. */}
                 <button
                   type="button"
+                  disabled={!hasMembers}
                   onClick={() => openChannel(active.row, active.column)}
-                  className={`${wiiButton} cursor-pointer motion-safe:animate-wii-breathe`}
+                  className={`${wiiButton} cursor-pointer motion-safe:animate-wii-breathe disabled:cursor-not-allowed disabled:opacity-50 disabled:motion-safe:animate-none`}
                 >
                   start
                 </button>

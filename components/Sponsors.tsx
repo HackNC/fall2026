@@ -46,15 +46,21 @@ export default function Sponsors() {
                   "bubble",
                   "flex items-center justify-center overflow-hidden p-3 motion-safe:animate-bubble-sway"
                 )}
-                style={{
-                  width: bubbleSize,
-                  height: bubbleSize,
-                  animationDelay: `${delay}s`,
-                  animationDuration: `${duration}s`,
-                  willChange: "transform",
-                  ["--sway-x" as any]: `${swayX}px`,
-                  ["--sway-y" as any]: `${swayY}px`,
-                }}
+                // The two custom properties drive the sway keyframes. Typed as
+                // a CSSProperties intersection rather than cast through `any`,
+                // so the rest of the object keeps its checking.
+                style={
+                  {
+                    width: bubbleSize,
+                    height: bubbleSize,
+                    animationDelay: `${delay}s`,
+                    animationDuration: `${duration}s`,
+                    willChange: "transform",
+                    "--sway-x": `${swayX}px`,
+                    "--sway-y": `${swayY}px`,
+                  } as React.CSSProperties &
+                    Record<"--sway-x" | "--sway-y", string>
+                }
               >
                 <Image
                   src={sponsor.logoSrc}

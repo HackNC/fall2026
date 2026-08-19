@@ -51,7 +51,7 @@ export default function WindowFrame({
 }: WindowFrameProps) {
   return (
     <div
-      className={`overflow-hidden rounded-[10px] ${variantClasses[variant]} ${className}`}
+      className={`overflow-hidden rounded-card ${variantClasses[variant]} ${className}`}
     >
       <div
         className={`flex flex-wrap items-center justify-between gap-3 ${titleBarClassName}`}
