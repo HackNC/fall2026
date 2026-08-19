@@ -34,42 +34,48 @@ export default function CommitteeScreen({
   }, [committee]);
 
   return (
-    <div className="motion-safe:animate-channel-open">
+    <div className="flex h-full min-h-0 flex-col motion-safe:animate-channel-open">
       <ScreenTitleBar committee={committee} variant="committee" />
 
-      {members.length === 0 ? (
-        <p className="grid min-h-[14rem] place-items-center text-center font-title text-section tracking-title text-royal lowercase">
-          coming soon
-        </p>
-      ) : (
-        <ul className="mt-8 flex flex-wrap gap-8 sm:mt-10 sm:gap-12">
-          {members.map((member) => (
-            <li key={member.name} className="w-[7.5rem] sm:w-[9rem]">
-              <div className="relative aspect-square overflow-hidden rounded-inset bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
-                {member.image ? (
-                  <Image
-                    src={member.image}
-                    alt=""
-                    fill
-                    sizes="9rem"
-                    className="object-cover"
-                  />
-                ) : null}
-              </div>
-              <p className="mt-3 truncate text-center font-body text-body font-bold tracking-body text-ink">
-                {member.name}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="flex min-h-0 flex-1 flex-col px-4 pb-2 pt-3 min-[391px]:px-5 min-[391px]:pt-4 min-[645px]:px-8 min-[645px]:pb-3 min-[645px]:pt-5 lg:px-10 lg:pb-4 lg:pt-6">
+        {members.length === 0 ? (
+          <p className="grid min-h-[11rem] place-items-center text-center font-title text-section tracking-title text-royal lowercase min-[645px]:min-h-[14rem]">
+            coming soon
+          </p>
+        ) : (
+          <ul className="mt-1.5 flex flex-wrap justify-center gap-3.5 min-[481px]:mt-2 min-[481px]:gap-4.5 min-[645px]:mt-3 min-[645px]:gap-7 lg:gap-8">
+            {members.map((member) => (
+              <li
+                key={member.name}
+                className="w-[5.8rem] min-[481px]:w-[6.5rem] min-[645px]:w-[8rem] lg:w-[8.75rem]"
+              >
+                <div className="relative aspect-square overflow-hidden rounded-inset bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt=""
+                      fill
+                      sizes="9rem"
+                      className="object-cover"
+                    />
+                  ) : null}
+                </div>
+                <p className="mt-3 truncate text-center font-body text-body font-bold tracking-body text-ink">
+                  {member.name}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
 
-      <ScreenFooter
-        backRef={backRef}
-        onBack={onBack}
-        actionLabel="View Directors"
-        onAction={onViewDirectors}
-      />
+        <ScreenFooter
+          className="mt-auto pt-4 min-[645px]:pt-6"
+          backRef={backRef}
+          onBack={onBack}
+          actionLabel="View Directors"
+          onAction={onViewDirectors}
+        />
+      </div>
     </div>
   );
 }
@@ -101,20 +107,23 @@ export function ScreenTitleBar({
 
   if (variant === "committee") {
     return (
-      <div className="-mx-6 -mt-8 flex items-start sm:-mx-10 sm:-mt-12">
-        <p className="w-[62%] rounded-tl-window rounded-br-[2.5rem] bg-cornflower px-6 py-4 sm:px-10 sm:py-5">
-          {name}
-        </p>
-        <p className="ml-auto px-6 py-5 font-body text-body font-bold tracking-body text-ink sm:px-10 sm:py-6">
-          Committee Members
-        </p>
+      <div>
+        <div className="rounded-t-window bg-cornflower px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            {name}
+            <p className="font-body text-body font-bold tracking-body text-white [text-shadow:0_1px_4px_rgba(23,55,113,0.45)]">
+              Committee Members
+            </p>
+          </div>
+        </div>
+        <div className="-mt-5 h-5 rounded-tl-[2.5rem] bg-white" />
       </div>
     );
   }
 
   return (
-    <div className="-mx-6 -mt-8 sm:-mx-10 sm:-mt-12">
-      <p className="rounded-t-window bg-cornflower px-6 py-4 text-right sm:px-10 sm:py-5">
+    <div>
+      <p className="rounded-t-window bg-cornflower px-4 py-3 text-right sm:px-6 sm:py-4 lg:px-8 lg:py-5">
         {name}
       </p>
       {/* Curves the white content up into the blue on the left. */}
@@ -132,14 +141,18 @@ export function ScreenFooter({
   onBack,
   actionLabel,
   onAction,
+  className = "",
 }: {
   backRef?: React.RefObject<HTMLButtonElement | null>;
   onBack: () => void;
   actionLabel: string;
   onAction: () => void;
+  className?: string;
 }) {
   return (
-    <div className="mt-10 -mb-2 flex items-center gap-4 sm:gap-6">
+    <div
+      className={`grid grid-cols-1 items-center gap-2.5 min-[481px]:grid-cols-2 min-[481px]:gap-3 min-[645px]:flex min-[645px]:gap-6 ${className}`}
+    >
       {/*
         Not a pill: the mockup's back control is a bare icon over a small
         label, tucked into the window's bottom-left corner.
@@ -160,7 +173,7 @@ export function ScreenFooter({
         onClick={onAction}
         className={glossyPill(
           "pressed",
-          "w-full cursor-pointer rounded-full py-3 normal-case"
+          "w-full min-w-0 cursor-pointer rounded-full py-3 normal-case"
         )}
       >
         {actionLabel}

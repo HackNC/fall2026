@@ -46,8 +46,8 @@ const channelTile =
  */
 const wiiButton =
   "relative inline-flex items-center justify-center rounded-full border border-royal/25 " +
-  "min-w-[11rem] px-10 py-4 text-center font-title text-xl tracking-title text-ink lowercase " +
-  "sm:min-w-[15rem] sm:px-14 sm:py-5 sm:text-2xl " +
+  "min-w-[7.75rem] px-6 py-3 text-center font-title text-lg tracking-title text-ink lowercase " +
+  "md:min-w-[15rem] md:px-14 md:py-5 md:text-2xl " +
   "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.35)_45%,rgba(255,255,255,0)_46%),linear-gradient(to_bottom,#FBFDFF_0%,#DCE7F5_55%,#C2D3EA_100%)] " +
   "shadow-[0_6px_10px_rgba(23,55,113,0.35),inset_0_2px_0_rgba(255,255,255,0.95),inset_0_-3px_6px_rgba(21,84,201,0.18)] " +
   "transition duration-150 hover:brightness-[1.04] active:translate-y-px " +
@@ -76,6 +76,11 @@ const rows = Array.from(
   (_, row) => directors.slice(row * COLUMNS, (row + 1) * COLUMNS)
 );
 
+const rowStartIndices = rows.reduce<number[]>((acc, row, index) => {
+  acc.push((acc[index - 1] ?? 0) + (rows[index - 1]?.length ?? 0));
+  return acc;
+}, []);
+
 // Nothing announced yet renders as "coming soon" instead of an empty grid.
 // The roving-tabindex handlers below all key off `rows`, so they are simply
 // unreachable while there are no tiles to focus.
@@ -94,11 +99,28 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+function positionToIndex(position: { row: number; column: number }) {
+  return rowStartIndices[position.row] + position.column;
+}
+
+function indexToPosition(index: number) {
+  let remaining = index;
+
+  for (let row = 0; row < rows.length; row += 1) {
+    const rowLength = rows[row].length;
+    if (remaining < rowLength) {
+      return { row, column: remaining };
+    }
+    remaining -= rowLength;
+  }
+
+  return { row: 0, column: 0 };
+}
+
 export default function MeetOurTeam() {
-  const [selected, setSelected] = useState<{
-    row: number;
-    column: number;
-  } | null>(null);
+  const [selectedDirectorIndex, setSelectedDirectorIndex] = useState<
+    number | null
+  >(null);
   // Roving tabindex position: the grid is one tab stop, arrow keys move within
   // it. Same contract as the Schedule day tabs, extended to two axes.
   const [active, setActive] = useState({ row: 0, column: 0 });
@@ -110,7 +132,19 @@ export default function MeetOurTeam() {
   const [menuOpen, setMenuOpen] = useState(false);
   const restoreFocusRef = useRef(false);
 
-  const selectedMember = selected ? rows[selected.row][selected.column] : null;
+  const selectedMember =
+    selectedDirectorIndex !== null ? directors[selectedDirectorIndex] : null;
+  const isStartScreen =
+    screen.kind === "grid" && selectedDirectorIndex === null;
+  const currentDirectorIndex = selectedDirectorIndex;
+  const isLastDirector =
+    hasMembers &&
+    currentDirectorIndex !== null &&
+    currentDirectorIndex >= directors.length - 1;
+  const startDisabled =
+    !hasMembers ||
+    screen.kind === "committee" ||
+    (currentDirectorIndex !== null && isLastDirector);
 
   // Returning from a channel puts focus back on the tile that opened it.
   useEffect(() => {
@@ -121,12 +155,28 @@ export default function MeetOurTeam() {
 
   function openChannel(row: number, column: number) {
     setActive({ row, column });
-    setSelected({ row, column });
+    setSelectedDirectorIndex(positionToIndex({ row, column }));
   }
 
   function closeChannel() {
     restoreFocusRef.current = true;
-    setSelected(null);
+    setSelectedDirectorIndex(null);
+  }
+
+  function goToStartScreen() {
+    setScreen({ kind: "grid" });
+    setSelectedDirectorIndex(null);
+    setActive({ row: 0, column: 0 });
+  }
+
+  function handleStart() {
+    if (startDisabled || screen.kind !== "grid") return;
+
+    const nextIndex =
+      currentDirectorIndex === null ? 0 : currentDirectorIndex + 1;
+    const next = indexToPosition(nextIndex);
+    setActive(next);
+    setSelectedDirectorIndex(nextIndex);
   }
 
   function handleTileKeyDown(
@@ -175,29 +225,20 @@ export default function MeetOurTeam() {
   return (
     <section aria-labelledby="team-heading" className="py-10 sm:py-16">
       <div className="mx-auto w-full max-w-[80rem] px-4 sm:px-6">
-        {/*
-          Three nested elements, each doing exactly one job:
-
-          1. the hover target, which never moves, so the raise cannot pull the
-             window out from under the pointer and start an oscillation;
-          2. the idle drift, on its own node because a running transform
-             animation overrides a transform utility on the same element;
-          3. the raise itself, fired from the group above.
-
-          Tiles below are built the same way.
-        */}
-        <div className="group/window">
-          <div className="motion-safe:animate-window-float">
-            <div
-              onKeyDown={handleWindowKeyDown}
-              className="relative rounded-window border border-white/70 bg-white/95 px-6 py-8 shadow-[0_10px_30px_rgba(23,55,113,0.35)] transition-[transform,box-shadow] duration-300 ease-out group-hover/window:-translate-y-1.5 group-hover/window:shadow-[0_18px_40px_rgba(23,55,113,0.45)] sm:px-10 sm:py-12"
-            >
+        <div className="motion-safe:animate-window-float">
+          <div
+            onKeyDown={handleWindowKeyDown}
+            className="relative h-[min(82vh,52rem)] min-h-[34rem] rounded-window border border-white/70 bg-white/95 shadow-[0_10px_30px_rgba(23,55,113,0.35)] min-[481px]:max-[649px]:h-[min(100vh,66rem)] min-[481px]:max-[649px]:min-h-[54rem] max-[520px]:h-[min(100vh,70rem)] max-[520px]:min-h-[58rem] max-[394px]:h-[min(98vh,60rem)] max-[394px]:min-h-[48rem] max-[360px]:h-[min(100vh,62rem)] max-[360px]:min-h-[50rem] max-[344px]:h-[min(100vh,64rem)] max-[344px]:min-h-[52rem] max-[320px]:h-[min(100vh,66rem)] max-[320px]:min-h-[54rem] min-[650px]:h-[min(80vh,52rem)] min-[650px]:min-h-[38rem]"
+          >
+            <div className="flex h-full min-h-0 flex-col gap-5 sm:gap-6 lg:gap-8">
               {menuOpen ? (
                 <SelectionMenu
+                  viewDirectorsDisabled={isStartScreen}
                   onClose={() => setMenuOpen(false)}
                   onViewDirectors={() => {
+                    if (isStartScreen) return;
                     setMenuOpen(false);
-                    setScreen({ kind: "grid" });
+                    goToStartScreen();
                   }}
                   onViewCommittee={() => {
                     setMenuOpen(false);
@@ -209,131 +250,130 @@ export default function MeetOurTeam() {
                 />
               ) : null}
 
-              {screen.kind === "committee" ? (
-                <>
-                  <h1 id="team-heading" className="sr-only">
-                    Meet Our Team
-                  </h1>
-                  <CommitteeScreen
-                    committee={screen.committee}
-                    members={teamMembers[screen.committee].filter(
-                      (member) => !member.isDirector
-                    )}
-                    onBack={() => setScreen({ kind: "grid" })}
-                    onViewDirectors={() => {
-                      setScreen({ kind: "grid" });
-                      setSelected(null);
-                    }}
-                  />
-                </>
-              ) : selectedMember && selected ? (
-                <>
-                  <h1 id="team-heading" className="sr-only">
-                    Meet Our Team
-                  </h1>
-                  <MemberDetail
-                    member={selectedMember}
-                    onBack={closeChannel}
-                    onViewCommittee={() =>
-                      setScreen({
-                        kind: "committee",
-                        committee: selectedMember.committee,
-                      })
-                    }
-                  />
-                </>
-              ) : (
-                <>
-                  <h1
-                    id="team-heading"
-                    className="text-center font-title text-page tracking-title text-royal"
-                  >
-                    Meet Our Team
-                  </h1>
+              <div className="min-h-0 flex-1">
+                {screen.kind === "committee" ? (
+                  <>
+                    <h1 id="team-heading" className="sr-only">
+                      Meet Our Team
+                    </h1>
+                    <CommitteeScreen
+                      committee={screen.committee}
+                      members={teamMembers[screen.committee].filter(
+                        (member) => !member.isDirector
+                      )}
+                      onBack={goToStartScreen}
+                      onViewDirectors={goToStartScreen}
+                    />
+                  </>
+                ) : selectedMember ? (
+                  <>
+                    <h1 id="team-heading" className="sr-only">
+                      Meet Our Team
+                    </h1>
+                    <MemberDetail
+                      member={selectedMember}
+                      onBack={closeChannel}
+                      onViewCommittee={() =>
+                        setScreen({
+                          kind: "committee",
+                          committee: selectedMember.committee,
+                        })
+                      }
+                    />
+                  </>
+                ) : (
+                  <div className="px-5 pb-2 pt-6 sm:px-8 sm:pb-3 sm:pt-8 lg:px-10 lg:pb-4 lg:pt-10">
+                    <h1
+                      id="team-heading"
+                      className="text-center font-title text-page tracking-title text-royal"
+                    >
+                      Meet Our Team
+                    </h1>
 
-                  <div className="mt-8 sm:mt-12">
-                    {!hasMembers ? (
-                      <p className="grid min-h-[16rem] place-items-center text-center font-title text-page tracking-title text-royal lowercase sm:min-h-[22rem]">
-                        coming soon
-                      </p>
-                    ) : (
-                      rows.map((rowMembers, row) => (
-                        <ul
-                          key={row}
-                          className="mt-4 grid grid-cols-3 gap-3 first:mt-0 sm:mt-5 sm:grid-cols-6 sm:gap-4"
-                        >
-                          {rowMembers.map((member, column) => (
-                            <li key={member.name} className="group/tile">
-                              <div
-                                className="motion-safe:animate-channel-idle"
-                                // Staggered so the row breathes as a wave instead
-                                // of pulsing in lockstep. Wraps only the tile, so
-                                // the name below stays still and readable.
-                                style={{
-                                  animationDelay: `${(row * 7 + column) * 180}ms`,
-                                }}
-                              >
-                                <button
-                                  id={tileId(row, column)}
-                                  type="button"
-                                  aria-label={`${member.name}, ${member.role}`}
-                                  tabIndex={
-                                    active.row === row &&
-                                    active.column === column
-                                      ? 0
-                                      : -1
-                                  }
-                                  onClick={() => openChannel(row, column)}
-                                  onFocus={() => setActive({ row, column })}
-                                  onKeyDown={(event) =>
-                                    handleTileKeyDown(event, row, column)
-                                  }
-                                  className={channelTile}
+                    <div className="mt-6 sm:mt-8 lg:mt-10">
+                      {!hasMembers ? (
+                        <p className="grid min-h-[14rem] place-items-center text-center font-title text-page tracking-title text-royal lowercase sm:min-h-[18rem]">
+                          coming soon
+                        </p>
+                      ) : (
+                        rows.map((rowMembers, row) => (
+                          <ul
+                            key={row}
+                            className="mt-4 grid grid-cols-3 gap-3 first:mt-0 min-[481px]:grid-cols-4 min-[481px]:gap-3.5 min-[645px]:mt-5 min-[645px]:grid-cols-6 min-[645px]:gap-4"
+                          >
+                            {rowMembers.map((member, column) => (
+                              <li key={member.name} className="group/tile">
+                                <div
+                                  className="motion-safe:animate-channel-idle"
+                                  // Staggered so the row breathes as a wave instead
+                                  // of pulsing in lockstep. Wraps only the tile, so
+                                  // the name below stays still and readable.
+                                  style={{
+                                    animationDelay: `${(row * 7 + column) * 180}ms`,
+                                  }}
                                 >
-                                  {member.image ? (
-                                    <Image
-                                      src={member.image}
-                                      alt=""
-                                      fill
-                                      sizes="(min-width: 640px) 10rem, 25vw"
-                                      className="object-cover"
-                                    />
-                                  ) : (
-                                    <span
-                                      aria-hidden="true"
-                                      className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
-                                    >
-                                      {initials(member.name)}
-                                    </span>
-                                  )}
-                                </button>
-                              </div>
-                              <p className="mt-1.5 truncate text-center font-body text-caption tracking-body text-ink">
-                                {member.name}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      ))
-                    )}
-                  </div>
+                                  <button
+                                    id={tileId(row, column)}
+                                    type="button"
+                                    aria-label={`${member.name}, ${member.role}`}
+                                    tabIndex={
+                                      active.row === row &&
+                                      active.column === column
+                                        ? 0
+                                        : -1
+                                    }
+                                    onClick={() => openChannel(row, column)}
+                                    onFocus={() => setActive({ row, column })}
+                                    onKeyDown={(event) =>
+                                      handleTileKeyDown(event, row, column)
+                                    }
+                                    className={channelTile}
+                                  >
+                                    {member.image ? (
+                                      <Image
+                                        src={member.image}
+                                        alt=""
+                                        fill
+                                        sizes="(min-width: 640px) 10rem, 25vw"
+                                        className="object-cover"
+                                      />
+                                    ) : (
+                                      <span
+                                        aria-hidden="true"
+                                        className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
+                                      >
+                                        {initials(member.name)}
+                                      </span>
+                                    )}
+                                  </button>
+                                </div>
+                                <p className="mt-1.5 truncate text-center font-body text-caption tracking-body text-ink">
+                                  {member.name}
+                                </p>
+                              </li>
+                            ))}
+                          </ul>
+                        ))
+                      )}
+                    </div>
 
-                  {hasMembers ? (
-                    <p className="mt-10 text-center font-body text-base tracking-body text-ink/60 motion-safe:animate-wii-breathe">
-                      click to explore
-                    </p>
-                  ) : null}
-                </>
-              )}
+                    {hasMembers ? (
+                      <p className="mt-8 text-center font-body text-base tracking-body text-ink/60 motion-safe:animate-wii-breathe sm:mt-10">
+                        click to explore
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+              </div>
 
               {/* Bottom-left and bottom-right, as on the console. */}
-              <div className="mt-10 flex items-center justify-between gap-4">
+              <div className="mt-auto grid grid-cols-1 gap-2.5 px-4 pb-5 min-[391px]:grid-cols-2 min-[391px]:gap-3 min-[391px]:px-5 min-[391px]:pb-6 min-[645px]:flex min-[645px]:items-center min-[645px]:justify-between min-[645px]:gap-4 min-[645px]:px-8 min-[645px]:pb-8 lg:px-10 lg:pb-10">
                 <button
                   type="button"
                   aria-haspopup="dialog"
                   aria-expanded={menuOpen}
                   onClick={() => setMenuOpen(true)}
-                  className={`${wiiButton} cursor-pointer motion-safe:animate-wii-breathe`}
+                  className={`${wiiButton} w-full min-w-0 cursor-pointer motion-safe:animate-wii-breathe min-[645px]:w-auto min-[645px]:min-w-[15rem]`}
                 >
                   menu
                 </button>
@@ -341,9 +381,9 @@ export default function MeetOurTeam() {
                     start button is disabled rather than silently inert. */}
                 <button
                   type="button"
-                  disabled={!hasMembers}
-                  onClick={() => openChannel(active.row, active.column)}
-                  className={`${wiiButton} cursor-pointer motion-safe:animate-wii-breathe disabled:cursor-not-allowed disabled:opacity-50 disabled:motion-safe:animate-none`}
+                  disabled={startDisabled}
+                  onClick={handleStart}
+                  className={`${wiiButton} w-full min-w-0 cursor-pointer motion-safe:animate-wii-breathe disabled:cursor-not-allowed disabled:opacity-50 disabled:motion-safe:animate-none min-[645px]:w-auto min-[645px]:min-w-[15rem]`}
                 >
                   start
                 </button>
