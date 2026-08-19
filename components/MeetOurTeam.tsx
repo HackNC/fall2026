@@ -99,8 +99,22 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function positionToIndex(position: { row: number; column: number }) {
-  return rowStartIndices[position.row] + position.column;
+/*
+ * Takes row and column as separate arguments rather than a position object, on
+ * purpose.
+ *
+ * With an object parameter the only call site reads `positionToIndex({ row,
+ * column })`, and the production minifier inlines that helper while failing to
+ * rename the shorthand properties — it emits `{row, column}` referencing
+ * identifiers that no longer exist under minification, so every tile click
+ * threw "row is not defined". Dev builds are unminified and never showed it.
+ *
+ * Scalar arguments leave no object literal to inline, so the bug has nothing
+ * to bite on. Keep it this way, and avoid shorthand in anything else small
+ * enough for the minifier to inline.
+ */
+function positionToIndex(row: number, column: number) {
+  return rowStartIndices[row] + column;
 }
 
 function indexToPosition(index: number) {
@@ -109,7 +123,7 @@ function indexToPosition(index: number) {
   for (let row = 0; row < rows.length; row += 1) {
     const rowLength = rows[row].length;
     if (remaining < rowLength) {
-      return { row, column: remaining };
+      return { row: row, column: remaining };
     }
     remaining -= rowLength;
   }
@@ -155,7 +169,7 @@ export default function MeetOurTeam() {
 
   function openChannel(row: number, column: number) {
     setActive({ row, column });
-    setSelectedDirectorIndex(positionToIndex({ row, column }));
+    setSelectedDirectorIndex(positionToIndex(row, column));
   }
 
   function closeChannel() {
