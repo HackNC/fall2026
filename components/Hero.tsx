@@ -34,6 +34,11 @@ const capsules = [
     travel: "-14vh",
     delay: "1200ms",
   },
+  {
+    className: "left-[3%] top-[62%] h-8 w-32 sm:h-10 sm:w-44",
+    travel: "-6vh",
+    delay: "600ms",
+  },
 ];
 
 function getTimeLeft(): TimeLeft {
@@ -104,7 +109,7 @@ export default function Hero() {
         />
       ))}
 
-      <div className="relative w-full max-w-5xl">
+      <div className="relative w-full max-w-[67rem]">
         {/*
           Registration is also in the nav, but the mockup puts the primary call
           to action here, tilted and breaking the panel's top edge so it reads
@@ -116,14 +121,14 @@ export default function Hero() {
           source order and the tag would sit in the flow instead of on the
           panel's corner.
         */}
-        <span className="absolute -top-5 right-4 z-10 -rotate-3 sm:right-10">
+        <span className="absolute -top-6 right-4 z-10 sm:-top-7 sm:right-8">
           <a
             href={REGISTER_HREF}
             target="_blank"
             rel="noreferrer"
             className={glossyPill(
               "blossom",
-              "shadow-[0_6px_14px_rgba(23,55,113,0.35)]"
+              "shadow-[0_6px_14px_rgba(23,55,113,0.35)] sm:px-10 sm:py-3 sm:text-2xl"
             )}
           >
             register here !
@@ -135,7 +140,7 @@ export default function Hero() {
           a faint white wash, a bright rim and a soft blur — so the sky and
           bubbles behind it stay readable straight through the middle.
         */}
-        <div className="relative overflow-hidden rounded-panel border border-white/65 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.16)_100%)] px-6 pt-14 pb-16 shadow-[0_18px_48px_rgba(23,55,113,0.18)] backdrop-blur-md backdrop-saturate-125 sm:px-12 sm:pt-20 sm:pb-24">
+        <div className="relative overflow-hidden rounded-panel border border-white/65 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.10)_55%,rgba(255,255,255,0.16)_100%)] px-6 pt-10 pb-12 shadow-[0_18px_48px_rgba(23,55,113,0.18)] backdrop-blur-md backdrop-saturate-125 sm:px-12 sm:pt-12 sm:pb-14">
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-linear-to-b from-white/25 to-transparent"
@@ -173,19 +178,19 @@ export default function Hero() {
           of the panel's rounded corner.
         */}
         <div
-          className="relative -mt-8 flex justify-center px-4 sm:-mt-10 sm:justify-end sm:pr-6"
+          className="relative flex justify-center px-4 sm:justify-end sm:pr-6"
           aria-live="polite"
           aria-atomic="true"
           aria-label="Countdown to October 9, 2026 Eastern Time"
         >
           {timeLeft.hasStarted ? (
-            <p className="rounded-control border border-white/65 bg-white/15 px-6 py-4 font-body text-body tracking-body text-white uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)]">
+            <p className="rounded-control border border-white/65 bg-white/15 px-6 py-4 font-body text-body tracking-body text-white uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)] sm:px-14 sm:text-2xl">
               event has started
             </p>
           ) : (
             // Tabular figures on purpose: without them the seconds digit
             // changes width every tick and the whole pane jitters.
-            <p className="rounded-control border border-white/65 bg-white/15 px-5 py-4 text-center font-body text-sm tracking-body text-white tabular-nums uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)] sm:px-10 sm:text-xl">
+            <p className="rounded-control border border-white/65 bg-white/15 px-5 py-4 text-center font-body text-sm tracking-body text-white tabular-nums uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)] sm:px-14 sm:text-2xl">
               {timeLeft.days} days : {formatUnit(timeLeft.hours)} hrs :{" "}
               {formatUnit(timeLeft.minutes)} min :{" "}
               {formatUnit(timeLeft.seconds)} sec

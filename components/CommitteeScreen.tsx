@@ -58,7 +58,11 @@ export default function CommitteeScreen({
                       sizes="9rem"
                       className="object-cover"
                     />
-                  ) : null}
+                  ) : (
+                    <span className="grid size-full place-items-center px-1 text-center font-title text-caption tracking-title text-ink/45 lowercase">
+                      photo coming soon
+                    </span>
+                  )}
                 </div>
                 <p className="mt-3 truncate text-center font-body text-body font-bold tracking-body text-ink">
                   {member.name}

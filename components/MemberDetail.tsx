@@ -49,8 +49,8 @@ export default function MemberDetail({
                 className="object-cover"
               />
             ) : (
-              <span className="grid size-full place-items-center font-body text-caption tracking-body text-ink/50">
-                member pic
+              <span className="grid size-full place-items-center px-2 text-center font-title text-body tracking-title text-ink/45 lowercase">
+                photo coming soon
               </span>
             )}
           </div>
