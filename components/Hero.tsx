@@ -16,8 +16,7 @@ type TimeLeft = {
 const EVENT_TIMESTAMP = Date.UTC(2026, 9, 9, 4, 0, 0);
 const EVENT_DATE = new Date(EVENT_TIMESTAMP);
 
-const REGISTER_HREF =
-  "https://docs.google.com/forms/d/e/1FAIpQLSfMx28v4vb33tfTGMJoqbkKMWl2Js5JSXjX9wPYvMZiHOpRCQ/viewform";
+const REGISTER_HREF = "https://form.typeform.com/to/VbwryQz0";
 
 /*
  * Glass capsules drifting around the panel, straight from the mockup. Fixed
