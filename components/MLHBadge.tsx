@@ -10,7 +10,7 @@ export default function MLHBadge({
   return (
     <a
       id="mlh-trust-badge"
-      href="https://www.mlh.com/seasons/2026/events"
+      href="https://www.mlh.com/seasons/2027/events"
       target="_blank"
       rel="noreferrer"
       className="rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
