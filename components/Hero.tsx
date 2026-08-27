@@ -16,6 +16,28 @@ type TimeLeft = {
 const EVENT_TIMESTAMP = Date.UTC(2026, 9, 9, 4, 0, 0);
 const EVENT_DATE = new Date(EVENT_TIMESTAMP);
 
+// Displayed alongside the countdown. Kept next to EVENT_TIMESTAMP on purpose:
+// the timestamp above is the same first day, so if one moves the other has to.
+const EVENT_DATES = "October 9\u201311";
+const EVENT_LOCATION = "Fetzer Gym";
+
+/*
+ * The hero's smaller sheets of glass: the date/location tag and the countdown.
+ *
+ * Look only — no padding or type size. Each use adds its own, because the two
+ * are deliberately different sizes and Tailwind resolves competing utilities by
+ * stylesheet order rather than by the order they appear in a class string, so
+ * baking sizing in here and overriding it per-use would be a coin flip.
+ */
+const glassPane =
+  "rounded-control border border-white/65 bg-white/15 text-center " +
+  "font-body font-bold tracking-body text-white uppercase " +
+  "shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md " +
+  "[text-shadow:0_1px_2px_rgba(23,55,113,0.45)]";
+
+const countdownPane = `${glassPane} px-4 py-2.5 text-sm whitespace-nowrap sm:px-8 sm:py-3 sm:text-xl`;
+const detailsTag = `${glassPane} px-4 py-2.5 text-sm whitespace-nowrap sm:px-8 sm:py-3 sm:text-xl`;
+
 const REGISTER_HREF = "https://form.typeform.com/to/VbwryQz0";
 
 /*
@@ -120,6 +142,16 @@ export default function Hero() {
           source order and the tag would sit in the flow instead of on the
           panel's corner.
         */}
+        {/*
+          When and where, tagged onto the panel's top-left so it mirrors the
+          register tag opposite and breaks the same edge.
+        */}
+        <span className="absolute -top-5 left-4 z-10 sm:-top-6 sm:left-8">
+          <p className={detailsTag}>
+            {EVENT_DATES} &middot; {EVENT_LOCATION}
+          </p>
+        </span>
+
         <span className="absolute -top-6 right-4 z-10 sm:-top-7 sm:right-8">
           <a
             href={REGISTER_HREF}
@@ -171,10 +203,15 @@ export default function Hero() {
         </div>
 
         {/*
-          Its own pane of glass rather than a pill, tucked under the panel's
-          bottom-right corner and overlapping it. The negative margin is what
-          makes the two sheets read as stacked; the right inset keeps it clear
-          of the panel's rounded corner.
+          Two panes of glass hanging off the panel's bottom edge — when and
+          where on the left, the countdown on the right. They sit flush against
+          the panel above so the three sheets read as one stacked assembly; the
+          side insets keep them clear of its rounded corners.
+        */}
+        {/*
+          The countdown keeps the mockup's spot on its own: one pane hanging off
+          the panel's bottom-right, flush to its edge. Pairing it with a second
+          pane on the left crowded the row and wrapped both onto two lines.
         */}
         <div
           className="relative flex justify-center px-4 sm:justify-end sm:pr-6"
@@ -183,13 +220,11 @@ export default function Hero() {
           aria-label="Countdown to October 9, 2026 Eastern Time"
         >
           {timeLeft.hasStarted ? (
-            <p className="rounded-control border border-white/65 bg-white/15 px-6 py-4 font-body text-body tracking-body text-white uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)] sm:px-14 sm:text-2xl">
-              event has started
-            </p>
+            <p className={countdownPane}>event has started</p>
           ) : (
             // Tabular figures on purpose: without them the seconds digit
             // changes width every tick and the whole pane jitters.
-            <p className="rounded-control border border-white/65 bg-white/15 px-5 py-4 text-center font-body text-sm tracking-body text-white tabular-nums uppercase shadow-[0_10px_28px_rgba(23,55,113,0.18)] backdrop-blur-md [text-shadow:0_1px_2px_rgba(23,55,113,0.45)] sm:px-14 sm:text-2xl">
+            <p className={`${countdownPane} tabular-nums`}>
               {timeLeft.days} days : {formatUnit(timeLeft.hours)} hrs :{" "}
               {formatUnit(timeLeft.minutes)} min :{" "}
               {formatUnit(timeLeft.seconds)} sec
