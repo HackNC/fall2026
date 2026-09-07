@@ -123,13 +123,38 @@
 }
 
 body {
-  background: var(--background);
+  /*
+   * Deliberately no background here — it lives on <html> instead.
+   *
+   * While <html> had none, this one propagated up to the canvas and <body>
+   * painted nothing itself, which let WaterBackdrop show through at z-index
+   * -10. Giving <html> a background for the overscroll area ended that
+   * propagation, so a background here would paint over the backdrop instead.
+   */
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
+
+  /*
+   * Stops the rubber-band overscroll at both ends, so dragging past the top or
+   * bottom cannot expose the blank area behind the page.
+   *
+   * Set on the root because that is the element that actually scrolls here.
+   * Note this also disables pull-to-refresh on Android — a deliberate trade,
+   * since the alternative is a white band appearing above a full-bleed design.
+   */
+  overscroll-behavior-y: none;
+
+  /*
+   * The canvas colour is normally inherited from <body>, but only while <body>
+   * has a background and nothing else claims it. Declaring it here as well
+   * means the area beyond the document is this colour no matter what, which
+   * matters on iOS where the bounce cannot be fully suppressed.
+   */
+  background: var(--background);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -260,6 +285,13 @@ details summary::marker {
   --animate-disc-spin: disc-spin 7s linear infinite;
   --animate-equalizer: equalizer 900ms ease-in-out infinite;
   --animate-track-open: track-open 260ms ease-out both;
+  /*
+   * The registration fish. Two tokens because the horizontal crossing and the
+   * vertical bob live on separate elements — a single element can only run one
+   * transform animation, and the second would overwrite the first.
+   */
+  --animate-fish-swim: fish-swim 26s linear infinite;
+  --animate-fish-bob: fish-bob 3.2s ease-in-out infinite;
 }
 
 /*
@@ -362,5 +394,31 @@ details summary::marker {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/*
+ * Swims from just off the right edge to fully past the left.
+ *
+ * `100vw` puts the fish at the right edge of the viewport (it starts at the
+ * container's left), and `-100%` resolves against the fish's own width, so it
+ * clears the left edge whatever size it renders at.
+ */
+@keyframes fish-swim {
+  from {
+    transform: translateX(100vw);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes fish-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1.5deg);
   }
 }
