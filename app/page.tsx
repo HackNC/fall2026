@@ -1,7 +1,7 @@
 import FaqPlaylist from "@/components/FaqPlaylist";
 import Hero from "@/components/Hero";
+import Sponsors from "@/components/Sponsors";
 import WhatIsHackNC from "@/components/WhatIsHackNC";
-// import Sponsors from "@/components/Sponsors";
 
 export default function Home() {
   return (
@@ -19,17 +19,9 @@ export default function Home() {
           <FaqPlaylist />
         </section>
 
-        {/*
-          Sponsors are not confirmed for 2026 yet, so the section is commented
-          out rather than shipped with placeholder logos. Uncomment this and
-          the import above to bring it back — components/Sponsors.tsx and
-          data/sponsors.ts are both untouched and still build.
-        */}
-        {/*
         <section id="sponsors" aria-label="Sponsors">
           <Sponsors />
         </section>
-        */}
       </div>
     </main>
   );

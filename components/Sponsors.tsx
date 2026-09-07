@@ -2,78 +2,68 @@ import Image from "next/image";
 import { sponsors } from "@/data/sponsors";
 import { glossyPill } from "./glossyPill";
 
-const gridPlacement = [
-  "lg:col-span-2",
-  "lg:col-span-2",
-  "lg:col-span-2",
-  "lg:col-start-2 lg:col-span-2",
-  "lg:col-start-4 lg:col-span-2",
-];
-
 export default function Sponsors() {
   return (
-    <section className="max-w-5xl mx-auto py-16 sm:py-20">
+    <section className="mx-auto max-w-6xl py-20 sm:py-28">
       <div className="text-center">
         <span
           className={glossyPill(
             "bubble",
-            "min-w-[6.5rem] cursor-default sm:min-w-[8rem] lg:min-w-[11.2rem]"
+            // Larger than the nav pills this recipe usually dresses: it is the
+            // section heading, so it carries its own padding and type size
+            // rather than the shared defaults.
+            "min-w-[8rem] cursor-default px-7 py-2.5 text-lg sm:min-w-[11rem] sm:px-9 sm:py-3 sm:text-xl lg:min-w-[14rem] lg:text-2xl"
           )}
         >
           our sponsors
         </span>
       </div>
-      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
-        {sponsors.map((sponsor, index) => {
-          const bubbleSize = Math.max(sponsor.width, sponsor.height) + 36;
 
-          // deterministic pseudo-random based on index to avoid SSR hydration issues
-          const seeded = Math.abs(Math.sin(index * 12.9898) * 43758.5453);
-          const rnd = seeded - Math.floor(seeded);
-
-          const duration = 9 + Math.round(rnd * 6); // 9..15s
-          const delay = Math.round(rnd * 1200) / 1000; // 0..1.2s
-          const swayX = 6 + Math.round(rnd * 12); // 6..18px
-          const swayY = 2 + Math.round(rnd * 6); // 2..8px
-
-          return (
-            <div
-              key={sponsor.name}
-              className={`${gridPlacement[index]} flex justify-center`}
+      {/*
+        Flex rather than grid, and deliberately so: the mockup runs three to a
+        row with any short final row centred, which wrapping flex items do for
+        free. A grid would left-align the stragglers, and pinning them with
+        per-item column placement is what broke when the list grew past five.
+      */}
+      <ul className="mt-14 flex flex-wrap justify-center gap-x-12 gap-y-14 sm:mt-20">
+        {sponsors.map((sponsor) => (
+          <li
+            key={sponsor.name}
+            className="w-[15rem] sm:w-[18rem] lg:w-[22rem]"
+          >
+            <a
+              href={sponsor.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={sponsor.name}
+              className="group block rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-royal"
             >
-              <div
-                className={glossyPill(
-                  "bubble",
-                  "flex items-center justify-center overflow-hidden p-3 motion-safe:animate-bubble-sway"
-                )}
-                // The two custom properties drive the sway keyframes. Typed as
-                // a CSSProperties intersection rather than cast through `any`,
-                // so the rest of the object keeps its checking.
-                style={
-                  {
-                    width: bubbleSize,
-                    height: bubbleSize,
-                    animationDelay: `${delay}s`,
-                    animationDuration: `${duration}s`,
-                    willChange: "transform",
-                    "--sway-x": `${swayX}px`,
-                    "--sway-y": `${swayY}px`,
-                  } as React.CSSProperties &
-                    Record<"--sway-x" | "--sway-y", string>
-                }
-              >
-                <Image
-                  src={sponsor.logoSrc}
-                  alt={sponsor.alt}
-                  width={sponsor.width}
-                  height={sponsor.height}
-                  className="h-[78%] w-[78%] object-contain"
-                />
+              {/*
+                Near-solid white rather than the mockup's flat grey: sponsor
+                logos are normally supplied transparent and drawn for a white
+                ground, so this is the canvas they need. The rim, blur and lift
+                keep it in the same glass family as the nav and hero panels
+                instead of reading as a pasted-on rectangle.
+
+                The box keeps its landscape proportion whether or not a logo
+                has arrived, so the rows do not reflow as artwork lands one
+                sponsor at a time.
+              */}
+              <div className="relative aspect-[11/4] overflow-hidden rounded-card border border-white/70 bg-white/90 shadow-[0_6px_18px_rgba(23,55,113,0.14)] backdrop-blur-sm transition duration-200 group-hover:-translate-y-0.5 group-hover:bg-white group-hover:shadow-[0_10px_24px_rgba(23,55,113,0.2)]">
+                {sponsor.logoSrc ? (
+                  <Image
+                    src={sponsor.logoSrc}
+                    alt={sponsor.name}
+                    fill
+                    sizes="(min-width: 1024px) 22rem, (min-width: 640px) 18rem, 15rem"
+                    className="object-contain p-4"
+                  />
+                ) : null}
               </div>
-            </div>
-          );
-        })}
-      </div>
+            </a>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

@@ -1,45 +1,59 @@
 export type Sponsor = {
   name: string;
-  logoSrc: string;
-  alt: string;
-  width: number;
-  height: number;
+  /** The sponsor's site. Each logo links out to it. */
+  href: string;
+  /**
+   * Omitted until the artwork arrives — a grey placeholder box renders in its
+   * place, as in the mockup.
+   *
+   * Logos live in public/sponsors/ and are referenced from the site root, so a
+   * file at public/sponsors/x.png is "/sponsors/x.png". The box has a fixed
+   * aspect ratio and the logo is contained inside it, so no dimensions are
+   * needed here — any reasonably sized landscape file works.
+   */
+  logoSrc?: string;
 };
 
+/* The 2026 sponsors, in the order they appear on the page. */
 export const sponsors: Sponsor[] = [
   {
-    name: "Sponsor 1",
-    logoSrc: "/sponsor_placeholder.svg",
-    alt: "Sponsor logo placeholder",
-    width: 280,
-    height: 100,
+    name: "Capital One",
+    href: "https://www.capitalone.com",
+    logoSrc: "/sponsors/capitalone.webp",
   },
   {
-    name: "Sponsor 2",
-    logoSrc: "/sponsor_placeholder.svg",
-    alt: "Sponsor logo placeholder",
-    width: 220,
-    height: 100,
+    name: "Fidelity",
+    href: "https://www.fidelity.com",
+    logoSrc: "/sponsors/fidelity.webp",
   },
   {
-    name: "Sponsor 3",
-    logoSrc: "/sponsor_placeholder.svg",
-    alt: "Sponsor logo placeholder",
-    width: 260,
-    height: 100,
+    name: "Genesys",
+    href: "https://www.genesys.com",
+    logoSrc: "/sponsors/genesys.webp",
   },
   {
-    name: "Sponsor 4",
-    logoSrc: "/sponsor_placeholder.svg",
-    alt: "Sponsor logo placeholder",
-    width: 240,
-    height: 100,
+    name: "Labcorp",
+    href: "https://www.labcorp.com",
+    logoSrc: "/sponsors/labcorp.webp",
   },
   {
-    name: "Sponsor 5",
-    logoSrc: "/sponsor_placeholder.svg",
-    alt: "Sponsor logo placeholder",
-    width: 300,
-    height: 100,
+    name: "Lowe's",
+    href: "https://www.lowes.com",
+    logoSrc: "/sponsors/lowes.webp",
+  },
+  {
+    name: "LPL Financial",
+    href: "https://www.lpl.com",
+    logoSrc: "/sponsors/lpl.webp",
+  },
+  {
+    name: "NetApp",
+    href: "https://www.netapp.com",
+    logoSrc: "/sponsors/netapp.webp",
+  },
+  {
+    name: "Pendo",
+    href: "https://www.pendo.io",
+    logoSrc: "/sponsors/pendo.webp",
   },
 ];
