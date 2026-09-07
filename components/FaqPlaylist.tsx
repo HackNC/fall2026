@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { faqs } from "@/data/faqs";
+import questionMark from "@/app/figma/question mark button.png";
 
 /*
  * Track lengths are authored as "m:ss" because that is what the mockup shows
@@ -40,25 +42,74 @@ const transportButton =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 export default function FaqPlaylist() {
+  /*
+   * Which answers are expanded. A set rather than a single index, because each
+   * question toggles on its own — opening one no longer closes the others.
+   *
+   * `trackIndex` survives alongside it as the playhead: the transport row still
+   * needs a notion of "current track" for skip and for the elapsed clock.
+   */
+  const [openIndices, setOpenIndices] = useState<ReadonlySet<number>>(
+    () => new Set()
+  );
   const [trackIndex, setTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const isPlaying = openIndices.has(trackIndex);
+  const [showHelp, setShowHelp] = useState(false);
+  const helpRef = useRef<HTMLDivElement>(null);
 
-  function selectTrack(index: number) {
-    // Clicking the open track closes it; clicking any other opens that one.
-    if (index === trackIndex && isPlaying) {
-      setIsPlaying(false);
-      return;
+  function toggleTrack(index: number, force?: boolean) {
+    setOpenIndices((current) => {
+      const next = new Set(current);
+      const shouldOpen = force ?? !next.has(index);
+      if (shouldOpen) {
+        next.add(index);
+      } else {
+        next.delete(index);
+      }
+      return next;
+    });
+  }
+  /*
+   * Escape and click-outside both dismiss the help popover.
+   *
+   * It stays open until dismissed rather than timing out like the nav's portal
+   * notice, because it contains a mailto link — a message that disappears on
+   * its own is one you cannot click.
+   */
+  useEffect(() => {
+    if (!showHelp) return;
+
+    function handleKey(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") setShowHelp(false);
     }
+    function handlePointer(event: PointerEvent) {
+      if (!helpRef.current?.contains(event.target as Node)) setShowHelp(false);
+    }
+
+    document.addEventListener("keydown", handleKey);
+    document.addEventListener("pointerdown", handlePointer);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.removeEventListener("pointerdown", handlePointer);
+    };
+  }, [showHelp]);
+
+  // Each row is an independent toggle. The playhead follows the row that was
+  // clicked so the transport controls stay anchored to what you last touched.
+  function selectTrack(index: number) {
     setTrackIndex(index);
-    setIsPlaying(true);
+    toggleTrack(index);
   }
 
   // Skipping wraps, the way a playlist does, and always opens the track it
   // lands on — someone reaching for "next question" wants to read it, not to
   // move a selection they then have to activate separately.
   function skip(offset: number) {
-    setTrackIndex((current) => (current + offset + faqs.length) % faqs.length);
-    setIsPlaying(true);
+    // Computed outside the updater on purpose: calling another setter from
+    // inside one makes it impure, and React may invoke updaters twice.
+    const next = (trackIndex + offset + faqs.length) % faqs.length;
+    setTrackIndex(next);
+    toggleTrack(next, true);
   }
 
   // Arrow keys move focus only, per the accordion pattern: moving the open
@@ -91,14 +142,45 @@ export default function FaqPlaylist() {
           green register. */}
       <div className="overflow-hidden rounded-inset border-[3px] border-forest/25 bg-linear-to-b from-[#F4FFFE] from-0% via-[#EDFAF0] via-55% to-[#D6EFDB] to-100% px-3 pt-3 pb-4 shadow-[0_4px_10px_rgba(20,120,66,0.28)] sm:px-5 sm:pt-4 sm:pb-6">
         <div className="flex items-center gap-3 pb-3 sm:gap-4">
-          <span
-            aria-hidden="true"
-            // Flat forest rather than a gradient: white on the light end of a
-            // gradient badge this size lands under 3:1.
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/70 bg-forest font-body text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_1px_3px_rgba(20,120,66,0.4)]"
-          >
-            ?
-          </span>
+          <div ref={helpRef} className="relative shrink-0">
+            {/*
+              The orb is artwork from the Figma rather than a styled glyph, so
+              the button is a bare hit target around it — no background, border
+              or shadow of its own to fight the asset's own gloss.
+            */}
+            <button
+              type="button"
+              aria-expanded={showHelp}
+              aria-label="Still have questions?"
+              onClick={() => setShowHelp((open) => !open)}
+              className="block cursor-pointer rounded-full transition duration-150 hover:brightness-110 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+            >
+              <Image src={questionMark} alt="" className="h-7 w-auto sm:h-8" />
+            </button>
+
+            {showHelp ? (
+              <div
+                role="status"
+                className="absolute top-full left-0 z-30 mt-3 w-[min(20rem,calc(100vw-3rem))] motion-safe:animate-track-open"
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1.5 left-2.5 h-3 w-3 rotate-45 border-t border-l border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.9),rgba(214,239,219,0.75))] backdrop-blur-xl"
+                />
+                <p className="rounded-inset border border-white/70 bg-[linear-gradient(150deg,rgba(255,255,255,0.92)_0%,rgba(214,239,219,0.8)_100%)] px-4 py-3.5 font-body text-sm leading-6 tracking-body text-ink shadow-[0_10px_26px_rgba(20,120,66,0.3),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-2xl">
+                  Still have questions? Can&rsquo;t find what you&rsquo;re
+                  looking for? Reach out to us at{" "}
+                  <a
+                    href="mailto:hello@hacknc.com"
+                    className="font-bold text-forest underline underline-offset-2 hover:text-forest/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                  >
+                    hello@hacknc.com
+                  </a>{" "}
+                  and we&rsquo;ll be happy to help!
+                </p>
+              </div>
+            ) : null}
+          </div>
 
           <span aria-hidden="true" className="h-[3px] flex-1 bg-forest/70" />
           <h2
@@ -119,7 +201,7 @@ export default function FaqPlaylist() {
 
         <ul className="rounded-card bg-white px-2 py-3 shadow-[0_2px_4px_rgba(20,120,66,0.2),inset_0_3px_6px_rgba(20,120,66,0.18)] sm:px-4 sm:py-5">
           {faqs.map((faq, index) => {
-            const isOpen = isPlaying && index === trackIndex;
+            const isOpen = openIndices.has(index);
 
             return (
               <li key={faq.question}>
@@ -172,10 +254,25 @@ export default function FaqPlaylist() {
                   role="region"
                   aria-labelledby={`faq-track-${index}`}
                   hidden={!isOpen}
-                  className="px-2 pt-1 pb-4 motion-safe:animate-track-open sm:px-4 sm:pl-13"
+                  className="px-2 pt-1 pb-4 motion-safe:animate-track-open sm:px-4"
                 >
-                  <p className="max-w-[62ch] font-body text-base leading-7 tracking-body text-ink">
-                    {faq.answer}
+                  {/*
+                    No measure cap and no hanging indent: the ticket asks for
+                    answers to run the full width of the container.
+                  */}
+                  <p className="w-full font-body text-base leading-7 tracking-body text-ink">
+                    {faq.answerHref ? (
+                      <a
+                        href={faq.answerHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-bold text-forest underline underline-offset-2 hover:text-forest/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                      >
+                        {faq.answer}
+                      </a>
+                    ) : (
+                      faq.answer
+                    )}
                   </p>
                 </div>
               </li>
@@ -196,7 +293,7 @@ export default function FaqPlaylist() {
             <button
               type="button"
               aria-label={isPlaying ? "Hide the answer" : "Show the answer"}
-              onClick={() => setIsPlaying((playing) => !playing)}
+              onClick={() => toggleTrack(trackIndex)}
               className={transportButton}
             >
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
