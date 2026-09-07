@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { glossyPill } from "@/components/glossyPill";
 import wordmark from "@/app/figma/hacknc 2026.png";
+import { REGISTER_HREF } from "@/data/site";
 
 type TimeLeft = {
   days: number;
@@ -37,8 +38,6 @@ const glassPane =
 
 const countdownPane = `${glassPane} px-4 py-2.5 text-sm whitespace-nowrap sm:px-8 sm:py-3 sm:text-xl`;
 const detailsTag = `${glassPane} px-4 py-2.5 text-sm whitespace-nowrap sm:px-8 sm:py-3 sm:text-xl`;
-
-const REGISTER_HREF = "https://form.typeform.com/to/VbwryQz0";
 
 /*
  * Glass capsules drifting around the panel, straight from the mockup. Fixed

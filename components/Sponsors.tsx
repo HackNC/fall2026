@@ -4,7 +4,7 @@ import { glossyPill } from "./glossyPill";
 
 export default function Sponsors() {
   return (
-    <section className="mx-auto max-w-6xl py-20 sm:py-28">
+    <section className="mx-auto max-w-6xl pt-4 pb-20 sm:pt-6 sm:pb-28">
       <div className="text-center">
         <span
           className={glossyPill(

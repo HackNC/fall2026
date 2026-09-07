@@ -1,5 +1,6 @@
 import FaqPlaylist from "@/components/FaqPlaylist";
 import Hero from "@/components/Hero";
+import RegistrationFish from "@/components/RegistrationFish";
 import Sponsors from "@/components/Sponsors";
 import WhatIsHackNC from "@/components/WhatIsHackNC";
 
@@ -15,11 +16,33 @@ export default function Home() {
           <WhatIsHackNC />
         </section>
 
-        <section id="faq" aria-label="FAQ">
+        <section
+          id="faq"
+          aria-label="FAQ"
+          /*
+           * Tighter than the page's default section rhythm, because the fish
+           * overlays the top of the sponsors and the usual gap left a
+           * conspicuous empty band above it.
+           *
+           * The override goes here, not on the sponsors: Tailwind v4's
+           * `space-y-*` sets `margin-block-end` on every child but the last,
+           * so the gap belongs to this section — and adjacent margins collapse
+           * to the larger of the two, so shrinking the sponsors' margin-top
+           * did nothing. The `!` is needed because that generated selector
+           * outranks a plain utility.
+           */
+          className="mb-12! sm:mb-16!"
+        >
           <FaqPlaylist />
         </section>
 
-        <section id="sponsors" aria-label="Sponsors">
+        {/*
+          The fish is positioned over this section rather than placed before
+          it, so it swims across the sponsors the way the mockup shows without
+          claiming a band of empty page to itself.
+        */}
+        <section id="sponsors" aria-label="Sponsors" className="relative">
+          <RegistrationFish />
           <Sponsors />
         </section>
       </div>
