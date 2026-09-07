@@ -36,8 +36,9 @@ export type TeamMember = {
  * The 2026 directors. Committee members are not listed yet — add them to the
  * same arrays without `isDirector` and they appear on the committee screens.
  *
- * Headshots are still to come: leave `image` off and the grey placeholder
- * block renders, or point it at a file under public/ (e.g. "/team/paige.jpg").
+ * Headshots live in public/team/ as square webp. Six are in; the rest render
+ * initials on the tile and "photo coming soon" on the detail screen until an
+ * `image` is set, so they can be added one at a time.
  *
  * Array order is display order, so the pairs below sit side by side.
  */
@@ -51,6 +52,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Junior",
       majors: "Computer Science + Economics",
       funFact: "I am a hoodie collector and have 20 hoodies.",
+      image: "/team/sanay.webp",
     },
     {
       name: "Yahan Yang",
@@ -61,6 +63,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       majors: "Computer Science + Information",
       funFact:
         "If you ever watch a show (esp Asian ones and if it's recent), I probably know something about it (from clips) but I've never watched it, and most likely will not watch it.",
+      image: "/team/yahan.webp",
     },
   ],
   Development: [
@@ -72,6 +75,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Rising Sophomore",
       majors: "Computer Science + Data Science",
       funFact: "I love Mexican food!",
+      image: "/team/vihaan.webp",
     },
     {
       name: "Rachel Lin",
@@ -93,6 +97,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Junior",
       majors: "Computer Science + Statistics",
       funFact: "I've never tried coca-cola.",
+      image: "/team/harsehaj.webp",
     },
     {
       name: "Sanya Saqib",
@@ -103,6 +108,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       majors: "Computer Science",
       funFact:
         "I've loved watching Formula 1 since I went to the first race in Jeddah!",
+      image: "/team/sanya.webp",
     },
   ],
   Outreach: [
@@ -156,6 +162,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Sophomore",
       majors: "Computer Science",
       funFact: "I was in chorus for 9 years!",
+      image: "/team/rhea.webp",
     },
   ],
   Finance: [

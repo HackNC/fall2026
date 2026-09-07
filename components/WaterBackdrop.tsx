@@ -45,7 +45,7 @@ export default function WaterBackdrop() {
           src="/hero-backdrop.webp"
           alt=""
           fill
-          priority
+          preload
           sizes="100vw"
           className="object-cover object-top"
         />

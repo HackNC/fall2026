@@ -75,7 +75,7 @@ export default function Navigation() {
             alt="HackNC logo"
             width={74}
             height={74}
-            priority
+            loading="eager"
             className="h-12 w-12 object-contain sm:h-[74px] sm:w-[74px]"
           />
         </Link>

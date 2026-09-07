@@ -349,6 +349,13 @@ export default function MeetOurTeam() {
                                         alt=""
                                         fill
                                         sizes="(min-width: 640px) 10rem, 25vw"
+                                        // The top row is above the fold and any
+                                        // of its tiles can win LCP depending on
+                                        // viewport, so they load eagerly. Not
+                                        // `preload`: the docs rule that out
+                                        // precisely when the LCP element is
+                                        // ambiguous between several images.
+                                        loading={row === 0 ? "eager" : "lazy"}
                                         className="object-cover"
                                       />
                                     ) : (
