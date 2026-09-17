@@ -14,14 +14,14 @@ export const resourceCategories: ResourceCategory[] = [
     title: "Guides & Past Projects",
     resources: [
       {
-        title: "HackNC 2024 on Devpost",
+        title: "HackNC 2025 on Devpost",
         description: "Browse every project submitted at last year's hackathon.",
-        href: "https://hacknc-2024.devpost.com",
+        href: "https://hacknc-2025.devpost.com",
       },
       {
-        title: "HackNC 2023 on Devpost",
+        title: "HackNC 2024 on Devpost",
         description: "See what past hackers built for inspiration.",
-        href: "https://hacknc-2023.devpost.com",
+        href: "https://hacknc-2024.devpost.com",
       },
       {
         title: "MLH Hackathon Guide",

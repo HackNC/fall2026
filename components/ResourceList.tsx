@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { glossyOrb } from "@/components/glossyOrb";
+import HelpPopover from "@/components/HelpPopover";
 import WindowFrame from "@/components/WindowFrame";
 import { resourceCategories } from "@/data/resources";
 
@@ -13,17 +14,14 @@ export default function ResourceList() {
           titleBar={
             <>
               {/*
-                Window chrome is pure decoration — the "?" and the circles do
-                nothing — so they are aria-hidden spans, never focusable.
+                Sized to the orb this replaced, so the title bar keeps its
+                height. It is the one piece of window chrome that does
+                something: the two circles on the right stay decorative.
               */}
-              <span
-                aria-hidden="true"
-                className={glossyOrb(
-                  "grid size-9 place-items-center font-body text-lg font-bold text-white [text-shadow:0_1px_2px_rgba(20,120,66,0.65)] sm:size-[43px] sm:text-2xl"
-                )}
-              >
-                ?
-              </span>
+              <HelpPopover
+                question="Want more resources?"
+                orbClassName="h-9 sm:h-[43px]"
+              />
               <div className="flex flex-1 items-center justify-center gap-3 sm:gap-6">
                 <span
                   aria-hidden="true"
