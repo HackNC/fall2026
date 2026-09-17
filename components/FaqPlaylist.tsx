@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useState, type KeyboardEvent } from "react";
+import HelpPopover from "@/components/HelpPopover";
 import { faqs } from "@/data/faqs";
-import questionMark from "@/app/figma/question mark button.png";
 
 /*
  * Track lengths are authored as "m:ss" because that is what the mockup shows
@@ -54,8 +53,6 @@ export default function FaqPlaylist() {
   );
   const [trackIndex, setTrackIndex] = useState(0);
   const isPlaying = openIndices.has(trackIndex);
-  const [showHelp, setShowHelp] = useState(false);
-  const helpRef = useRef<HTMLDivElement>(null);
 
   function toggleTrack(index: number, force?: boolean) {
     setOpenIndices((current) => {
@@ -69,30 +66,6 @@ export default function FaqPlaylist() {
       return next;
     });
   }
-  /*
-   * Escape and click-outside both dismiss the help popover.
-   *
-   * It stays open until dismissed rather than timing out like the nav's portal
-   * notice, because it contains a mailto link — a message that disappears on
-   * its own is one you cannot click.
-   */
-  useEffect(() => {
-    if (!showHelp) return;
-
-    function handleKey(event: globalThis.KeyboardEvent) {
-      if (event.key === "Escape") setShowHelp(false);
-    }
-    function handlePointer(event: PointerEvent) {
-      if (!helpRef.current?.contains(event.target as Node)) setShowHelp(false);
-    }
-
-    document.addEventListener("keydown", handleKey);
-    document.addEventListener("pointerdown", handlePointer);
-    return () => {
-      document.removeEventListener("keydown", handleKey);
-      document.removeEventListener("pointerdown", handlePointer);
-    };
-  }, [showHelp]);
 
   // Each row is an independent toggle. The playhead follows the row that was
   // clicked so the transport controls stay anchored to what you last touched.
@@ -142,45 +115,7 @@ export default function FaqPlaylist() {
           green register. */}
       <div className="overflow-hidden rounded-inset border-[3px] border-forest/25 bg-linear-to-b from-[#F4FFFE] from-0% via-[#EDFAF0] via-55% to-[#D6EFDB] to-100% px-3 pt-3 pb-4 shadow-[0_4px_10px_rgba(20,120,66,0.28)] sm:px-5 sm:pt-4 sm:pb-6">
         <div className="flex items-center gap-3 pb-3 sm:gap-4">
-          <div ref={helpRef} className="relative shrink-0">
-            {/*
-              The orb is artwork from the Figma rather than a styled glyph, so
-              the button is a bare hit target around it — no background, border
-              or shadow of its own to fight the asset's own gloss.
-            */}
-            <button
-              type="button"
-              aria-expanded={showHelp}
-              aria-label="Still have questions?"
-              onClick={() => setShowHelp((open) => !open)}
-              className="block cursor-pointer rounded-full transition duration-150 hover:brightness-110 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-            >
-              <Image src={questionMark} alt="" className="h-7 w-auto sm:h-8" />
-            </button>
-
-            {showHelp ? (
-              <div
-                role="status"
-                className="absolute top-full left-0 z-30 mt-3 w-[min(20rem,calc(100vw-3rem))] motion-safe:animate-track-open"
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute -top-1.5 left-2.5 h-3 w-3 rotate-45 border-t border-l border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.9),rgba(214,239,219,0.75))] backdrop-blur-xl"
-                />
-                <p className="rounded-inset border border-white/70 bg-[linear-gradient(150deg,rgba(255,255,255,0.92)_0%,rgba(214,239,219,0.8)_100%)] px-4 py-3.5 font-body text-sm leading-6 tracking-body text-ink shadow-[0_10px_26px_rgba(20,120,66,0.3),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-2xl">
-                  Still have questions? Can&rsquo;t find what you&rsquo;re
-                  looking for? Reach out to us at{" "}
-                  <a
-                    href="mailto:hello@hacknc.com"
-                    className="font-bold text-forest underline underline-offset-2 hover:text-forest/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-                  >
-                    hello@hacknc.com
-                  </a>{" "}
-                  and we&rsquo;ll be happy to help!
-                </p>
-              </div>
-            ) : null}
-          </div>
+          <HelpPopover question="Still have questions?" />
 
           <span aria-hidden="true" className="h-[3px] flex-1 bg-forest/70" />
           <h2
