@@ -92,7 +92,7 @@ export default function Schedule() {
             <div className="-mt-4 -mr-4 ml-auto hidden sm:-mt-5 sm:-mr-6 sm:flex">
               <span
                 aria-hidden="true"
-                className="grid h-[38px] w-[62px] place-items-end border-b border-l border-royal/25 bg-linear-to-b from-[#F7FAFF] to-[#D2E1F6] pr-4 pb-1.5 text-base text-ink/70 shadow-[0_1px_4px_rgba(23,55,113,0.3)]"
+                className="grid h-[38px] w-[62px] place-items-center border-b border-l border-royal/25 bg-linear-to-b from-[#F7FAFF] to-[#D2E1F6] text-base text-ink/70 shadow-[0_1px_4px_rgba(23,55,113,0.3)]"
               >
                 &#8211;
               </span>
