@@ -36,8 +36,9 @@ export type TeamMember = {
  * The 2026 directors. Committee members are not listed yet — add them to the
  * same arrays without `isDirector` and they appear on the committee screens.
  *
- * Headshots are still to come: leave `image` off and the grey placeholder
- * block renders, or point it at a file under public/ (e.g. "/team/paige.jpg").
+ * Headshots live in public/team/ as 600px square webp — every director has
+ * one. Anyone added without an `image` renders initials on the tile and
+ * "photo coming soon" on the detail screen until it is set.
  *
  * Array order is display order, so the pairs below sit side by side.
  */
@@ -51,37 +52,41 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Junior",
       majors: "Computer Science + Economics",
       funFact: "I am a hoodie collector and have 20 hoodies.",
+      image: "/team/sanay.webp",
     },
     {
       name: "Yahan Yang",
       committee: "Leads",
       role: "Co-Lead",
       isDirector: true,
-      year: "Rising Senior",
-      majors: "Computer Science + Information",
+      year: "Senior",
+      majors: "Computer Science + Information Science",
       funFact:
         "If you ever watch a show (esp Asian ones and if it's recent), I probably know something about it (from clips) but I've never watched it, and most likely will not watch it.",
+      image: "/team/yahan.webp",
     },
   ],
   Development: [
     {
       name: "Vihaan Kerekatte",
       committee: "Development",
-      role: "Co-Director of Dev",
+      role: "Co-Director of Development",
       isDirector: true,
-      year: "Rising Sophomore",
+      year: "Sophomore",
       majors: "Computer Science + Data Science",
       funFact: "I love Mexican food!",
+      image: "/team/vihaan.webp",
     },
     {
       name: "Rachel Lin",
       committee: "Development",
-      role: "Co-Director of Dev",
+      role: "Co-Director of Development",
       isDirector: true,
-      year: "Rising Senior",
+      year: "Senior",
       majors: "Computer Science",
       funFact:
         "I have a soft spot for tabby cats after befriending a stray named Beans at UNC.",
+      image: "/team/rachel.webp",
     },
   ],
   Logistics: [
@@ -93,6 +98,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Junior",
       majors: "Computer Science + Statistics",
       funFact: "I've never tried coca-cola.",
+      image: "/team/harsehaj.webp",
     },
     {
       name: "Sanya Saqib",
@@ -103,6 +109,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       majors: "Computer Science",
       funFact:
         "I've loved watching Formula 1 since I went to the first race in Jeddah!",
+      image: "/team/sanya.webp",
     },
   ],
   Outreach: [
@@ -114,16 +121,18 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Senior",
       majors: "Computer Science & Mathematics",
       funFact: "I've been to every HackNC since 2022!",
+      image: "/team/robert.webp",
     },
     {
       name: "Ishi Varshney",
       committee: "Outreach",
       role: "Co-Director of Outreach",
       isDirector: true,
-      year: "Rising Junior",
-      majors: "Computer Science B.S. + Biostatistics B.S.",
+      year: "Junior",
+      majors: "Computer Science + Biostatistics",
       funFact:
         "I have travelled to more than 20 countries and still trying to grow the list!",
+      image: "/team/ishi.webp",
     },
   ],
   Graphics: [
@@ -133,9 +142,10 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       role: "Co-Director of Graphics",
       isDirector: true,
       year: "Senior",
-      majors: "Computer Science BS + Statistics",
+      majors: "Computer Science + Statistics",
       funFact:
         "If you show me a cat you found online, I can probably tell you its name.",
+      image: "/team/paige.webp",
     },
     {
       name: "Angela Lam",
@@ -145,6 +155,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Senior",
       majors: "Biology",
       funFact: "I'm a big fountain pen and stationary collector!",
+      image: "/team/angela.webp",
     },
   ],
   SocialMedia: [
@@ -156,6 +167,7 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       year: "Sophomore",
       majors: "Computer Science",
       funFact: "I was in chorus for 9 years!",
+      image: "/team/rhea.webp",
     },
   ],
   Finance: [
@@ -164,10 +176,11 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       committee: "Finance",
       role: "Director of Finance",
       isDirector: true,
-      year: "Rising Junior",
+      year: "Junior",
       majors: "Economics + Statistics",
       funFact:
         "I can name a majority of Pokémon in at least one language other than English.",
+      image: "/team/kaya.webp",
     },
   ],
 };

@@ -349,6 +349,13 @@ export default function MeetOurTeam() {
                                         alt=""
                                         fill
                                         sizes="(min-width: 640px) 10rem, 25vw"
+                                        // The top row is above the fold and any
+                                        // of its tiles can win LCP depending on
+                                        // viewport, so they load eagerly. Not
+                                        // `preload`: the docs rule that out
+                                        // precisely when the LCP element is
+                                        // ambiguous between several images.
+                                        loading={row === 0 ? "eager" : "lazy"}
                                         className="object-cover"
                                       />
                                     ) : (
@@ -361,8 +368,18 @@ export default function MeetOurTeam() {
                                     )}
                                   </button>
                                 </div>
-                                <p className="mt-1.5 truncate text-center font-body text-caption tracking-body text-ink">
+                                <p className="mt-1.5 truncate text-center font-body text-caption font-bold tracking-body text-ink">
                                   {member.name}
+                                </p>
+                                {/*
+                                  Allowed to wrap rather than truncated: the
+                                  titles run long ("Co-Director of Logistics")
+                                  and clipping them mid-word reads worse than
+                                  a second line. Capped at two so a row cannot
+                                  grow unboundedly.
+                                */}
+                                <p className="mt-0.5 line-clamp-2 text-center font-body text-[0.68rem] leading-snug tracking-body text-ink/65 lowercase sm:text-caption">
+                                  {member.role}
                                 </p>
                               </li>
                             ))}

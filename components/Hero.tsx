@@ -195,7 +195,7 @@ export default function Hero() {
             <Image
               src={wordmark}
               alt=""
-              priority
+              loading="eager"
               className="mx-auto h-auto w-full max-w-[46rem]"
             />
           </h1>
