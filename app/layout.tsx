@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Istok_Web, Ubuntu } from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
+import ScrollToTop from "@/components/ScrollToTop";
 import WaterBackdrop from "@/components/WaterBackdrop";
 import WiiCursor from "@/components/WiiCursor";
 import "./globals.css";
@@ -64,6 +65,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /*
+   * No `data-scroll-behavior` attribute here, on purpose. Next 16 stopped
+   * overriding a global `scroll-behavior: smooth` during navigation, and that
+   * attribute is the opt-in to bring the old instant snap back. We want the
+   * opposite: the scroll-to-top on a page change should glide the same way the
+   * in-page anchors do, so the smooth setting in globals.css is left to apply.
+   */
   return (
     <html
       lang="en"
@@ -98,6 +106,7 @@ export default function RootLayout({
           where the native cursor stays put.
         */}
         <WiiCursor />
+        <ScrollToTop />
         <Navigation />
         <div className="flex-1">{children}</div>
         <Footer />

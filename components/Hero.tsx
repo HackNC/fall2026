@@ -117,7 +117,12 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[calc(100svh-9rem)] items-center justify-center">
+    <section
+      // The bottom padding lifts the centred content: with items-center, the
+      // panel sits at the midpoint of the box *minus* this padding, so it
+      // lands a little above true centre without a transform.
+      className="relative flex min-h-[calc(100svh-9rem)] items-center justify-center pb-14 sm:pb-20"
+    >
       {capsules.map((capsule) => (
         <span
           key={capsule.className}
