@@ -39,13 +39,18 @@ export default function MemberDetail({
 
       <div className="flex min-h-0 flex-1 flex-col px-4 pb-2 pt-3 min-[391px]:px-5 min-[391px]:pt-4 min-[645px]:px-8 min-[645px]:pb-3 min-[645px]:pt-5 lg:px-10 lg:pb-4 lg:pt-6">
         <div className="grid gap-4 min-[481px]:gap-5 min-[645px]:grid-cols-[minmax(0,18rem)_1fr] min-[645px]:gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-12">
-          <div className="relative aspect-square overflow-hidden rounded-inset bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
+          {/*
+            Capped below the two-column breakpoint: a full-width square photo
+            on a phone is taller than the window can hold, and the text and
+            footer would spill over the console buttons beneath.
+          */}
+          <div className="relative mx-auto w-full max-w-[13rem] aspect-square overflow-hidden rounded-inset bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)] min-[481px]:max-w-[16rem] min-[645px]:max-w-none">
             {member.image ? (
               <Image
                 src={member.image}
                 alt=""
                 fill
-                sizes="(min-width: 1024px) 22rem, (min-width: 645px) 18rem, 100vw"
+                sizes="(min-width: 1024px) 22rem, (min-width: 645px) 18rem, (min-width: 481px) 16rem, 13rem"
                 className="object-cover"
               />
             ) : (

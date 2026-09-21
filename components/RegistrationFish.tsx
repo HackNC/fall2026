@@ -30,8 +30,13 @@ export default function RegistrationFish() {
        * other to `auto`, which would clip the curved text above the fish (and
        * make a scroll container). `clip` constrains only the axis named, so the
        * page cannot widen while the fish stays free to overlap vertically.
+       *
+       * Hidden on phones. The single-column sponsor stack leaves nowhere for
+       * it to swim without covering a card, hover-to-pause does not exist on
+       * touch, and a moving tap target is a poor one; the hero's register
+       * pill carries the call to action there.
        */
-      className="pointer-events-none absolute inset-x-0 top-[7rem] left-1/2 z-30 sm:top-[4rem] w-screen -translate-x-1/2 overflow-x-clip"
+      className="pointer-events-none absolute inset-x-0 left-1/2 z-30 hidden w-screen -translate-x-1/2 overflow-x-clip sm:top-[4rem] sm:block"
     >
       <a
         href={REGISTER_HREF}

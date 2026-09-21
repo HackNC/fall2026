@@ -41,9 +41,14 @@ export default function ResourceList() {
             </>
           }
           controls={
-            <span aria-hidden="true" className="flex shrink-0 gap-[19px]">
-              <span className={glossyOrb("size-6 sm:size-7")} />
-              <span className={glossyOrb("size-6 sm:size-7")} />
+            // Decoration only, and the phone-width title bar has no room for
+            // it beside the "?" and the heading without wrapping.
+            <span
+              aria-hidden="true"
+              className="hidden shrink-0 gap-[19px] sm:flex"
+            >
+              <span className={glossyOrb("size-7")} />
+              <span className={glossyOrb("size-7")} />
             </span>
           }
         >

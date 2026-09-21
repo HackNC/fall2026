@@ -264,7 +264,12 @@ export default function MeetOurTeam() {
                 />
               ) : null}
 
-              <div className="min-h-0 flex-1">
+              {/*
+                Scrolls inside the window rather than growing it, so a long
+                committee roster or a tall detail screen on a phone can never
+                push past the console buttons below.
+              */}
+              <div className="min-h-0 flex-1 overflow-y-auto">
                 {screen.kind === "committee" ? (
                   <>
                     <h1 id="team-heading" className="sr-only">
