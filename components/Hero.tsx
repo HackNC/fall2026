@@ -156,20 +156,6 @@ export default function Hero() {
           </p>
         </span>
 
-        <span className="absolute -top-6 right-4 z-10 sm:-top-7 sm:right-8">
-          <a
-            href={REGISTER_HREF}
-            target="_blank"
-            rel="noreferrer"
-            className={glossyPill(
-              "blossom",
-              "shadow-[0_6px_14px_rgba(23,55,113,0.35)] sm:px-10 sm:py-3 sm:text-2xl"
-            )}
-          >
-            register here !
-          </a>
-        </span>
-
         {/*
           The glass is the panel, not the type. It is almost entirely clear —
           a faint white wash, a bright rim and a soft blur — so the sky and
@@ -235,6 +221,28 @@ export default function Hero() {
             </p>
           )}
         </div>
+
+        {/*
+          On a phone there is no room for this beside the date tag on the
+          panel's top edge, so it flows underneath the countdown as its own
+          centred row. From `sm` up it takes the mockup's spot: pinned to the
+          top-right corner, breaking the panel's edge like the date tag
+          opposite. Absolute placement ignores DOM order, so it can live here
+          for the phone layout without moving on wider screens.
+        */}
+        <span className="mt-5 flex justify-center sm:absolute sm:-top-7 sm:right-8 sm:z-10 sm:mt-0 sm:block">
+          <a
+            href={REGISTER_HREF}
+            target="_blank"
+            rel="noreferrer"
+            className={glossyPill(
+              "blossom",
+              "shadow-[0_6px_14px_rgba(23,55,113,0.35)] sm:px-10 sm:py-3 sm:text-2xl"
+            )}
+          >
+            register here !
+          </a>
+        </span>
       </div>
     </section>
   );
