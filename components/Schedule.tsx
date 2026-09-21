@@ -3,7 +3,13 @@
 import { useState, type KeyboardEvent } from "react";
 import { glossyPill } from "@/components/glossyPill";
 import WindowFrame from "@/components/WindowFrame";
-import { schedule, scheduleDays, type ScheduleDay } from "@/data/schedule";
+import {
+  schedule,
+  scheduleDates,
+  scheduleDays,
+  scheduleIsTentative,
+  type ScheduleDay,
+} from "@/data/schedule";
 
 export default function Schedule() {
   const [activeDay, setActiveDay] = useState<ScheduleDay>(scheduleDays[0]);
@@ -46,6 +52,13 @@ export default function Schedule() {
           </h1>
           <span aria-hidden="true" className="h-[3px] w-12 bg-royal sm:w-32" />
         </div>
+
+        {scheduleIsTentative ? (
+          <p className="mx-auto mt-5 max-w-[22rem] text-center font-body text-base tracking-body text-ink/75 sm:mt-6 sm:max-w-none sm:text-lg">
+            Times and events may change, so be sure to check back closer to the
+            weekend!
+          </p>
+        ) : null}
 
         {/* Retro OS window frame. */}
         <WindowFrame
@@ -126,22 +139,34 @@ export default function Schedule() {
                 coming soon
               </p>
             ) : (
-              dayEvents.map((event) => (
-                <article
-                  key={`${event.time}-${event.title}`}
-                  className="grid gap-1 border-b border-sky py-5 first:pt-0 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-x-16 sm:py-7"
-                >
-                  <time className="font-body text-page tracking-body whitespace-nowrap text-ink">
-                    {event.time}
-                  </time>
-                  <div className="font-body tracking-body text-ink">
-                    <h2 className="text-base sm:text-2xl">{event.title}</h2>
-                    <p className="mt-1 max-w-[46rem] text-base sm:text-2xl">
-                      {event.description}
-                    </p>
-                  </div>
-                </article>
-              ))
+              <>
+                {/*
+                  Date only: the weekday is already the label on the tab
+                  above. Body face rather than the title face because the
+                  trial title font watermarks every digit.
+                */}
+                <p className="mb-2 font-body text-sm font-bold tracking-[0.18em] text-royal uppercase sm:mb-3 sm:text-base">
+                  {scheduleDates[activeDay]}
+                </p>
+                {dayEvents.map((event) => (
+                  <article
+                    key={`${event.time}-${event.title}`}
+                    className="grid gap-1 border-b border-sky py-5 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-x-16 sm:py-7"
+                  >
+                    <time className="font-body text-page tracking-body whitespace-nowrap text-ink">
+                      {event.time}
+                    </time>
+                    <div className="font-body tracking-body text-ink">
+                      <h2 className="text-base sm:text-2xl">{event.title}</h2>
+                      {event.description ? (
+                        <p className="mt-1 max-w-[46rem] text-base sm:text-2xl">
+                          {event.description}
+                        </p>
+                      ) : null}
+                    </div>
+                  </article>
+                ))}
+              </>
             )}
           </div>
         </WindowFrame>
