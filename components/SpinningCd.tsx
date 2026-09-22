@@ -12,12 +12,12 @@ import Image from "next/image";
  * under it; rotating it with the disc is the tell that makes CSS discs look
  * like spinning stickers.
  */
-export default function SpinningCd() {
+export default function SpinningCd({ className = "" }: { className?: string }) {
   return (
     <div
       // Decorative: the heading and copy beside it already say what this is.
       aria-hidden="true"
-      className="group relative mx-auto aspect-square w-full max-w-[20rem] select-none"
+      className={`group relative mx-auto aspect-square w-full max-w-[20rem] select-none ${className}`}
     >
       <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(23,55,113,0.28)_0%,rgba(23,55,113,0)_72%)] blur-xl" />
 
