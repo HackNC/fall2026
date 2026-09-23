@@ -92,7 +92,15 @@ export default function WhatIsHackNC() {
         </div>
 
         {/* Fills its column, as the graphic does in the mockup (3:2 beside the box). */}
-        <SpinningCd className="lg:max-w-none" />
+        <div
+          className="motion-safe:will-change-transform"
+          style={{
+            transform:
+              "translate3d(0, calc((var(--scroll-page) - 0.25) * -24px), 0)",
+          }}
+        >
+          <SpinningCd className="lg:max-w-none" />
+        </div>
       </div>
     </section>
   );
