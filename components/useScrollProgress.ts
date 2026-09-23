@@ -29,10 +29,18 @@ export function useScrollProgress() {
     function publish() {
       queued = false;
       const scrollY = window.scrollY;
+      const maxScroll = Math.max(
+        1,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
       root.style.setProperty("--scroll-px", String(scrollY));
       root.style.setProperty(
         "--scroll-hero",
         String(Math.min(1, scrollY / Math.max(1, window.innerHeight)))
+      );
+      root.style.setProperty(
+        "--scroll-page",
+        String(Math.min(1, Math.max(0, scrollY / maxScroll)))
       );
     }
 
@@ -51,6 +59,7 @@ export function useScrollProgress() {
       // same at-rest positions the static export was built with.
       root.style.removeProperty("--scroll-px");
       root.style.removeProperty("--scroll-hero");
+      root.style.removeProperty("--scroll-page");
     }
 
     function start() {
