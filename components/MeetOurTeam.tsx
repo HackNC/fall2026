@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import CommitteeScreen from "@/components/CommitteeScreen";
 import MemberDetail from "@/components/MemberDetail";
+import RosterScreen from "@/components/RosterScreen";
 import SelectionMenu from "@/components/SelectionMenu";
 import {
   committeeLabel,
@@ -108,18 +109,23 @@ function tileId(index: number) {
  * The teams that are only directors (see `hasCommittee`) are the exception:
  * choosing one goes straight to that list, with no menu and nothing to
  * switch to.
+ *
+ * The console buttons are two shortcuts: Start opens the co-leads, and Menu
+ * opens the full roster, every committee's names on one screen.
  */
 export default function MeetOurTeam() {
   /*
-   * Which console screen the window is showing. Every screen past the home
-   * one carries its committee, so the whole journey stays scoped to the one
-   * that was chosen and Back always has somewhere definite to return to.
+   * Which console screen the window is showing. Every committee screen
+   * carries its committee, so the journey stays scoped to the one that was
+   * chosen and Back always has somewhere definite to return to. The roster
+   * spans every committee, so it carries none.
    */
   const [screen, setScreen] = useState<
     | { kind: "home" }
     | { kind: "directors"; committee: Committee }
     | { kind: "member"; committee: Committee; member: TeamMember }
     | { kind: "committee"; committee: Committee }
+    | { kind: "roster" }
   >({ kind: "home" });
 
   /*
@@ -241,7 +247,9 @@ export default function MeetOurTeam() {
                   </h1>
                 ) : null}
 
-                {screen.kind === "member" ? (
+                {screen.kind === "roster" ? (
+                  <RosterScreen onBack={goHome} />
+                ) : screen.kind === "member" ? (
                   <MemberDetail
                     member={screen.member}
                     onBack={() =>
@@ -372,12 +380,7 @@ export default function MeetOurTeam() {
                 <div className="mt-auto grid grid-cols-1 gap-2.5 px-4 pb-5 min-[391px]:grid-cols-2 min-[391px]:gap-3 min-[391px]:px-5 min-[391px]:pb-6 min-[650px]:flex min-[650px]:items-center min-[650px]:justify-center min-[650px]:gap-[15.8%] min-[650px]:px-0 min-[650px]:pb-[4.6%]">
                   <button
                     type="button"
-                    aria-haspopup={
-                      hasCommittee(committeeNames[active])
-                        ? "dialog"
-                        : undefined
-                    }
-                    onClick={() => openMenuFor(active)}
+                    onClick={() => setScreen({ kind: "roster" })}
                     aria-label="Menu"
                     className={`${consoleButton} motion-safe:animate-wii-breathe`}
                   >
@@ -389,12 +392,16 @@ export default function MeetOurTeam() {
                     />
                   </button>
                   {/*
-                    Start opens the highlighted committee, which is what
-                    clicking its tile does — the console's two ways in.
+                    Start always opens the co-leads, whichever tile is
+                    highlighted: the natural first stop. The Leads tile takes
+                    the highlight, so Back returns focus there.
                   */}
                   <button
                     type="button"
-                    onClick={() => openMenuFor(active)}
+                    onClick={() => {
+                      setActive(committeeNames.indexOf("Leads"));
+                      setScreen({ kind: "directors", committee: "Leads" });
+                    }}
                     aria-label="Start"
                     className={`${consoleButton} motion-safe:animate-wii-breathe`}
                   >

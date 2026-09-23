@@ -7,7 +7,7 @@ import {
   ScreenFooter,
   ScreenTitleBar,
 } from "@/components/CommitteeScreen";
-import type { TeamMember } from "@/data/teamMembers";
+import { committeeLabel, type TeamMember } from "@/data/teamMembers";
 
 type MemberDetailProps = {
   member: TeamMember;
@@ -40,7 +40,7 @@ export default function MemberDetail({
 
   return (
     <div className="flex h-full min-h-0 flex-col motion-safe:animate-channel-open">
-      <ScreenTitleBar committee={member.committee} />
+      <ScreenTitleBar title={committeeLabel(member.committee)} />
 
       <div className="flex min-h-0 flex-1 flex-col">
         <div

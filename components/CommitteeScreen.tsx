@@ -77,7 +77,7 @@ export default function CommitteeScreen({
 
   return (
     <div className="flex h-full min-h-0 flex-col motion-safe:animate-channel-open">
-      <ScreenTitleBar committee={committee} label={label} />
+      <ScreenTitleBar title={committeeLabel(committee)} label={label} />
 
       <div className="flex min-h-0 flex-1 flex-col">
         {members.length === 0 ? (
@@ -167,10 +167,11 @@ export default function CommitteeScreen({
  * laid over it.
  */
 export function ScreenTitleBar({
-  committee,
+  title,
   label,
 }: {
-  committee: Committee;
+  /** The name in the blue: a committee's, or the full roster's. */
+  title: string;
   /** Omitted on a member's card, where the committee name stands alone. */
   label?: string;
 }) {
@@ -209,7 +210,7 @@ export function ScreenTitleBar({
                 }),
           }}
         >
-          <CommitteeName committee={committee} />
+          <HeaderName text={title} />
         </div>
       </div>
 
@@ -261,7 +262,7 @@ const NAME_SCALE = 0.92 * 0.92;
 const NAME_MAX_SIZE = 6.34 * NAME_SCALE;
 
 /**
- * The committee name, sized to its anchor.
+ * The header's name, sized to its anchor.
  *
  * Measured rather than guessed from its letter count: it is set at the full
  * size, and a name wider than the anchor is scaled down by exactly the
@@ -269,7 +270,7 @@ const NAME_MAX_SIZE = 6.34 * NAME_SCALE;
  * and one measurement holds at every window width. It is taken again once the
  * webfont has loaded, since the fallback face measures differently.
  */
-function CommitteeName({ committee }: { committee: Committee }) {
+function HeaderName({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
@@ -292,7 +293,7 @@ function CommitteeName({ committee }: { committee: Committee }) {
     return () => {
       cancelled = true;
     };
-  }, [committee]);
+  }, [text]);
 
   return (
     <span
@@ -305,7 +306,7 @@ function CommitteeName({ committee }: { committee: Committee }) {
       */
       className="-mr-[0.16em] font-accent text-[5.37cqw] font-medium leading-none tracking-[0.16em] whitespace-nowrap text-white"
     >
-      {committeeLabel(committee)}
+      {text}
     </span>
   );
 }
