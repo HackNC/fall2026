@@ -42,7 +42,7 @@ export default function WaterBackdrop() {
           wide screens.
         */}
         <Image
-          src="/hero-backdrop.webp"
+          src="/other/hero-backdrop.webp"
           alt=""
           fill
           preload

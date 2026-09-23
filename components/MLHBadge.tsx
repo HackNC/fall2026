@@ -26,7 +26,7 @@ export default function MLHBadge({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/mlh-logo-blue.svg"
+        src="/other/mlh-logo-blue.svg"
         alt="Major League Hacking 2027 Hackathon Season"
         style={{ width: "100%" }}
       />

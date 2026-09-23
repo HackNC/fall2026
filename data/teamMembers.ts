@@ -10,6 +10,22 @@ export const committeeNames = [
 
 export type Committee = (typeof committeeNames)[number];
 
+/**
+ * Whether a committee has members beneath its directors. The leads, social
+ * media and finance are only directors, so they have no committee list to
+ * switch to and no menu to choose between the two.
+ */
+const directorsOnly: readonly Committee[] = ["Leads", "SocialMedia", "Finance"];
+
+export function hasCommittee(committee: Committee) {
+  return !directorsOnly.includes(committee);
+}
+
+/** A committee's name as it is shown; the keys above are identifiers. */
+export function committeeLabel(committee: Committee) {
+  return committee === "SocialMedia" ? "Social Media" : committee;
+}
+
 export type TeamMember = {
   name: string;
   committee: Committee;
@@ -17,8 +33,8 @@ export type TeamMember = {
   role: string;
   /**
    * Directors get the full detail screen — photo, year, majors, fun fact.
-   * Everyone else appears as a name and photo on their committee's screen,
-   * which is why the fields below are optional.
+   * Everyone else appears by name alone on their committee's screen, which
+   * is why the fields below are optional.
    */
   isDirector?: boolean;
   year?: string;
@@ -26,21 +42,21 @@ export type TeamMember = {
   majors?: string;
   funFact?: string;
   /**
-   * Omitted until graphics delivers headshots. The channel tile and the
-   * detail view both fall back to the mockup's grey placeholder block.
+   * A director's headshot. Where one is missing, the tile and the card both
+   * fall back to the mockup's grey placeholder block.
    */
   image?: string;
 };
 
 /*
- * The 2026 directors. Committee members are not listed yet — add them to the
- * same arrays without `isDirector` and they appear on the committee screens.
+ * The 2026 team. Directors carry `isDirector` and the full card details;
+ * committee members are listed after them by name alone, and appear on their
+ * committee's screen as a list of names (there are no member photos yet).
  *
- * Headshots live in public/team/ as 600px square webp — every director has
- * one. Anyone added without an `image` renders initials on the tile and
- * "photo coming soon" on the detail screen until it is set.
+ * Headshots live in public/team/ as square webp, up to 1100px — every
+ * director has one.
  *
- * Array order is display order, so the pairs below sit side by side.
+ * Array order is display order.
  */
 export const teamMembers: Record<Committee, TeamMember[]> = {
   Leads: [
@@ -88,6 +104,31 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
         "I have a soft spot for tabby cats after befriending a stray named Beans at UNC.",
       image: "/team/rachel.webp",
     },
+    {
+      name: "Sai Nagamalla",
+      committee: "Development",
+      role: "Development Committee",
+    },
+    {
+      name: "Markandeya Yalamanchi",
+      committee: "Development",
+      role: "Development Committee",
+    },
+    {
+      name: "Jason Pereira",
+      committee: "Development",
+      role: "Development Committee",
+    },
+    {
+      name: "Frank Lin",
+      committee: "Development",
+      role: "Development Committee",
+    },
+    {
+      name: "Vuong Nguyen",
+      committee: "Development",
+      role: "Development Committee",
+    },
   ],
   Logistics: [
     {
@@ -110,6 +151,21 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       funFact:
         "I've loved watching Formula 1 since I went to the first race in Jeddah!",
       image: "/team/sanya.webp",
+    },
+    {
+      name: "Priya Patel",
+      committee: "Logistics",
+      role: "Logistics Committee",
+    },
+    {
+      name: "Medha Kuchimanchi",
+      committee: "Logistics",
+      role: "Logistics Committee",
+    },
+    {
+      name: "Rani Akki",
+      committee: "Logistics",
+      role: "Logistics Committee",
     },
   ],
   Outreach: [
@@ -134,6 +190,26 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
         "I have travelled to more than 20 countries and still trying to grow the list!",
       image: "/team/ishi.webp",
     },
+    {
+      name: "Krystal Le",
+      committee: "Outreach",
+      role: "Outreach Committee",
+    },
+    {
+      name: "Nhu-Y Nguyen",
+      committee: "Outreach",
+      role: "Outreach Committee",
+    },
+    {
+      name: "Aysel Omer",
+      committee: "Outreach",
+      role: "Outreach Committee",
+    },
+    {
+      name: "Nandini Jhunjhunwala",
+      committee: "Outreach",
+      role: "Outreach Committee",
+    },
   ],
   Graphics: [
     {
@@ -156,6 +232,16 @@ export const teamMembers: Record<Committee, TeamMember[]> = {
       majors: "Biology",
       funFact: "I'm a big fountain pen and stationary collector!",
       image: "/team/angela.webp",
+    },
+    {
+      name: "Cassy Moise",
+      committee: "Graphics",
+      role: "Graphics Committee",
+    },
+    {
+      name: "Sherry Chen",
+      committee: "Graphics",
+      role: "Graphics Committee",
     },
   ],
   SocialMedia: [

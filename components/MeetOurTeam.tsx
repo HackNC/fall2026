@@ -1,238 +1,193 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import CommitteeScreen from "@/components/CommitteeScreen";
 import MemberDetail from "@/components/MemberDetail";
 import SelectionMenu from "@/components/SelectionMenu";
 import {
+  committeeLabel,
   committeeNames,
+  hasCommittee,
   teamMembers,
   type Committee,
+  type TeamMember,
 } from "@/data/teamMembers";
 
-/**
- * Same Figma chrome as glossyPill's `royal` variant, reshaped into a square
- * channel tile: the white reflection sweep over the royal gradient, plus the
- * bevel insets. Spelled out in full because Tailwind scans this file as plain
- * text — see the note in components/glossyPill.ts.
+/*
+ * The console screen itself: the Figma export (public/about-components/
+ * "wii screen bg.svg"), a white rounded panel with its drop shadow baked in.
  *
- * The raise is duplicated onto focus-visible so the tiles react the same way
- * whether they are reached by pointer or by keyboard.
- *
- * The raise fires on `group-hover/tile`, never plain `hover`: a hover that
- * translates the hovered element moves it out from under the pointer, which
- * ends the hover, which drops it back — an infinite oscillation at every edge.
- * The static <li> owns the hover instead, so the trigger area never moves. The
- * group is *named* because the window is an ancestor group too, and a bare
- * `group-hover` would raise every tile whenever the window was hovered.
- * focus-visible stays unqualified — focus is not position-dependent.
+ * Nine-sliced rather than stretched so the 100px corner radius holds at any
+ * size while the flat white between corners stretches. The slice is the
+ * radius plus the 9px the shadow occupies. `border-0` keeps it out of layout:
+ * border-image paints without reserving space.
  */
-const channelTile =
-  "relative block aspect-square w-full overflow-hidden rounded-card border border-royal/30 " +
-  "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0)_55%),linear-gradient(to_bottom,#1554C9_5%,rgba(244,255,254,0.95)_100%)] " +
-  "shadow-[0_4px_4px_rgba(23,55,113,0.45),inset_0_-2px_0_rgba(21,84,201,0.2),inset_0_4px_0_rgba(255,255,255,0.25)] " +
-  "transition-[transform,box-shadow] duration-200 ease-out " +
-  "group-hover/tile:-translate-y-2.5 group-hover/tile:scale-[1.06] group-hover/tile:shadow-[0_16px_22px_rgba(23,55,113,0.45)] " +
-  "focus-visible:-translate-y-2.5 focus-visible:scale-[1.06] " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
-
-/**
- * The Wii's bottom menu buttons: stadium-shaped, large, and glossy.
- *
- * The gloss is a bright white sweep over the top 45% ending in a hard cutoff
- * at 46% rather than a soft fade — that hard edge is what separates the
- * console's look from a generic gradient — layered over a cool silver base.
- */
-const wiiButton =
-  "relative inline-flex items-center justify-center rounded-full border border-royal/25 " +
-  "min-w-[7.75rem] px-6 py-3 text-center font-title text-lg tracking-title text-ink lowercase " +
-  "md:min-w-[15rem] md:px-14 md:py-5 md:text-2xl " +
-  "bg-[image:linear-gradient(to_bottom,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.35)_45%,rgba(255,255,255,0)_46%),linear-gradient(to_bottom,#FBFDFF_0%,#DCE7F5_55%,#C2D3EA_100%)] " +
-  "shadow-[0_6px_10px_rgba(23,55,113,0.35),inset_0_2px_0_rgba(255,255,255,0.95),inset_0_-3px_6px_rgba(21,84,201,0.18)] " +
-  "transition duration-150 hover:brightness-[1.04] active:translate-y-px " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
+const screenStyle = {
+  borderImageSource: 'url("/about-components/wii screen bg.svg")',
+  borderImageSlice: "120 fill",
+  /*
+    A variable so it can shrink on a phone: nine-slice corners paint at this
+    width whatever the element's size, and a flat 120px turned a ~295px
+    window into a pill.
+  */
+  borderImageWidth: "var(--screen-slice)",
+  borderImageRepeat: "stretch",
+} as const;
 
 /*
- * The main grid is directors only. Everyone else is reached through that
- * committee's screen, which is what "Committee Members" lists, so a person
- * appears in exactly one place.
- *
- * Laid out six to a row rather than one row per committee: with two directors
- * on most committees, the per-committee rows left the grid mostly empty. Each
- * director's committee is still named on their own screen's title bar.
- *
- * `rows` stays a 2-D array so the roving-tabindex handlers below — which index
- * by [row][column] — keep working unchanged.
+ * The console's bottom buttons are the Figma exports, gloss and label baked
+ * in, so this is only a hit target around the artwork: no background, border
+ * or type of its own to fight it. The width is the share of the screen each
+ * button takes in the mockup, which is what puts the pair at roughly the
+ * quarter and three-quarter marks.
  */
-const COLUMNS = 6;
-
-const directors = committeeNames.flatMap((committee) =>
-  teamMembers[committee].filter((member) => member.isDirector)
-);
-
-const rows = Array.from(
-  { length: Math.ceil(directors.length / COLUMNS) },
-  (_, row) => directors.slice(row * COLUMNS, (row + 1) * COLUMNS)
-);
-
-const rowStartIndices = rows.reduce<number[]>((acc, row, index) => {
-  acc.push((acc[index - 1] ?? 0) + (rows[index - 1]?.length ?? 0));
-  return acc;
-}, []);
-
-// Nothing announced yet renders as "coming soon" instead of an empty grid.
-// The roving-tabindex handlers below all key off `rows`, so they are simply
-// unreachable while there are no tiles to focus.
-const hasMembers = rows.some((row) => row.length > 0);
-
-function tileId(row: number, column: number) {
-  return `team-tile-${row}-${column}`;
-}
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0] ?? "")
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
+const consoleButton =
+  "block w-full cursor-pointer rounded-full transition duration-150 " +
+  "hover:brightness-[1.04] active:translate-y-px " +
+  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-royal " +
+  "min-[650px]:w-[27.6%]";
 
 /*
- * Takes row and column as separate arguments rather than a position object, on
- * purpose.
+ * The Figma's committee icons, by the names graphics gave the exports.
  *
- * With an object parameter the only call site reads `positionToIndex({ row,
- * column })`, and the production minifier inlines that helper while failing to
- * rename the shorthand properties — it emits `{row, column}` referencing
- * identifiers that no longer exist under minification, so every tile click
- * threw "row is not defined". Dev builds are unminified and never showed it.
+ * Spelled out rather than derived from the committee name: the files do not
+ * follow one rule ("dev" for Development, "social media" for SocialMedia), so
+ * a mapping that can be read at a glance beats a clever transform that breaks
+ * the next time a committee is added.
  *
- * Scalar arguments leave no object literal to inline, so the bug has nothing
- * to bite on. Keep it this way, and avoid shorthand in anything else small
- * enough for the minifier to inline.
+ * Each export carries its own blue rounded-square background, so the tile
+ * below adds no fill of its own — just the lift and the shadow.
  */
-function positionToIndex(row: number, column: number) {
-  return rowStartIndices[row] + column;
+const committeeIcons: Record<Committee, string> = {
+  Leads: "leads icon.svg",
+  Development: "dev icon.svg",
+  Logistics: "logistics icon.svg",
+  Outreach: "outreach icon.svg",
+  Graphics: "graphics icon.svg",
+  SocialMedia: "social media icon.svg",
+  Finance: "finance icon.svg",
+};
+
+// Rounded to the artwork's own corner (rx 20 on a 133 square), so the clip and
+// the shadow follow it exactly at any tile size.
+//
+// The idle bob (channel-idle) animates `transform`, while the hover and focus
+// lift below set the separate `translate` and `scale` properties, so the two
+// stack instead of one overriding the other — and the transition names those
+// two properties, since a `transform` transition would not ease them.
+const committeeTile =
+  "block aspect-square w-full cursor-pointer overflow-hidden rounded-[15%] " +
+  "shadow-[0_4px_10px_rgba(23,55,113,0.3)] " +
+  "transition-[translate,scale,box-shadow] duration-200 ease-out " +
+  "group-hover/tile:-translate-y-2 group-hover/tile:scale-[1.06] " +
+  "group-hover/tile:shadow-[0_16px_22px_rgba(23,55,113,0.4)] " +
+  "focus-visible:-translate-y-2 focus-visible:scale-[1.06] " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
+
+function directorsOf(committee: Committee) {
+  return teamMembers[committee].filter((member) => member.isDirector);
 }
 
-function indexToPosition(index: number) {
-  let remaining = index;
-
-  for (let row = 0; row < rows.length; row += 1) {
-    const rowLength = rows[row].length;
-    if (remaining < rowLength) {
-      return { row: row, column: remaining };
-    }
-    remaining -= rowLength;
-  }
-
-  return { row: 0, column: 0 };
+function membersOf(committee: Committee) {
+  return teamMembers[committee].filter((member) => !member.isDirector);
 }
 
+function tileId(index: number) {
+  return `committee-tile-${index}`;
+}
+
+/**
+ * The About page's console.
+ *
+ * Committee-first, as in the Figma: the home screen is the seven committees,
+ * choosing one opens the selection menu scoped to it, and from there you go to
+ * that committee's directors or its members. The footer button on either list
+ * swaps between the two without leaving the committee, and only directors
+ * expand into a card — committee members are a flat list.
+ *
+ * The teams that are only directors (see `hasCommittee`) are the exception:
+ * choosing one goes straight to that list, with no menu and nothing to
+ * switch to.
+ */
 export default function MeetOurTeam() {
-  const [selectedDirectorIndex, setSelectedDirectorIndex] = useState<
-    number | null
-  >(null);
-  // Roving tabindex position: the grid is one tab stop, arrow keys move within
-  // it. Same contract as the Schedule day tabs, extended to two axes.
-  const [active, setActive] = useState({ row: 0, column: 0 });
-  // Which console screen the window is showing. The grid and the member
-  // screens swap the window contents; the selection menu overlays them.
+  /*
+   * Which console screen the window is showing. Every screen past the home
+   * one carries its committee, so the whole journey stays scoped to the one
+   * that was chosen and Back always has somewhere definite to return to.
+   */
   const [screen, setScreen] = useState<
-    { kind: "grid" } | { kind: "committee"; committee: Committee }
-  >({ kind: "grid" });
-  const [menuOpen, setMenuOpen] = useState(false);
+    | { kind: "home" }
+    | { kind: "directors"; committee: Committee }
+    | { kind: "member"; committee: Committee; member: TeamMember }
+    | { kind: "committee"; committee: Committee }
+  >({ kind: "home" });
+
+  /*
+   * The selection menu overlays whatever screen is showing, and is always
+   * opened for a particular committee — clicking a tile is what opens it, so
+   * there is no unscoped state to represent.
+   */
+  const [menuCommittee, setMenuCommittee] = useState<Committee | null>(null);
+
+  // Roving tabindex over the home tiles: the row is one tab stop, arrow keys
+  // move within it. Same contract as the Schedule day tabs.
+  const [active, setActive] = useState(0);
   const restoreFocusRef = useRef(false);
 
-  const selectedMember =
-    selectedDirectorIndex !== null ? directors[selectedDirectorIndex] : null;
-  const isStartScreen =
-    screen.kind === "grid" && selectedDirectorIndex === null;
-  const currentDirectorIndex = selectedDirectorIndex;
-  const isLastDirector =
-    hasMembers &&
-    currentDirectorIndex !== null &&
-    currentDirectorIndex >= directors.length - 1;
-  const startDisabled =
-    !hasMembers ||
-    screen.kind === "committee" ||
-    (currentDirectorIndex !== null && isLastDirector);
-
-  // Returning from a channel puts focus back on the tile that opened it.
+  // Coming back from a screen should land focus on the tile that opened it,
+  // not at the top of the document.
   useEffect(() => {
-    if (selectedMember || !restoreFocusRef.current) return;
+    if (screen.kind !== "home" || !restoreFocusRef.current) return;
     restoreFocusRef.current = false;
-    document.getElementById(tileId(active.row, active.column))?.focus();
-  }, [selectedMember, active]);
+    document.getElementById(tileId(active))?.focus();
+  }, [screen, active]);
 
-  function openChannel(row: number, column: number) {
-    setActive({ row, column });
-    setSelectedDirectorIndex(positionToIndex(row, column));
+  // A committee with members opens the menu to choose between its two lists;
+  // one that is only directors goes straight to them.
+  function openMenuFor(index: number) {
+    const committee = committeeNames[index];
+    setActive(index);
+    if (hasCommittee(committee)) {
+      setMenuCommittee(committee);
+    } else {
+      setScreen({ kind: "directors", committee });
+    }
   }
 
-  function closeChannel() {
+  function goHome() {
     restoreFocusRef.current = true;
-    setSelectedDirectorIndex(null);
+    setScreen({ kind: "home" });
   }
 
-  function goToStartScreen() {
-    setScreen({ kind: "grid" });
-    setSelectedDirectorIndex(null);
-    setActive({ row: 0, column: 0 });
-  }
+  function handleTileKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    let next: number | undefined;
 
-  function handleStart() {
-    if (startDisabled || screen.kind !== "grid") return;
-
-    const nextIndex =
-      currentDirectorIndex === null ? 0 : currentDirectorIndex + 1;
-    const next = indexToPosition(nextIndex);
-    setActive(next);
-    setSelectedDirectorIndex(nextIndex);
-  }
-
-  function handleTileKeyDown(
-    event: KeyboardEvent<HTMLButtonElement>,
-    row: number,
-    column: number
-  ) {
-    let next: { row: number; column: number } | undefined;
-
-    if (event.key === "ArrowRight") {
-      next = { row, column: (column + 1) % rows[row].length };
-    } else if (event.key === "ArrowLeft") {
-      next = {
-        row,
-        column: (column - 1 + rows[row].length) % rows[row].length,
-      };
-    } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      const step = event.key === "ArrowDown" ? 1 : -1;
-      const nextRow = (row + step + rows.length) % rows.length;
-      // Rows are uneven, so hold the column where possible and clamp to the
-      // end of a shorter row rather than wrapping to somewhere unrelated.
-      next = {
-        row: nextRow,
-        column: Math.min(column, rows[nextRow].length - 1),
-      };
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      next = (active + 1) % committeeNames.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      next = (active - 1 + committeeNames.length) % committeeNames.length;
     } else if (event.key === "Home") {
-      next = { row: 0, column: 0 };
+      next = 0;
     } else if (event.key === "End") {
-      next = { row: rows.length - 1, column: rows[rows.length - 1].length - 1 };
+      next = committeeNames.length - 1;
     }
 
-    if (!next) return;
+    if (next === undefined) return;
 
     event.preventDefault();
     setActive(next);
-    document.getElementById(tileId(next.row, next.column))?.focus();
+    document.getElementById(tileId(next))?.focus();
   }
 
+  // Escape backs out one screen at a time, menu first.
   function handleWindowKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape" && selectedMember) {
-      event.preventDefault();
-      closeChannel();
+    if (event.key !== "Escape") return;
+    if (menuCommittee) {
+      setMenuCommittee(null);
+    } else if (screen.kind === "member") {
+      setScreen({ kind: "directors", committee: screen.committee });
+    } else if (screen.kind !== "home") {
+      goHome();
     }
   }
 
@@ -241,189 +196,217 @@ export default function MeetOurTeam() {
       <div className="mx-auto w-full max-w-[80rem] px-4 sm:px-6">
         <div className="motion-safe:animate-window-float">
           <div
+            /*
+              From 650px up the window holds the mockup's 1628x1076 aspect, so
+              every percentage inside it maps straight onto the Figma. Phones
+              keep explicit heights and scroll instead.
+            */
             onKeyDown={handleWindowKeyDown}
-            className="relative h-[min(82vh,52rem)] min-h-[34rem] rounded-window border border-white/70 bg-white/95 shadow-[0_10px_30px_rgba(23,55,113,0.35)] min-[481px]:max-[649px]:h-[min(100vh,66rem)] min-[481px]:max-[649px]:min-h-[54rem] max-[520px]:h-[min(100vh,70rem)] max-[520px]:min-h-[58rem] max-[394px]:h-[min(98vh,60rem)] max-[394px]:min-h-[48rem] max-[360px]:h-[min(100vh,62rem)] max-[360px]:min-h-[50rem] max-[344px]:h-[min(100vh,64rem)] max-[344px]:min-h-[52rem] max-[320px]:h-[min(100vh,66rem)] max-[320px]:min-h-[54rem] min-[650px]:h-[min(80vh,52rem)] min-[650px]:min-h-[38rem]"
+            style={screenStyle}
+            className="relative h-[min(82vh,52rem)] min-h-[34rem] border-0 [--screen-slice:120px] max-[649px]:[--screen-slice:56px] min-[481px]:max-[649px]:h-[min(100vh,66rem)] min-[481px]:max-[649px]:min-h-[54rem] max-[520px]:h-[min(100vh,70rem)] max-[520px]:min-h-[58rem] max-[394px]:h-[min(98vh,60rem)] max-[394px]:min-h-[48rem] max-[360px]:h-[min(100vh,62rem)] max-[360px]:min-h-[50rem] max-[344px]:h-[min(100vh,64rem)] max-[344px]:min-h-[52rem] max-[320px]:h-[min(100vh,66rem)] max-[320px]:min-h-[54rem] min-[650px]:aspect-[1628/1076] min-[650px]:h-auto min-[650px]:min-h-0"
           >
-            <div className="flex h-full min-h-0 flex-col gap-5 sm:gap-6 lg:gap-8">
-              {menuOpen ? (
+            {/*
+              Exactly the white panel, and clipped to it. The export draws the
+              panel 9px in from its canvas (the shadow's margin) with 100px
+              corners, both against a 120px slice — so both are taken as a
+              share of the slice, and stay true when a phone shrinks it.
+            */}
+            <div className="absolute inset-[calc(var(--screen-slice)*9/120)] flex flex-col overflow-hidden rounded-[calc(var(--screen-slice)*100/120)] [container-type:inline-size]">
+              {menuCommittee ? (
                 <SelectionMenu
-                  viewDirectorsDisabled={isStartScreen}
-                  onClose={() => setMenuOpen(false)}
+                  committee={menuCommittee}
+                  onClose={() => setMenuCommittee(null)}
                   onViewDirectors={() => {
-                    if (isStartScreen) return;
-                    setMenuOpen(false);
-                    goToStartScreen();
+                    setScreen({ kind: "directors", committee: menuCommittee });
+                    setMenuCommittee(null);
                   }}
                   onViewCommittee={() => {
-                    setMenuOpen(false);
-                    setScreen({
-                      kind: "committee",
-                      committee: selectedMember?.committee ?? committeeNames[0],
-                    });
+                    setScreen({ kind: "committee", committee: menuCommittee });
+                    setMenuCommittee(null);
                   }}
                 />
               ) : null}
 
               {/*
                 Scrolls inside the window rather than growing it, so a long
-                committee roster or a tall detail screen on a phone can never
-                push past the console buttons below.
+                roster on a phone can never push past the console buttons.
+                Vertically only: the header bleeds past both sides on purpose,
+                and would otherwise make the screen scroll sideways.
               */}
-              <div className="min-h-0 flex-1 overflow-y-auto">
-                {screen.kind === "committee" ? (
-                  <>
-                    <h1 id="team-heading" className="sr-only">
-                      Meet Our Team
-                    </h1>
-                    <CommitteeScreen
-                      committee={screen.committee}
-                      members={teamMembers[screen.committee].filter(
-                        (member) => !member.isDirector
-                      )}
-                      onBack={goToStartScreen}
-                      onViewDirectors={goToStartScreen}
-                    />
-                  </>
-                ) : selectedMember ? (
-                  <>
-                    <h1 id="team-heading" className="sr-only">
-                      Meet Our Team
-                    </h1>
-                    <MemberDetail
-                      member={selectedMember}
-                      onBack={closeChannel}
-                      onViewCommittee={() =>
-                        setScreen({
-                          kind: "committee",
-                          committee: selectedMember.committee,
-                        })
-                      }
-                    />
-                  </>
+              <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto">
+                {/* The home screen's heading is artwork; the others get this one. */}
+                {screen.kind !== "home" ? (
+                  <h1 id="team-heading" className="sr-only">
+                    Meet Our Team
+                  </h1>
+                ) : null}
+
+                {screen.kind === "member" ? (
+                  <MemberDetail
+                    member={screen.member}
+                    onBack={() =>
+                      setScreen({
+                        kind: "directors",
+                        committee: screen.committee,
+                      })
+                    }
+                    onViewCommittee={
+                      hasCommittee(screen.committee)
+                        ? () =>
+                            setScreen({
+                              kind: "committee",
+                              committee: screen.committee,
+                            })
+                        : undefined
+                    }
+                  />
+                ) : screen.kind === "directors" ? (
+                  <CommitteeScreen
+                    committee={screen.committee}
+                    members={directorsOf(screen.committee)}
+                    label="Directors"
+                    onSelect={(member) =>
+                      setScreen({
+                        kind: "member",
+                        committee: screen.committee,
+                        member,
+                      })
+                    }
+                    onBack={goHome}
+                    {...(hasCommittee(screen.committee)
+                      ? {
+                          actionLabel: "View Committee Members",
+                          onAction: () =>
+                            setScreen({
+                              kind: "committee",
+                              committee: screen.committee,
+                            }),
+                        }
+                      : {})}
+                  />
+                ) : screen.kind === "committee" ? (
+                  <CommitteeScreen
+                    committee={screen.committee}
+                    members={membersOf(screen.committee)}
+                    label="Committee Members"
+                    onBack={goHome}
+                    actionLabel="View Directors"
+                    onAction={() =>
+                      setScreen({
+                        kind: "directors",
+                        committee: screen.committee,
+                      })
+                    }
+                  />
                 ) : (
-                  <div className="px-5 pb-2 pt-6 sm:px-8 sm:pb-3 sm:pt-8 lg:px-10 lg:pb-4 lg:pt-10">
-                    <h1
-                      id="team-heading"
-                      className="text-center font-title text-page tracking-title text-royal"
-                    >
-                      Meet Our Team
+                  <div className="pt-[16.1%] pb-4 max-[649px]:px-5 max-[649px]:pt-6 max-[649px]:pb-2">
+                    {/*
+                      Artwork, not type: the Figma sets this heading in a face
+                      the site does not license, so it ships as the export and
+                      the real heading goes to screen readers only. Width is
+                      the share of the screen it occupies in the mockup.
+                    */}
+                    <h1 id="team-heading">
+                      <span className="sr-only">Meet Our Team</span>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/about-components/Meet Our Team text.svg"
+                        alt=""
+                        className="mx-auto block w-[70.6%]"
+                      />
                     </h1>
 
-                    <div className="mt-6 sm:mt-8 lg:mt-10">
-                      {!hasMembers ? (
-                        <p className="grid min-h-[14rem] place-items-center text-center font-title text-page tracking-title text-royal lowercase sm:min-h-[18rem]">
-                          coming soon
-                        </p>
-                      ) : (
-                        rows.map((rowMembers, row) => (
-                          <ul
-                            key={row}
-                            className="mt-4 grid grid-cols-3 gap-3 first:mt-0 min-[481px]:grid-cols-4 min-[481px]:gap-3.5 min-[645px]:mt-5 min-[645px]:grid-cols-6 min-[645px]:gap-4"
+                    <ul className="mx-auto mt-[7.4%] grid w-[85.1%] grid-cols-7 gap-[2.6%] max-[649px]:mt-7 max-[649px]:flex max-[649px]:w-auto max-[649px]:flex-wrap max-[649px]:justify-center max-[649px]:gap-3">
+                      {committeeNames.map((committee, index) => (
+                        <li
+                          key={committee}
+                          className="group/tile max-[649px]:w-[4.5rem]"
+                        >
+                          <button
+                            id={tileId(index)}
+                            type="button"
+                            tabIndex={active === index ? 0 : -1}
+                            aria-haspopup={
+                              hasCommittee(committee) ? "dialog" : undefined
+                            }
+                            aria-label={`${committeeLabel(committee)} committee`}
+                            onClick={() => openMenuFor(index)}
+                            onFocus={() => setActive(index)}
+                            onKeyDown={handleTileKeyDown}
+                            className={`${committeeTile} motion-safe:animate-channel-idle`}
+                            /*
+                              Each tile half a second further into the bob
+                              than the last, so the row ripples rather than
+                              moving as one. Negative, so every tile is
+                              already mid-motion on load.
+                            */
+                            style={{ animationDelay: `${index * -0.5}s` }}
                           >
-                            {rowMembers.map((member, column) => (
-                              <li key={member.name} className="group/tile">
-                                <div
-                                  className="motion-safe:animate-channel-idle"
-                                  // Staggered so the row breathes as a wave instead
-                                  // of pulsing in lockstep. Wraps only the tile, so
-                                  // the name below stays still and readable.
-                                  style={{
-                                    animationDelay: `${(row * 7 + column) * 180}ms`,
-                                  }}
-                                >
-                                  <button
-                                    id={tileId(row, column)}
-                                    type="button"
-                                    aria-label={`${member.name}, ${member.role}`}
-                                    tabIndex={
-                                      active.row === row &&
-                                      active.column === column
-                                        ? 0
-                                        : -1
-                                    }
-                                    onClick={() => openChannel(row, column)}
-                                    onFocus={() => setActive({ row, column })}
-                                    onKeyDown={(event) =>
-                                      handleTileKeyDown(event, row, column)
-                                    }
-                                    className={channelTile}
-                                  >
-                                    {member.image ? (
-                                      <Image
-                                        src={member.image}
-                                        alt=""
-                                        fill
-                                        sizes="(min-width: 640px) 10rem, 25vw"
-                                        // The top row is above the fold and any
-                                        // of its tiles can win LCP depending on
-                                        // viewport, so they load eagerly. Not
-                                        // `preload`: the docs rule that out
-                                        // precisely when the LCP element is
-                                        // ambiguous between several images.
-                                        loading={row === 0 ? "eager" : "lazy"}
-                                        className="object-cover"
-                                      />
-                                    ) : (
-                                      <span
-                                        aria-hidden="true"
-                                        className="grid size-full place-items-center font-title text-base text-white [text-shadow:0_2px_4px_rgba(23,55,113,0.65)] sm:text-2xl"
-                                      >
-                                        {initials(member.name)}
-                                      </span>
-                                    )}
-                                  </button>
-                                </div>
-                                <p className="mt-1.5 truncate text-center font-body text-caption font-bold tracking-body text-ink">
-                                  {member.name}
-                                </p>
-                                {/*
-                                  Allowed to wrap rather than truncated: the
-                                  titles run long ("Co-Director of Logistics")
-                                  and clipping them mid-word reads worse than
-                                  a second line. Capped at two so a row cannot
-                                  grow unboundedly.
-                                */}
-                                <p className="mt-0.5 line-clamp-2 text-center font-body text-[0.68rem] leading-snug tracking-body text-ink/65 lowercase sm:text-caption">
-                                  {member.role}
-                                </p>
-                              </li>
-                            ))}
-                          </ul>
-                        ))
-                      )}
-                    </div>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={`/about-components/${committeeIcons[committee]}`}
+                              alt=""
+                              className="block size-full object-cover"
+                            />
+                          </button>
+                          <p className="mt-2 truncate text-center font-accent text-caption font-bold tracking-body text-ink lowercase">
+                            {committeeLabel(committee)}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
 
-                    {hasMembers ? (
-                      <p className="mt-8 text-center font-body text-base tracking-body text-ink/60 motion-safe:animate-wii-breathe sm:mt-10">
-                        click to explore
-                      </p>
-                    ) : null}
+                    <p className="mt-[4.5%] text-center font-accent text-base tracking-body text-ink/60 motion-safe:animate-wii-breathe max-[649px]:mt-8">
+                      click to explore
+                    </p>
                   </div>
                 )}
               </div>
 
-              {/* Bottom-left and bottom-right, as on the console. */}
-              <div className="mt-auto grid grid-cols-1 gap-2.5 px-4 pb-5 min-[391px]:grid-cols-2 min-[391px]:gap-3 min-[391px]:px-5 min-[391px]:pb-6 min-[645px]:flex min-[645px]:items-center min-[645px]:justify-between min-[645px]:gap-4 min-[645px]:px-8 min-[645px]:pb-8 lg:px-10 lg:pb-10">
-                <button
-                  type="button"
-                  aria-haspopup="dialog"
-                  aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen(true)}
-                  className={`${wiiButton} w-full min-w-0 cursor-pointer motion-safe:animate-wii-breathe min-[645px]:w-auto min-[645px]:min-w-[15rem]`}
-                >
-                  menu
-                </button>
-                {/* Nothing to open until the roster lands, so the console's
-                    start button is disabled rather than silently inert. */}
-                <button
-                  type="button"
-                  disabled={startDisabled}
-                  onClick={handleStart}
-                  className={`${wiiButton} w-full min-w-0 cursor-pointer motion-safe:animate-wii-breathe disabled:cursor-not-allowed disabled:opacity-50 disabled:motion-safe:animate-none min-[645px]:w-auto min-[645px]:min-w-[15rem]`}
-                >
-                  start
-                </button>
-              </div>
+              {/*
+                The console buttons belong to the home screen only: in the
+                mockups each overlay fills the window and carries its own
+                Back and action pill instead.
+              */}
+              {screen.kind === "home" ? (
+                <div className="mt-auto grid grid-cols-1 gap-2.5 px-4 pb-5 min-[391px]:grid-cols-2 min-[391px]:gap-3 min-[391px]:px-5 min-[391px]:pb-6 min-[650px]:flex min-[650px]:items-center min-[650px]:justify-center min-[650px]:gap-[15.8%] min-[650px]:px-0 min-[650px]:pb-[4.6%]">
+                  <button
+                    type="button"
+                    aria-haspopup={
+                      hasCommittee(committeeNames[active])
+                        ? "dialog"
+                        : undefined
+                    }
+                    onClick={() => openMenuFor(active)}
+                    aria-label="Menu"
+                    className={`${consoleButton} motion-safe:animate-wii-breathe`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/about-components/menu button.svg"
+                      alt=""
+                      className="block w-full"
+                    />
+                  </button>
+                  {/*
+                    Start opens the highlighted committee, which is what
+                    clicking its tile does — the console's two ways in.
+                  */}
+                  <button
+                    type="button"
+                    onClick={() => openMenuFor(active)}
+                    aria-label="Start"
+                    className={`${consoleButton} motion-safe:animate-wii-breathe`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/about-components/start button.svg"
+                      alt=""
+                      className="block w-full"
+                    />
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

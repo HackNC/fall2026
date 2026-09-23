@@ -2,24 +2,31 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { ScreenFooter, ScreenTitleBar } from "@/components/CommitteeScreen";
+import {
+  pctOfHeight,
+  ScreenFooter,
+  ScreenTitleBar,
+} from "@/components/CommitteeScreen";
 import type { TeamMember } from "@/data/teamMembers";
 
 type MemberDetailProps = {
   member: TeamMember;
   onBack: () => void;
-  onViewCommittee: () => void;
+  /** Omitted for a committee with no list to switch to. */
+  onViewCommittee?: () => void;
 };
 
-/**
- * A director's screen: photo on the left, details on the right, under the
- * committee title bar.
+/*
+ * Proportions measured off the director mockup, as percentages of the console
+ * window (see the note in CommitteeScreen for why vertical values are written
+ * as percentages of width):
  *
- * This replaces the grid inside the same window rather than floating over it,
- * which is what the mockup shows — so it is a view swap, not a dialog, and
- * deliberately carries no `role="dialog"` or focus trap. The SELECTION menu is
- * the one thing here that *is* a dialog.
+ *   photo   42% wide, 531x484, starting 7.2% in and 17.5% down
+ *   text    the column to its right, name and role centred over it, the
+ *           facts left-aligned beneath
  */
+
+/** One director's card: their photo, their details, and the way back. */
 export default function MemberDetail({
   member,
   onBack,
@@ -27,8 +34,6 @@ export default function MemberDetail({
 }: MemberDetailProps) {
   const backRef = useRef<HTMLButtonElement>(null);
 
-  // Opening a channel takes focus with it; the tile that was activated no
-  // longer exists, so leaving focus behind would drop it onto the body.
   useEffect(() => {
     backRef.current?.focus();
   }, [member]);
@@ -37,70 +42,78 @@ export default function MemberDetail({
     <div className="flex h-full min-h-0 flex-col motion-safe:animate-channel-open">
       <ScreenTitleBar committee={member.committee} />
 
-      <div className="flex min-h-0 flex-1 flex-col px-4 pb-2 pt-3 min-[391px]:px-5 min-[391px]:pt-4 min-[645px]:px-8 min-[645px]:pb-3 min-[645px]:pt-5 lg:px-10 lg:pb-4 lg:pt-6">
-        <div className="grid gap-4 min-[481px]:gap-5 min-[645px]:grid-cols-[minmax(0,18rem)_1fr] min-[645px]:gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-12">
-          {/*
-            Capped below the two-column breakpoint: a full-width square photo
-            on a phone is taller than the window can hold, and the text and
-            footer would spill over the console buttons beneath.
-          */}
-          <div className="relative mx-auto w-full max-w-[13rem] aspect-square overflow-hidden rounded-inset bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)] min-[481px]:max-w-[16rem] min-[645px]:max-w-none">
-            {member.image ? (
-              <Image
-                src={member.image}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 22rem, (min-width: 645px) 18rem, (min-width: 481px) 16rem, 13rem"
-                className="object-cover"
-              />
-            ) : (
-              <span className="grid size-full place-items-center px-2 text-center font-title text-body tracking-title text-ink/45 lowercase">
-                photo coming soon
-              </span>
-            )}
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div
+          /*
+            No padding on this row, on purpose: every percentage below is a
+            share of the console window, and padding here would shrink the box
+            they resolve against. The inset is a margin on the photo instead.
+          */
+          className="flex max-[649px]:flex-col max-[649px]:items-center max-[649px]:gap-4 max-[649px]:px-5"
+          style={{ marginTop: pctOfHeight(2.9) }}
+        >
+          <div className="ml-[7.2%] w-[42%] shrink-0 max-[649px]:mx-0 max-[649px]:w-[11rem]">
+            <div className="relative aspect-[531/484] w-full overflow-hidden rounded-[7%] bg-[#D9D9D9] shadow-[inset_0_2px_6px_rgba(23,55,113,0.25)]">
+              {member.image ? (
+                <Image
+                  src={member.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 650px) 42vw, 11rem"
+                  className="object-cover"
+                />
+              ) : (
+                <span className="grid size-full place-items-center px-2 text-center font-accent text-body tracking-title text-ink/45 lowercase">
+                  photo coming soon
+                </span>
+              )}
+            </div>
           </div>
 
-          <dl className="min-w-0 font-body tracking-body text-ink">
+          {/*
+            55.2%..90% of the window. Type is in `cqw`, 1% of the window's
+            width. The margins inside are not: a percentage margin resolves
+            against this column's width (34.8% of the window), so 1% of one is
+            0.526% of the window's height.
+          */}
+          <dl className="ml-[6%] w-[34.8%] shrink-0 pt-[4.36%] font-accent tracking-body text-ink max-[649px]:mx-0 max-[649px]:w-full max-[649px]:pt-0">
             <dt className="sr-only">Name</dt>
-            <dd className="text-center font-title text-page tracking-title text-royal lowercase">
-              {member.name}
+            <dd className="text-center text-[2.45cqw] font-bold lowercase max-[649px]:text-[1.1rem]">
+              {member.name.split(" ")[0]}
             </dd>
 
             <dt className="sr-only">Role</dt>
-            <dd className="mt-2 text-center text-lg font-bold lowercase sm:text-xl">
+            <dd className="mt-[3.49%] text-center text-[2.37cqw] lowercase max-[649px]:mt-[3%] max-[649px]:text-[0.9rem]">
               {member.role}
             </dd>
 
             {member.year ? (
-              <div className="mt-5 flex gap-2 text-lg max-[390px]:flex-col sm:text-xl max-[390px]:gap-0.5 min-[645px]:mt-6">
-                <dt className="shrink-0 font-bold lowercase">year:</dt>
-                <dd className="lowercase">{member.year}</dd>
+              <div className="mt-[9.82%] text-[2.1cqw] max-[649px]:mt-[7%] max-[649px]:text-[0.85rem]">
+                <dt className="inline font-bold lowercase">year: </dt>
+                <dd className="inline lowercase">{member.year}</dd>
               </div>
             ) : null}
 
             {member.majors ? (
-              <div className="mt-3 flex gap-2 text-lg max-[390px]:flex-col sm:text-xl max-[390px]:gap-0.5 min-[645px]:mt-3">
-                <dt className="shrink-0 font-bold lowercase">major(s):</dt>
-                <dd className="break-words lowercase">{member.majors}</dd>
+              <div className="mt-[5.54%] text-[2.1cqw] max-[649px]:mt-[4%] max-[649px]:text-[0.85rem]">
+                <dt className="inline font-bold lowercase">major(s): </dt>
+                <dd className="inline lowercase">{member.majors}</dd>
               </div>
             ) : null}
 
             {member.funFact ? (
-              <div className="mt-3 flex gap-2 text-lg max-[390px]:flex-col sm:text-xl max-[390px]:gap-0.5 min-[645px]:mt-3">
-                <dt className="shrink-0 font-bold lowercase">fun fact:</dt>
-                <dd className="max-w-[30rem] break-words leading-snug">
-                  {member.funFact}
-                </dd>
+              <div className="mt-[3.24%] text-[2.1cqw] max-[649px]:mt-[4%] max-[649px]:text-[0.85rem]">
+                <dt className="inline font-bold lowercase">fun fact: </dt>
+                <dd className="inline">{member.funFact}</dd>
               </div>
             ) : null}
           </dl>
         </div>
 
         <ScreenFooter
-          className="mt-auto pt-3 min-[391px]:pt-5 sm:pt-6"
           backRef={backRef}
           onBack={onBack}
-          actionLabel="View Committee Members"
+          actionLabel={onViewCommittee ? "View Committee Members" : undefined}
           onAction={onViewCommittee}
         />
       </div>

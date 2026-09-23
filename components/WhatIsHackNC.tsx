@@ -19,7 +19,7 @@ import SpinningCd from "@/components/SpinningCd";
 // Slices in source px: the top 205 hold the gloss highlight, the right 150
 // hold the three slashes, the bottom 60 and left 40 are the corners.
 const frameStyle = {
-  borderImageSource: "url(/what-is-hacknc-frame.webp)",
+  borderImageSource: "url(/home-components/what-is-hacknc-frame.webp)",
   borderImageSlice: "205 150 60 40 fill",
   borderImageWidth:
     "calc(205px * var(--art)) calc(150px * var(--art)) calc(60px * var(--art)) calc(40px * var(--art))",
@@ -32,7 +32,7 @@ const frameStyle = {
 // The diagonal lives in the top-middle region, so it scales with the width —
 // the tab starts 56% of the way across at every size, as in the export.
 const textBoxStyle = {
-  borderImageSource: "url(/what-is-hacknc-textbox.webp)",
+  borderImageSource: "url(/home-components/what-is-hacknc-textbox.webp)",
   borderImageSlice: "70 40 45 40 fill",
   borderImageWidth:
     "calc(70px * var(--art)) calc(40px * var(--art)) calc(45px * var(--art)) calc(40px * var(--art))",

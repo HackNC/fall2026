@@ -34,11 +34,6 @@ export default function Navigation() {
     return () => window.clearTimeout(timer);
   }, [showPortalNotice]);
 
-  // Following a link should close the menu, and so should Escape.
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   useEffect(() => {
     if (!menuOpen) return;
     function handleKey(event: KeyboardEvent) {
@@ -92,7 +87,7 @@ export default function Navigation() {
           className="relative shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
         >
           <Image
-            src="/hacknc-logo.webp"
+            src="/other/hacknc-logo.webp"
             alt="HackNC logo"
             width={74}
             height={74}
@@ -152,6 +147,11 @@ export default function Navigation() {
                 <Link
                   href={link.href}
                   aria-current={isCurrent ? "page" : undefined}
+                  // Closes the dropdown on the way out. Done here rather than
+                  // in an effect on `pathname`: setting state from an effect
+                  // just to react to a render is the cascading-render pattern
+                  // React warns about, and tapping a link is the actual event.
+                  onClick={() => setMenuOpen(false)}
                   className={glossyPill(
                     isCurrent ? "pressed" : "royal",
                     "w-full sm:w-auto sm:min-w-[8rem] lg:min-w-[11.2rem]"

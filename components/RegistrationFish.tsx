@@ -53,7 +53,7 @@ export default function RegistrationFish() {
           className="relative block w-[11rem] motion-safe:animate-fish-bob motion-safe:group-hover:[animation-play-state:paused] sm:w-[14rem] lg:w-[17rem]"
         >
           <Image
-            src="/registration-fish.webp"
+            src="/other/registration-fish.webp"
             alt=""
             width={1198}
             height={635}
