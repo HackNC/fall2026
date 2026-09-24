@@ -233,16 +233,22 @@ details summary::marker {
 }
 
 /*
- * Toggled by WiiCursor while the pointer is inside the team window, so the
- * native cursor is only ever hidden when the hand is on screen to replace it.
+ * The site's cursor: the Wii "Player 1" hand, everywhere. It is the real
+ * system cursor, so it moves with no lag and costs nothing.
  *
- * The descendant selector and !important are both load-bearing: Tailwind's
- * preflight gives buttons `cursor: default`, which would otherwise beat the
- * inherited `none` and make the real cursor reappear over every tile.
+ * A PNG of the original .cur (identical pixels), since Safari's .cur support
+ * is unreliable and every browser takes a PNG. "2 1" is the .cur's own
+ * hotspot, the fingertip, so clicks land where the finger points.
+ *
+ * !important and the universal selector are deliberate: links, buttons and
+ * `cursor-pointer` would otherwise swap in the system pointer hand.
  */
-.wii-pointer-active,
-.wii-pointer-active * {
-  cursor: none !important;
+*,
+*::before,
+*::after {
+  cursor:
+    url("/other/wii-cursor.png") 2 1,
+    auto !important;
 }
 
 /* Stands in for the Wii's channel-zoom when a tile opens. */

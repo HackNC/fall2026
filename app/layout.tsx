@@ -4,7 +4,6 @@ import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 import ScrollToTop from "@/components/ScrollToTop";
 import WaterBackdrop from "@/components/WaterBackdrop";
-import WiiCursor from "@/components/WiiCursor";
 import "./globals.css";
 
 /*
@@ -56,15 +55,6 @@ export default function RootLayout({
           the viewport.
         */}
         <WaterBackdrop />
-        {/*
-          Site-wide Player 1 hand. It portals itself to <body> and works in
-          viewport coordinates, so mounting it here rather than per-section
-          costs nothing and keeps one instance alive across navigations.
-
-          It opts itself out on touch devices and under prefers-reduced-motion,
-          where the native cursor stays put.
-        */}
-        <WiiCursor />
         <ScrollToTop />
         <Navigation />
         <div className="flex-1">{children}</div>
