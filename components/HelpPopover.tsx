@@ -12,6 +12,12 @@ type HelpPopoverProps = {
   question: string;
   /** Extra classes for the orb image — the callers differ only in size. */
   orbClassName?: string;
+  /**
+   * Where the "?" is already drawn into a window's artwork: the button is
+   * then an invisible hit target over it, and these classes size it. The
+   * orb image is not rendered.
+   */
+  hotspotClassName?: string;
 };
 
 /*
@@ -26,6 +32,7 @@ type HelpPopoverProps = {
 export default function HelpPopover({
   question,
   orbClassName = "h-7 sm:h-8",
+  hotspotClassName,
 }: HelpPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -62,9 +69,25 @@ export default function HelpPopover({
         aria-expanded={isOpen}
         aria-label={question}
         onClick={() => setIsOpen((open) => !open)}
-        className="block cursor-pointer rounded-full transition duration-150 hover:brightness-110 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+        className={
+          hotspotClassName
+            ? /*
+                The orb is in the artwork beneath, so hover brightens that
+                through a backdrop filter — the same 110% as the image
+                version, clipped to the orb's oval by the rounding. The hit
+                area reaches past the drawn orb, which is small on a phone.
+              */
+              `relative block cursor-pointer rounded-full transition-[backdrop-filter] duration-150 after:absolute after:-inset-4 after:content-[''] hover:backdrop-brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${hotspotClassName}`
+            : "block cursor-pointer rounded-full transition duration-150 hover:brightness-110 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+        }
       >
-        <Image src={questionMark} alt="" className={`w-auto ${orbClassName}`} />
+        {hotspotClassName ? null : (
+          <Image
+            src={questionMark}
+            alt=""
+            className={`w-auto ${orbClassName}`}
+          />
+        )}
       </button>
 
       {isOpen ? (

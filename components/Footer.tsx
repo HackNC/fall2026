@@ -63,7 +63,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <p className="px-6 text-center font-mono text-sm font-semibold text-ink sm:px-8 sm:text-base lg:px-10 xl:px-12">
+        <p className="px-6 text-center font-accent text-sm font-semibold text-ink sm:px-8 sm:text-base lg:px-10 xl:px-12">
           {"made with <3 by the hacknc graphics + dev team"}
         </p>
       </div>

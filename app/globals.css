@@ -35,10 +35,10 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-display: var(--font-geist-sans);
+  --font-sans: var(--font-ubuntu), "Trebuchet MS", sans-serif;
+  --font-display: var(--font-ubuntu), "Trebuchet MS", sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
   /*
    * hacknc 2026 style guide tokens.
@@ -73,17 +73,13 @@
    * Always pair the family with its tracking: `font-body tracking-body`,
    * `font-accent tracking-accent`, `font-title tracking-title`.
    *
-   * The spec settled on Ubuntu and Istok Web as the real accent and body
-   * faces. They started life as fallbacks for Tahoma and Aptos — Aptos ships
-   * with Office rather than the web — so these are no longer substitutes.
-   *
-   * Bubbleboddy Neue is a local face loaded in app/layout.tsx. Note the
-   * spelling: the family is "Bubbleboddy" with two d's, so the old
-   * "Bubblebody Neue" that used to lead this stack never matched anything.
+   * Every role is Ubuntu, as in the Figma. The three names are kept because
+   * they still say what a piece of text is doing, and would let a role take
+   * its own face again without touching every call site.
    */
-  --font-title: var(--font-bubbleboddy), "Trebuchet MS", sans-serif;
+  --font-title: var(--font-ubuntu), "Trebuchet MS", sans-serif;
   --font-accent: var(--font-ubuntu), "Trebuchet MS", sans-serif;
-  --font-body: var(--font-istok-web), Verdana, sans-serif;
+  --font-body: var(--font-ubuntu), "Trebuchet MS", sans-serif;
 
   /*
    * Body sits at 5% and accent at regular, both per spec. Title is not
@@ -132,7 +128,7 @@ body {
    * propagation, so a background here would paint over the backdrop instead.
    */
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-ubuntu), "Trebuchet MS", sans-serif;
 }
 
 html {

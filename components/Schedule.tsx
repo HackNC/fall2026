@@ -2,7 +2,6 @@
 
 import { useState, type KeyboardEvent } from "react";
 import { glossyPill } from "@/components/glossyPill";
-import WindowFrame from "@/components/WindowFrame";
 import {
   schedule,
   scheduleDates,
@@ -10,6 +9,50 @@ import {
   scheduleIsTentative,
   type ScheduleDay,
 } from "@/data/schedule";
+
+/*
+ * The window is the Figma export (public/schedule-components/"window
+ * frame.svg"): blue frame, gradient title bar with its minimise / maximise /
+ * close drawn in, and the inner white panel. Its canvas is 1209 x 1733, and
+ * the numbers below are measured off it:
+ *
+ *   frame       x 4..1205 (a 4px shadow margin each side, 8px below)
+ *   title bar   y 0..84; the window controls take x 932..1182
+ *   panel       x 28..1181, y 84..1674, 10px corners
+ *
+ * Nine-sliced, as the resources window is: the slices take the title bar and
+ * every corner, and only the plain middle stretches to the day's events. The
+ * slice widths are shares of the window's width (`cqw` on the wrapper), so the
+ * title bar and its controls stay evenly scaled at any width.
+ */
+const ART_WIDTH = 1209;
+const at = (px: number) => `calc(${px} * 100cqw / ${ART_WIDTH})`;
+
+const SLICE = { top: 100, right: 40, bottom: 70, left: 40 };
+
+/*
+ * Drawn from a 2x WebP render of that SVG (same folder, rendered with
+ * headless Chrome), not the SVG itself: the export is full of blur and
+ * drop-shadow filters, and as a border image the browser re-ran them on every
+ * repaint — scrolling, and anything moving behind the glass nav — which
+ * stalled one frame in ten for up to a second. A raster is cheap to paint.
+ * Re-render it if the SVG changes.
+ *
+ * A raster's slices are in its own pixels, hence RENDER_SCALE below; the widths
+ * the slices are drawn at are unchanged, still in the artwork's units.
+ */
+const RENDER_SCALE = 2;
+
+const windowStyle = {
+  borderImageSource: 'url("/schedule-components/window frame.webp")',
+  borderImageSlice: `${SLICE.top * RENDER_SCALE} ${SLICE.right * RENDER_SCALE} ${SLICE.bottom * RENDER_SCALE} ${SLICE.left * RENDER_SCALE} fill`,
+  borderImageWidth: `${at(SLICE.top)} ${at(SLICE.right)} ${at(SLICE.bottom)} ${at(SLICE.left)}`,
+  borderImageRepeat: "stretch",
+  // The panel's edges, plus room inside it.
+  paddingTop: `calc(${at(84)} + clamp(1.25rem, 3.5cqw, 2.5rem))`,
+  paddingBottom: `calc(${at(59)} + clamp(1.25rem, 4cqw, 3rem))`,
+  paddingInline: `calc(${at(28)} + clamp(1rem, 4.5cqw, 3.5rem))`,
+} as const;
 
 export default function Schedule() {
   const [activeDay, setActiveDay] = useState<ScheduleDay>(scheduleDays[0]);
@@ -60,15 +103,19 @@ export default function Schedule() {
           </p>
         ) : null}
 
-        {/* Retro OS window frame. */}
-        <WindowFrame
-          variant="blue"
-          className="mt-8 px-4 pt-4 pb-8 sm:mt-12 sm:px-6 sm:pt-5 sm:pb-12"
-          titleBar={
+        {/*
+          The window is the Figma export (see the note at the top). The day
+          tabs sit in its title bar from 768px up — the title bar's height,
+          from the panel's left edge (x 28) to just short of the window
+          controls (x 912) — and at the top of the panel below that, where
+          the title bar is too short to hold them.
+        */}
+        <div className="mt-8 [container-type:inline-size] sm:mt-12">
+          <div className="relative border-0" style={windowStyle}>
             <div
               role="tablist"
               aria-label="Schedule days"
-              className="flex flex-wrap gap-2 sm:gap-4 lg:gap-8"
+              className="mb-6 flex flex-wrap justify-center gap-2 md:absolute md:top-0 md:left-[calc(28*100cqw/1209)] md:mb-0 md:h-[calc(84*100cqw/1209)] md:max-w-[calc(884*100cqw/1209)] md:flex-nowrap md:items-center md:justify-start md:gap-4 lg:gap-8"
             >
               {scheduleDays.map((day, index) => {
                 const isActive = day === activeDay;
@@ -86,7 +133,7 @@ export default function Schedule() {
                     onKeyDown={(event) => handleTabKeyDown(event, index)}
                     className={glossyPill(
                       isActive ? "pressed" : "blossom",
-                      "min-w-[6.5rem] cursor-pointer sm:min-w-[8.5rem] lg:min-w-[11.2rem]"
+                      "min-w-[6.5rem] cursor-pointer md:min-w-[8.5rem] lg:min-w-[11.2rem]"
                     )}
                   >
                     {day}
@@ -94,82 +141,53 @@ export default function Schedule() {
                 );
               })}
             </div>
-          }
-          controls={
-            /*
-              Window controls are pure decoration — a page cannot minimise or
-              close itself — so they are hidden from assistive tech rather than
-              exposed as buttons that do nothing.
-            */
-            /* Flush to the frame's top-right corner, as in the mockup. */
-            <div className="-mt-4 -mr-4 ml-auto hidden sm:-mt-5 sm:-mr-6 sm:flex">
-              <span
-                aria-hidden="true"
-                className="grid h-[38px] w-[62px] place-items-center border-b border-l border-royal/25 bg-linear-to-b from-[#F7FAFF] to-[#D2E1F6] text-base text-ink/70 shadow-[0_1px_4px_rgba(23,55,113,0.3)]"
-              >
-                &#8211;
-              </span>
-              <span
-                aria-hidden="true"
-                className="grid h-[38px] w-[62px] place-items-center border-b border-l border-royal/25 bg-linear-to-b from-[#F7FAFF] to-[#D2E1F6] text-xs text-ink/70 shadow-[0_1px_4px_rgba(23,55,113,0.3)]"
-              >
-                &#9744;
-              </span>
-              <span
-                aria-hidden="true"
-                className="grid h-[38px] w-[72px] place-items-center rounded-tr-[7px] rounded-bl-[5px] border-[1.5px] border-[#BA0303]/30 bg-linear-to-b from-[#CC5959] from-[32%] to-[#FFBEBE] to-[72%] font-body text-lg text-white shadow-[0_4px_4px_rgba(0,0,0,0.25)] [text-shadow:0_1px_4px_rgba(23,55,113,0.5)]"
-              >
-                X
-              </span>
-            </div>
-          }
-        >
-          <div
-            id={`schedule-panel-${activeDay.toLowerCase()}`}
-            role="tabpanel"
-            aria-labelledby={`schedule-tab-${activeDay.toLowerCase()}`}
-            className={`mt-4 min-h-[28rem] rounded-card bg-white px-5 py-6 shadow-[0_4px_4px_rgba(23,55,113,0.25),inset_0_4px_4px_rgba(23,55,113,0.25)] sm:mt-3.5 sm:min-h-[40rem] sm:px-12 sm:py-10 ${
-              dayEvents.length === 0
-                ? "grid place-items-center text-center"
-                : ""
-            }`}
-          >
-            {dayEvents.length === 0 ? (
-              <p className="font-title text-page tracking-title text-royal lowercase">
-                coming soon
-              </p>
-            ) : (
-              <>
-                {/*
-                  Date only: the weekday is already the label on the tab
-                  above. Body face rather than the title face because the
-                  trial title font watermarks every digit.
-                */}
-                <p className="mb-2 font-body text-sm font-bold tracking-[0.18em] text-royal uppercase sm:mb-3 sm:text-base">
-                  {scheduleDates[activeDay]}
+
+            <div
+              id={`schedule-panel-${activeDay.toLowerCase()}`}
+              role="tabpanel"
+              aria-labelledby={`schedule-tab-${activeDay.toLowerCase()}`}
+              className={`min-h-[24rem] sm:min-h-[34rem] ${
+                dayEvents.length === 0
+                  ? "grid place-items-center text-center"
+                  : ""
+              }`}
+            >
+              {dayEvents.length === 0 ? (
+                <p className="font-title text-page tracking-title text-royal lowercase">
+                  coming soon
                 </p>
-                {dayEvents.map((event) => (
-                  <article
-                    key={`${event.time}-${event.title}`}
-                    className="grid gap-1 border-b border-sky py-5 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-x-16 sm:py-7"
-                  >
-                    <time className="font-body text-page tracking-body whitespace-nowrap text-ink">
-                      {event.time}
-                    </time>
-                    <div className="font-body tracking-body text-ink">
-                      <h2 className="text-base sm:text-2xl">{event.title}</h2>
-                      {event.description ? (
-                        <p className="mt-1 max-w-[46rem] text-base sm:text-2xl">
-                          {event.description}
-                        </p>
-                      ) : null}
-                    </div>
-                  </article>
-                ))}
-              </>
-            )}
+              ) : (
+                <>
+                  {/*
+                    Date only: the weekday is already the label on the tab
+                    above.
+                  */}
+                  <p className="mb-2 font-body text-sm font-bold tracking-[0.18em] text-royal uppercase sm:mb-3 sm:text-base">
+                    {scheduleDates[activeDay]}
+                  </p>
+                  {dayEvents.map((event) => (
+                    <article
+                      key={`${event.time}-${event.title}`}
+                      className="grid gap-1 border-b border-sky py-5 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-x-16 sm:py-7"
+                    >
+                      <time className="font-body text-page tracking-body whitespace-nowrap text-ink">
+                        {event.time}
+                      </time>
+                      <div className="font-body tracking-body text-ink">
+                        <h2 className="text-base sm:text-2xl">{event.title}</h2>
+                        {event.description ? (
+                          <p className="mt-1 max-w-[46rem] text-base sm:text-2xl">
+                            {event.description}
+                          </p>
+                        ) : null}
+                      </div>
+                    </article>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
-        </WindowFrame>
+        </div>
       </div>
     </section>
   );

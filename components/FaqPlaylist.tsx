@@ -120,7 +120,7 @@ export default function FaqPlaylist() {
           <span aria-hidden="true" className="h-[3px] flex-1 bg-forest/70" />
           <h2
             id="faq-heading"
-            className="shrink-0 font-title text-lg tracking-title text-forest lowercase sm:text-2xl"
+            className="shrink-0 font-title text-lg tracking-title text-forest sm:text-2xl"
           >
             FAQ playlist
           </h2>
@@ -250,7 +250,7 @@ export default function FaqPlaylist() {
           */}
           <p
             aria-hidden="true"
-            className="rounded-md border border-forest/25 bg-white px-3 py-1.5 font-mono text-sm tabular-nums text-forest shadow-[inset_0_1px_3px_rgba(20,120,66,0.25)]"
+            className="rounded-md border border-forest/25 bg-white px-3 py-1.5 font-accent text-sm tabular-nums text-forest shadow-[inset_0_1px_3px_rgba(20,120,66,0.25)]"
           >
             {isPlaying ? elapsedBefore(trackIndex) : "00:00"}/{runningTime}
           </p>

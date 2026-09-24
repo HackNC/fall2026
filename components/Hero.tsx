@@ -168,18 +168,10 @@ export default function Hero() {
           />
 
           {/*
-            Still artwork rather than live text, and it has to stay that way
-            until the font is licensed.
-
-            The Bubbleboddy Neue *trial* substitutes a "PERSONAL USE ONLY —
-            ZETAFONTS.COM" watermark for every digit glyph, in all three
-            weights. Letters render perfectly, so `font-title` is fine for
-            headings; anything containing numbers is not. "hacknc 2026" set as
-            live text renders as `hacknc` followed by four watermark badges.
-
-            This export came from the Figma, which has the full family, so its
-            numerals are correct. Swap back to live text with `font-title
-            text-display font-light` once the commercial licence is bought.
+            Artwork rather than live text: the wordmark is lettered in
+            Bubbleboddy Neue, which the site does not load (everything else is
+            Ubuntu). The export came from the Figma, which has the licensed
+            family, so its letters and numerals are exact.
           */}
           <h1 className="relative">
             <span className="sr-only">HackNC 2026</span>

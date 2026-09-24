@@ -151,7 +151,9 @@ export default function WiiCursor() {
         dominantBaseline="central"
         fontSize="11"
         fontWeight="700"
-        fontFamily="Tahoma, Verdana, sans-serif"
+        // A style, not the attribute: presentation attributes cannot read the
+        // CSS variable next/font sets.
+        style={{ fontFamily: "var(--font-ubuntu), sans-serif" }}
         fill="#ffffff"
       >
         1

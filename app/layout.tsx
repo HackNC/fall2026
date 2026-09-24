@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Istok_Web, Ubuntu } from "next/font/google";
-import localFont from "next/font/local";
+import { Ubuntu } from "next/font/google";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -8,50 +7,13 @@ import WaterBackdrop from "@/components/WaterBackdrop";
 import WiiCursor from "@/components/WiiCursor";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 /*
- * The style guide's title face. Zetafonts' trial cut, licensed for
- * non-commercial use — see the licence PDF that ships with the family.
- *
- * Subset to Latin and converted to woff2 before being committed: the source
- * TTFs carry full Cyrillic and Greek sets at ~190 KB each, which is 24 KB here
- * instead. Regenerate with pyftsubset if a weight or glyph range is missing.
- *
- * `display: "swap"` on purpose — the wordmark is artwork, so the only thing
- * waiting on this file is body-adjacent headline text, which is better shown
- * in the fallback than not shown at all.
+ * Ubuntu is the site's one face, as in the Figma: every font role in
+ * globals.css (title, body, accent, and the page default) points at it.
  */
-const bubbleboddy = localFont({
-  variable: "--font-bubbleboddy",
-  display: "swap",
-  src: [
-    { path: "./fonts/BubbleboddyNeue-Light.woff2", weight: "300" },
-    { path: "./fonts/BubbleboddyNeue-Regular.woff2", weight: "400" },
-    { path: "./fonts/BubbleboddyNeue-Bold.woff2", weight: "700" },
-  ],
-});
-
-// Accent face. Ubuntu and Istok Web are the real specified faces now, not
-// stand-ins for Tahoma/Aptos — see the font stack comment in globals.css.
 const ubuntu = Ubuntu({
   variable: "--font-ubuntu",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-});
-
-// Body face.
-const istokWeb = Istok_Web({
-  variable: "--font-istok-web",
-  weight: ["400", "700"],
+  weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
 });
 
@@ -73,10 +35,7 @@ export default function RootLayout({
    * in-page anchors do, so the smooth setting in globals.css is left to apply.
    */
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bubbleboddy.variable} ${ubuntu.variable} ${istokWeb.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${ubuntu.variable} h-full antialiased`}>
       {/*
         Browser extensions (Grammarly, password managers) inject attributes
         onto <body> before React hydrates, which React reports as a mismatch.
