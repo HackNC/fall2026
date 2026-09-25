@@ -16,9 +16,37 @@ const ubuntu = Ubuntu({
   subsets: ["latin"],
 });
 
+/*
+ * What a link to the site shows when it is pasted into Discord, Slack,
+ * iMessage and the like.
+ *
+ * The preview image is app/opengraph-image.jpg (and twitter-image.jpg, the
+ * same picture for X): Next finds those files by name and writes the tags,
+ * so nothing here points at them. `metadataBase` is what turns their paths
+ * into the absolute URLs link previews require.
+ *
+ * Apps cache a link's preview, so after a change a link that was already
+ * shared can keep showing the old one for a while; pasting it fresh (or with
+ * `?v=2` on the end) fetches the new one.
+ */
+const previewText = "October 9-11 @ UNC - Register Now!";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hacknc.com"),
   title: "HackNC 2026",
-  description: "The official HackNC 2026 Website.",
+  description: previewText,
+  openGraph: {
+    title: "HackNC 2026",
+    description: previewText,
+    url: "/",
+    siteName: "HackNC 2026",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HackNC 2026",
+    description: previewText,
+  },
 };
 
 export default function RootLayout({
