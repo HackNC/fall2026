@@ -31,7 +31,7 @@ export const resourceCategories: ResourceCategory[] = [
       {
         title: "Submitting on Devpost",
         description: "How to enter your project before the deadline.",
-        href: "https://help.devpost.com/hc/en-us/articles/360054999651",
+        href: "https://help.devpost.com/article/122-how-to-enter-a-submission",
       },
     ],
   },
