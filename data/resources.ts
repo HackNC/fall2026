@@ -14,6 +14,11 @@ export const resourceCategories: ResourceCategory[] = [
     title: "Guides & Past Projects",
     resources: [
       {
+        title: "HackNC 2026 Hacker Guide",
+        description: "Everything you need to know for the weekend.",
+        href: "https://go.unc.edu/HackNC2026-guide",
+      },
+      {
         title: "HackNC 2025 on Devpost",
         description: "Browse every project submitted at last year's hackathon.",
         href: "https://hacknc-2025.devpost.com",
@@ -52,6 +57,11 @@ export const resourceCategories: ResourceCategory[] = [
         title: "Figma for Education",
         description: "Design your UI with a free education plan.",
         href: "https://www.figma.com/education/",
+      },
+      {
+        title: "React Docs",
+        description: "Learn React, the library behind most web apps.",
+        href: "https://react.dev/learn",
       },
       {
         title: "Next.js Learn",
