@@ -1,8 +1,12 @@
 import Image from "next/image";
-import { REGISTER_HREF } from "@/data/site";
+import { REGISTER_HREF, REGISTRATION_OPEN } from "@/data/site";
 
 /**
  * The registration fish: swims across the page and links to the form.
+ *
+ * Once registration closes (REGISTRATION_OPEN in data/site.ts) it keeps
+ * swimming — it is part of the page — but is no longer a link, and the text
+ * on its back says so.
  *
  * Two nested elements, each running one animation. A single element can only
  * hold one transform at a time, so the crossing and the bob would overwrite
@@ -38,16 +42,7 @@ export default function RegistrationFish() {
        */
       className="pointer-events-none absolute inset-x-0 left-1/2 z-30 hidden w-screen -translate-x-1/2 overflow-x-clip sm:top-[4rem] sm:block"
     >
-      <a
-        href={REGISTER_HREF}
-        target="_blank"
-        rel="noreferrer"
-        // Pauses on hover and focus: a link that is still moving when you
-        // reach for it is a link you keep missing.
-        className="group pointer-events-auto inline-block rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-royal motion-safe:animate-fish-swim motion-safe:hover:[animation-play-state:paused] motion-safe:focus-visible:[animation-play-state:paused]"
-      >
-        <span className="sr-only">Register for HackNC 2026</span>
-
+      <FishBody>
         <span
           aria-hidden="true"
           className="relative block w-[11rem] motion-safe:animate-fish-bob motion-safe:group-hover:[animation-play-state:paused] sm:w-[14rem] lg:w-[17rem]"
@@ -97,12 +92,42 @@ export default function RegistrationFish() {
               paintOrder="stroke"
             >
               <textPath href="#fish-text-arc" startOffset="0%">
-                click me to register...
+                {REGISTRATION_OPEN
+                  ? "click me to register..."
+                  : "registration closed"}
               </textPath>
             </text>
           </svg>
         </span>
-      </a>
+      </FishBody>
     </div>
+  );
+}
+
+/** The swimmer: the form's link while registration is open, plain otherwise. */
+function FishBody({ children }: { children: React.ReactNode }) {
+  const swim = "group inline-block rounded-full motion-safe:animate-fish-swim";
+
+  if (!REGISTRATION_OPEN) {
+    return (
+      <span className={swim}>
+        <span className="sr-only">Registration for HackNC 2026 is closed</span>
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={REGISTER_HREF}
+      target="_blank"
+      rel="noreferrer"
+      // Pauses on hover and focus: a link that is still moving when you reach
+      // for it is a link you keep missing.
+      className={`${swim} pointer-events-auto focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-royal motion-safe:hover:[animation-play-state:paused] motion-safe:focus-visible:[animation-play-state:paused]`}
+    >
+      <span className="sr-only">Register for HackNC 2026</span>
+      {children}
+    </a>
   );
 }

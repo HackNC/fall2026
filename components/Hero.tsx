@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { glossyPill } from "@/components/glossyPill";
 import wordmark from "@/app/figma/hacknc 2026.png";
-import { REGISTER_HREF } from "@/data/site";
+import { REGISTER_HREF, REGISTRATION_OPEN } from "@/data/site";
 
 type TimeLeft = {
   days: number;
@@ -223,17 +223,34 @@ export default function Hero() {
           for the phone layout without moving on wider screens.
         */}
         <span className="mt-5 flex justify-center sm:absolute sm:-top-7 sm:right-8 sm:z-10 sm:mt-0 sm:block">
-          <a
-            href={REGISTER_HREF}
-            target="_blank"
-            rel="noreferrer"
-            className={glossyPill(
-              "blossom",
-              "shadow-[0_6px_14px_rgba(23,55,113,0.35)] sm:px-10 sm:py-3 sm:text-2xl"
-            )}
-          >
-            register here !
-          </a>
+          {REGISTRATION_OPEN ? (
+            <a
+              href={REGISTER_HREF}
+              target="_blank"
+              rel="noreferrer"
+              className={glossyPill(
+                "blossom",
+                "shadow-[0_6px_14px_rgba(23,55,113,0.35)] sm:px-10 sm:py-3 sm:text-2xl"
+              )}
+            >
+              register here !
+            </a>
+          ) : (
+            /*
+              Kept in place once registration closes, so anyone who comes for
+              the form gets an answer rather than finding it gone. Same pink
+              tag, so the hero keeps its colour, but plain text rather than a
+              link, with the hover and press effects switched off.
+            */
+            <p
+              className={glossyPill(
+                "blossom",
+                "shadow-[0_6px_14px_rgba(23,55,113,0.35)] hover:brightness-100 active:translate-y-0 sm:px-10 sm:py-3 sm:text-2xl"
+              )}
+            >
+              registration closed
+            </p>
+          )}
         </span>
       </div>
     </section>

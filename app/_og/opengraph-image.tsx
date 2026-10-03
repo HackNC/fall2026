@@ -32,11 +32,12 @@ import { ImageResponse } from "next/og";
  *     the build never depends on the live site. The backdrop is pre-cropped
  *     to 1200 x 630, as `objectFit: "cover"` did.
  *
- * The arrow is drawn as an SVG, since Ubuntu's Latin subset has no "→". And
- * the button's label is in its own element: as a bare text node beside the
- * arrow, Satori laid it out but never painted it.
+ * The button's label is in its own element: as a bare text node beside
+ * another element, Satori laid it out but never painted it. (While
+ * registration was open the button had an arrow, drawn as an SVG since
+ * Ubuntu's Latin subset has no "→", and the Wii cursor pointing at it.)
  */
-export const alt = "HackNC 2026 — October 9-11 @ UNC. Register now!";
+export const alt = "HackNC 2026 — October 9-11 @ UNC. Registration closed.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -51,12 +52,11 @@ async function dataUrl(file: string, type: string) {
 }
 
 export default async function Image() {
-  const [ubuntuMedium, ubuntuBold, backdrop, logo, cursor] = await Promise.all([
+  const [ubuntuMedium, ubuntuBold, backdrop, logo] = await Promise.all([
     asset("Ubuntu-Medium.ttf"),
     asset("Ubuntu-Bold.ttf"),
     dataUrl("backdrop.jpg", "image/jpeg"),
     dataUrl("logo.png", "image/png"),
-    dataUrl("cursor.png", "image/png"),
   ]);
 
   return new ImageResponse(
@@ -118,57 +118,28 @@ export default async function Image() {
           October 9-11 @ UNC
         </div>
 
-        <div style={{ display: "flex", position: "relative", marginTop: 36 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              padding: "20px 46px",
-              borderRadius: 999,
-              fontSize: 38,
-              fontWeight: 700,
-              letterSpacing: "0.01em",
-              color: "#ffffff",
-              textShadow: "0 1px 2px rgba(23,55,113,0.45)",
-              backgroundImage:
-                "linear-gradient(180deg, #3f7ae0 0%, #1554c9 100%)",
-              border: "2px solid rgba(255,255,255,0.55)",
-              boxShadow:
-                "0 12px 24px rgba(21,84,201,0.35), inset 0 2px 0 rgba(255,255,255,0.35)",
-            }}
-          >
-            <div style={{ display: "flex" }}>Register Now</div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 44,
-                height: 44,
-                borderRadius: 999,
-                background: "#ffffff",
-              }}
-            >
-              <svg width="26" height="26" viewBox="0 0 24 24">
-                <path
-                  d="M5 12h13M13 6l6 6-6 6"
-                  stroke="#1554c9"
-                  strokeWidth="2.8"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-          <img
-            src={cursor}
-            width={64}
-            height={64}
-            alt=""
-            style={{ position: "absolute", right: -26, bottom: -40 }}
-          />
+        {/*
+          Registration has closed, so the button is a label: the hero's pink
+          "blossom" tag, with no arrow and no pointing cursor.
+        */}
+        <div
+          style={{
+            display: "flex",
+            marginTop: 36,
+            padding: "18px 44px",
+            borderRadius: 999,
+            fontSize: 38,
+            fontWeight: 700,
+            letterSpacing: "0.01em",
+            color: "#711767",
+            textShadow: "0 1px 0 rgba(255,255,255,0.6)",
+            backgroundImage:
+              "linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, #ff98b8 5%, rgba(244,255,254,0.95) 100%)",
+            border: "2px solid #ff98b8",
+            boxShadow: "0 10px 20px rgba(23,55,113,0.3)",
+          }}
+        >
+          <div style={{ display: "flex" }}>Registration Closed</div>
         </div>
       </div>
     </div>,
