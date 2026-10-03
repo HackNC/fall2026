@@ -31,6 +31,13 @@
   inherits: true;
 }
 
+/* 0 at the top of the page, 1 at the very bottom of the document. */
+@property --scroll-page {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
