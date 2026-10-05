@@ -109,13 +109,17 @@ export default function Schedule() {
           from the panel's left edge (x 28) to just short of the window
           controls (x 912) — and at the top of the panel below that, where
           the title bar is too short to hold them.
+
+          In the title bar the tabs share that space equally (capped at their
+          full size), so however many days there are, they never run under
+          the controls.
         */}
         <div className="mt-8 [container-type:inline-size] sm:mt-12">
           <div className="relative border-0" style={windowStyle}>
             <div
               role="tablist"
               aria-label="Schedule days"
-              className="mb-6 flex flex-wrap justify-center gap-2 md:absolute md:top-0 md:left-[calc(28*100cqw/1209)] md:mb-0 md:h-[calc(84*100cqw/1209)] md:max-w-[calc(884*100cqw/1209)] md:flex-nowrap md:items-center md:justify-start md:gap-4 lg:gap-8"
+              className="mb-6 flex flex-wrap justify-center gap-2 md:absolute md:top-0 md:left-[calc(28*100cqw/1209)] md:mb-0 md:h-[calc(84*100cqw/1209)] md:w-[calc(884*100cqw/1209)] md:flex-nowrap md:items-center md:justify-start md:gap-3 lg:gap-6"
             >
               {scheduleDays.map((day, index) => {
                 const isActive = day === activeDay;
@@ -133,7 +137,7 @@ export default function Schedule() {
                     onKeyDown={(event) => handleTabKeyDown(event, index)}
                     className={glossyPill(
                       isActive ? "pressed" : "blossom",
-                      "min-w-[6.5rem] cursor-pointer md:min-w-[8.5rem] lg:min-w-[11.2rem]"
+                      "min-w-[6.5rem] cursor-pointer md:min-w-0 md:max-w-[11.2rem] md:flex-1"
                     )}
                   >
                     {day}

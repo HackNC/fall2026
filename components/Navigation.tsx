@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import MLHBadge from "@/components/MLHBadge";
 import { glossyPill } from "@/components/glossyPill";
+import { PORTAL_HREF } from "@/data/site";
 
 const internalLinks = [
   { label: "about", href: "/about" },
@@ -18,7 +19,6 @@ const MLH_BADGE_RIGHT_OFFSET = "clamp(10px, 3.5vw, 28px)";
 
 export default function Navigation() {
   const pathname = usePathname();
-  const [showPortalNotice, setShowPortalNotice] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   /*
    * Phone layout only. Below `sm` the four pills no longer fit beside the
@@ -27,12 +27,6 @@ export default function Navigation() {
    * forced visible by its own `sm:flex`.
    */
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (!showPortalNotice) return;
-    const timer = window.setTimeout(() => setShowPortalNotice(false), 2600);
-    return () => window.clearTimeout(timer);
-  }, [showPortalNotice]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -162,33 +156,21 @@ export default function Navigation() {
               </li>
             );
           })}
-          <li className="relative">
-            <button
-              type="button"
-              aria-expanded={showPortalNotice}
-              onClick={() => setShowPortalNotice(true)}
+          <li>
+            {/* A separate site, so it opens in a new tab like the site's
+                other external links. */}
+            <a
+              href={PORTAL_HREF}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setMenuOpen(false)}
               className={glossyPill(
                 "royal",
-                "w-full cursor-pointer sm:w-auto sm:min-w-[8rem] lg:min-w-[11.2rem]"
+                "w-full sm:w-auto sm:min-w-[8rem] lg:min-w-[11.2rem]"
               )}
             >
               portal
-            </button>
-            {showPortalNotice ? (
-              <div
-                role="status"
-                aria-live="polite"
-                className="absolute top-full left-1/2 z-30 mt-2 -translate-x-1/2"
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-t border-l border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.65),rgba(216,236,255,0.55))] backdrop-blur-xl"
-                />
-                <span className="block whitespace-nowrap rounded-inset border border-white/55 bg-[linear-gradient(150deg,rgba(255,255,255,0.52)_0%,rgba(189,221,255,0.38)_100%)] px-3.5 py-1.5 font-body text-sm tracking-body text-ink shadow-[0_10px_26px_rgba(23,55,113,0.28),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-2xl">
-                  Portal is coming soon!
-                </span>
-              </div>
-            ) : null}
+            </a>
           </li>
         </ul>
 

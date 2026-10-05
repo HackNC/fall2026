@@ -40,9 +40,9 @@ export default function HelpPopover({
   /*
    * Escape and click-outside both dismiss the popover.
    *
-   * It stays open until dismissed rather than timing out like the nav's portal
-   * notice, because it contains a mailto link — a message that disappears on
-   * its own is one you cannot click.
+   * It stays open until dismissed rather than timing out, because it contains
+   * a mailto link — a message that disappears on its own is one you cannot
+   * click.
    */
   useEffect(() => {
     if (!isOpen) return;

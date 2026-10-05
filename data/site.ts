@@ -7,6 +7,9 @@
  */
 export const REGISTER_HREF = "https://form.typeform.com/to/VbwryQz0";
 
+/* The hacker portal, linked from the nav. */
+export const PORTAL_HREF = "https://portal.hacknc.com";
+
 /*
  * Whether registration is taking sign-ups. While false, the hero tag and the
  * fish both read "registration closed" and link nowhere. Set it back to true

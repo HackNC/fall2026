@@ -1,9 +1,15 @@
-export const scheduleDays = ["Friday", "Saturday", "Sunday"] as const;
+export const scheduleDays = [
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+] as const;
 
 export type ScheduleDay = (typeof scheduleDays)[number];
 
 /* Shown above each day's events. Keep in step with EVENT_DATES in Hero.tsx. */
 export const scheduleDates: Record<ScheduleDay, string> = {
+  Thursday: "October 8",
   Friday: "October 9",
   Saturday: "October 10",
   Sunday: "October 11",
@@ -17,17 +23,12 @@ export type ScheduleEvent = {
 };
 
 /*
- * The hacker-facing schedule, from the run of show (last updated 9/19/2026).
+ * The hacker-facing schedule, from the team's schedule sheet (October 2026).
  *
- * Only the Public and Workshop rows of that sheet are here. Internal rows (setup,
- * deliveries, mentor and judge meetings, sleeping-area logistics) are
- * left out on purpose: this page is for hackers, and the run of show is the
- * team's document. "X ends" rows are folded into the "until" of the event they
- * close rather than listed on their own.
- *
- * Workshop titles marked TBD are still being confirmed with the presenters.
- * Rooms are deliberately not listed yet; they go in the descriptions once the
- * venue plan is final.
+ * Each row is its start time; where the sheet gives an end time it goes in the
+ * description as "Until ...". Locations are deliberately left out for now.
+ * Thursday's Mini Hackathon is a pre-event, ahead of the main October 9-11
+ * weekend.
  */
 /*
  * Shown as a note under the page heading while the run of show is still
@@ -36,33 +37,41 @@ export type ScheduleEvent = {
 export const scheduleIsTentative = true;
 
 export const schedule: Record<ScheduleDay, ScheduleEvent[]> = {
+  Thursday: [
+    {
+      time: "5:30 PM",
+      title: "Mini Hackathon with Lafayette Co.",
+      description: "Until 7:30 PM.",
+    },
+  ],
   Friday: [
     {
       time: "5:00 PM",
-      title: "Kickoff + HackNC 101",
-      description:
-        "Welcome, what to expect over the weekend, and how to make the most of it.",
+      title: "HackNC Kickoff",
+      description: "Until 5:30 PM.",
     },
     {
       time: "5:30 PM",
-      title: "Workshop: CS+Social Good",
-      description: "Topic to be announced.",
+      title: "HackNC 101 Workshop with Lead Directors",
+      description:
+        "What to expect over the weekend, and how to make the most of it. Until 6:00 PM.",
     },
     {
       time: "5:30 PM",
-      title: "Team Matching",
+      title: "Team Matching Event",
       description:
-        "Don't have a team yet? Come meet other hackers and form one.",
+        "Don't have a team yet? Come meet other hackers and form one. Until 6:00 PM.",
     },
   ],
   Saturday: [
     {
       time: "8:00 AM",
-      title: "Check-In Opens",
+      title: "Hacker Check-In Begins",
+      description: "Until 10:30 AM.",
     },
     {
       time: "8:30 AM",
-      title: "Coffee & Breakfast",
+      title: "Breakfast",
       description: "Until 10:00 AM.",
     },
     {
@@ -72,16 +81,17 @@ export const schedule: Record<ScheduleDay, ScheduleEvent[]> = {
     },
     {
       time: "11:30 AM",
-      title: "Hacking Begins",
+      title: "Hacking Begins!",
     },
     {
       time: "11:45 AM",
-      title: "MLH Workshop: Google Gemini AI Studio",
+      title: "Intro to Web Dev Workshop with CS+SG",
+      description: "Until 12:30 PM.",
     },
     {
       time: "11:45 AM",
-      title: "Workshop: CS+Social Good",
-      description: "Topic to be announced.",
+      title: "Google Gemini AI Studio Workshop with MLH",
+      description: "Until 12:30 PM.",
     },
     {
       time: "12:30 PM",
@@ -96,25 +106,34 @@ export const schedule: Record<ScheduleDay, ScheduleEvent[]> = {
     },
     {
       time: "3:15 PM",
-      title: "Treasury Workshop: Beyond AI Slop",
+      title: "Sponsor Workshop with Treasury: Beyond AI Slop",
+      description: "Until 4:00 PM.",
     },
     {
       time: "3:15 PM",
-      title: "Workshop: HackNC Dev Team",
-      description: "Topic to be announced.",
+      title: "UNC FLUX Workshop: Intro to UI/UX",
+      description: "Until 4:00 PM.",
     },
     {
       time: "4:15 PM",
       title: "MLH Workshop: Intro to GitHub Copilot",
+      description: "Until 5:00 PM.",
     },
     {
-      time: "4:30 PM",
-      title: "Labcorp Workshop: Privilege, Trust, Accountability",
+      time: "4:15 PM",
+      title: "Sponsor Workshop with Labcorp: Privilege, Trust, Accountability",
+      description: "Until 5:00 PM.",
     },
     {
       time: "5:15 PM",
-      title: "Workshop: HackNC Dev Team",
-      description: "Topic to be announced.",
+      title: "UNC Dev Workshop: Hacking with AI",
+      description: "Until 6:00 PM.",
+    },
+    {
+      time: "5:15 PM",
+      title:
+        "Sponsor Workshop with Lafayette Co.: How to Pitch and Raise Money",
+      description: "Until 6:00 PM.",
     },
     {
       time: "6:00 PM",
@@ -128,36 +147,39 @@ export const schedule: Record<ScheduleDay, ScheduleEvent[]> = {
     },
     {
       time: "9:00 PM",
-      title: "Skribbl.io",
+      title: "Skribbl.io Game",
       description: "Until 10:00 PM.",
     },
   ],
   Sunday: [
     {
-      time: "8:30 AM",
-      title: "Coffee & Breakfast",
-      description: "Until 10:00 AM.",
+      time: "6:00 AM",
+      title: "Discord \u201cBest Meme\u201d Due",
+    },
+    {
+      time: "7:30 AM",
+      title: "Breakfast",
+      description: "Until 9:00 AM.",
+    },
+    {
+      time: "10:00 AM",
+      title: "Hacking Ends!",
+      description: "Final deadline for submissions via Devpost.",
     },
     {
       time: "11:00 AM",
-      title: "Hacking Ends + Submit on Devpost",
-      description: "Projects must be submitted on Devpost by 11:00 AM.",
+      title: "Lunch",
+      description: "Until 1:00 PM.",
     },
     {
       time: "12:00 PM",
-      title: "Lunch",
-      description: "Until 2:00 PM.",
+      title: "Demo Fair",
+      description: "Until 1:30 PM.",
     },
     {
-      time: "1:00 PM",
-      title: "Demo Fair & Judging",
-      description:
-        "Be at your table to demo your project to the judges. Until 2:30 PM.",
-    },
-    {
-      time: "4:00 PM",
-      title: "Closing Ceremony & Awards",
-      description: "Until 5:00 PM.",
+      time: "3:00 PM",
+      title: "Closing Ceremony",
+      description: "Until 4:00 PM.",
     },
   ],
 };
