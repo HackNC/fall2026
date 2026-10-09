@@ -91,12 +91,6 @@ export const sponsors: Sponsor[] = [
     logoSrc: "/sponsors/netapp.webp",
   },
   {
-    name: "Pendo",
-    tier: 3,
-    href: "https://www.pendo.io",
-    logoSrc: "/sponsors/pendo.webp",
-  },
-  {
     name: "Treasury",
     tier: 4,
     href: "https://treasury.sh",

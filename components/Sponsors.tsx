@@ -14,7 +14,10 @@ import { glossyPill } from "./glossyPill";
  * Spelled out in full for Tailwind's scanner; the `sizes` hint mirrors each
  * width so the browser fetches sensibly.
  */
-const tierCard: Record<SponsorTier, { className: string; sizes: string }> = {
+const tierCard: Record<
+  SponsorTier,
+  { className: string; sizes: string; rowClassName?: string }
+> = {
   1: {
     className: "w-[17rem] sm:w-[22rem] lg:w-[25.5rem]",
     sizes: "(min-width: 1024px) 25.5rem, (min-width: 640px) 22rem, 17rem",
@@ -24,12 +27,13 @@ const tierCard: Record<SponsorTier, { className: string; sizes: string }> = {
     sizes: "(min-width: 1024px) 24rem, (min-width: 640px) 20rem, 15.5rem",
   },
   3: {
-    // Fluid from xl up: a quarter of the row less the gaps, so seven cards
-    // always break 4+3 rather than 3+3+1 with one stranded, and grow with the
-    // row up to the section's max width (~18.5rem there).
-    className: "w-[13rem] sm:w-[16rem] lg:w-[17.5rem] xl:w-[calc(25%-1.5rem)]",
+    className: "w-[13rem] sm:w-[16rem] lg:w-[17.5rem] xl:w-[18.5rem]",
     sizes:
       "(min-width: 1280px) 18.5rem, (min-width: 1024px) 17.5rem, (min-width: 640px) 16rem, 13rem",
+    // Six sponsors: capped so exactly three cards fit a line (three cards
+    // plus two 2rem gaps), giving two even rows of three rather than four and
+    // a stranded two. Below lg the row is narrower anyway and breaks 2+2+2.
+    rowClassName: "mx-auto lg:max-w-[57rem] xl:max-w-[60rem]",
   },
   4: {
     className: "w-[12rem] sm:w-[14.5rem] lg:w-[17rem]",
@@ -41,8 +45,8 @@ const tiers: SponsorTier[] = [1, 2, 3, 4];
 
 export default function Sponsors() {
   return (
-    // 7xl rather than the 6xl used elsewhere: the four fluid tier-3 cards
-    // need the room, and this is the page wrapper's width anyway.
+    // 7xl rather than the 6xl used elsewhere: the widest rows need the room,
+    // and this is the page wrapper's width anyway.
     <section className="mx-auto max-w-7xl pt-4 pb-20 sm:pt-6 sm:pb-28">
       <div className="text-center">
         <span
@@ -78,7 +82,7 @@ export default function Sponsors() {
             <ul
               key={tier}
               aria-label={`Tier ${tier} sponsors`}
-              className="flex flex-wrap justify-center gap-x-6 gap-y-10 sm:gap-x-8"
+              className={`flex flex-wrap justify-center gap-x-6 gap-y-10 sm:gap-x-8 ${card.rowClassName ?? ""}`}
             >
               {members.map((sponsor) => (
                 <li key={sponsor.name} className={card.className}>
