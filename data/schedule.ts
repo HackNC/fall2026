@@ -46,11 +46,6 @@ export const schedule: Record<ScheduleDay, ScheduleEvent[]> = {
   ],
   Friday: [
     {
-      time: "5:00 PM",
-      title: "HackNC Kickoff",
-      description: "Until 5:30 PM.",
-    },
-    {
       time: "5:30 PM",
       title: "HackNC 101 Workshop with Lead Directors",
       description:
