@@ -19,14 +19,14 @@ export const resourceCategories: ResourceCategory[] = [
         href: "https://go.unc.edu/HackNC2026-guide",
       },
       {
-        title: "HackNC 2025 on Devpost",
-        description: "Browse every project submitted at last year's hackathon.",
-        href: "https://hacknc-2025.devpost.com",
+        title: "HackNC 2026 on Devpost",
+        description: "Explore the projects submitted at HackNC 2026.",
+        href: "https://hacknc-2026.devpost.com/",
       },
       {
-        title: "HackNC 2024 on Devpost",
-        description: "See what past hackers built for inspiration.",
-        href: "https://hacknc-2024.devpost.com",
+        title: "HackNC 2026 Photo Album",
+        description: "Browse photos from HackNC 2026.",
+        href: "https://photos.app.goo.gl/Jq17u1jRnTssSuHG6",
       },
       {
         title: "MLH Hackathon Guide",
