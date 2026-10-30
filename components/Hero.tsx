@@ -202,7 +202,7 @@ export default function Hero() {
           aria-label="Countdown to October 9, 2026 Eastern Time"
         >
           {timeLeft.hasStarted ? (
-            <p className={countdownPane}>event has started</p>
+            <p className={countdownPane}>event has ended</p>
           ) : (
             // Tabular figures on purpose: without them the seconds digit
             // changes width every tick and the whole pane jitters.
