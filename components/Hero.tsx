@@ -59,6 +59,11 @@ const capsules = [
     travel: "-6vh",
     delay: "600ms",
   },
+  {
+    className: "right-[4%] top-[70%] h-6 w-24 sm:h-8 sm:w-36",
+    travel: "-11vh",
+    delay: "1800ms",
+  },
 ];
 
 function getTimeLeft(): TimeLeft {
@@ -127,7 +132,7 @@ export default function Hero() {
         <span
           key={capsule.className}
           aria-hidden="true"
-          className={`pointer-events-none absolute rounded-full border border-white/45 bg-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-md ${capsule.className}`}
+          className={`pointer-events-none absolute rounded-full border border-white/45 bg-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-md motion-safe:will-change-transform ${capsule.className}`}
           style={{
             transform: `translate3d(0, calc(var(--scroll-hero) * ${capsule.travel}), 0)`,
           }}
